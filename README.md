@@ -6,7 +6,7 @@ Survive and FIGHT!
 
 ### Dependencies
 
-Both Windows and Linux version require the same dependencies:
+Both Windows and Linux versions require the same dependencies:
  * Cmake (> 2.6)
  * Ogre 1.10
  * OIS (Generaly presentend as a dependency of Ogre)
