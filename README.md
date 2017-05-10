@@ -1,4 +1,28 @@
-# Swords-Scrolls-and-Knuckles
+# Swords Scrolls and Knuckles
 Survive and FIGHT!
 
-A game for Windows and Linux
+
+## Compilation
+
+### Dependencies
+
+Both Windows and Linux version required the same dependencies:
+ * Cmake (> 2.6)
+ * Ogre 1.10
+ * OIS (Generaly presentend as a dependency of Ogre)
+
+### Windows
+
+*TODO*
+
+### Linux
+
+To compile `Swords Scrolls and Knucles` on Unix-like system, open a terminal and type:
+
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
+
+Now, you can play the game by typing `./ssk` from the build directory! :)
