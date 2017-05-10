@@ -1,13 +1,3 @@
-//
-// main.hpp for  in /home/grange_c/rendu/indie/include
-//
-// Made by Benjamin Grange
-// Login   <grange_c@epitech.net>
-//
-// Started on  Wed May 10 06:36:14 2017 Benjamin Grange
-// Last update Wed May 10 06:36:14 2017 Benjamin Grange
-//
-
 #ifndef MAIN_HPP
 # define MAIN_HPP
 

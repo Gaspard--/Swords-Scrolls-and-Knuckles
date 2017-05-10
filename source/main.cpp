@@ -1,13 +1,3 @@
-//
-// main.cpp for  in /home/grange_c/rendu/indie/source
-//
-// Made by Benjamin Grange
-// Login   <grange_c@epitech.net>
-//
-// Started on  Tue May 09 23:25:02 2017 Benjamin Grange
-// Last update Tue May 09 23:25:02 2017 Benjamin Grange
-//
-
 #include "main.hpp"
 
 int main() {
@@ -17,6 +7,6 @@ int main() {
     std::cout << i << std::endl;
   };
 
-  print("Hello Gnome World !");
+  print("Hello Ogre World !");
   return (0);
 }
