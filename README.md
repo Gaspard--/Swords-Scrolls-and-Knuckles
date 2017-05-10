@@ -17,7 +17,7 @@ Both Windows and Linux versions require the same dependencies:
 
 ### Linux
 
-To compile `Swords Scrolls and Knucles` on Unix-like system, open a terminal and type:
+To compile `Swords Scrolls and Knuckles` on Unix-like system, open a terminal and type:
 
 ```bash
 mkdir build && cd build
