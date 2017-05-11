@@ -35,7 +35,7 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 set(OIS_DIR "${CMAKE_SOURCE_DIR}/cmake/")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra --std=c++14")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14")
 
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")
 file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")

@@ -32,3 +32,7 @@
 # Cmake stuff
 build
 ssk
+
+# Vim stuff
+Session.vim
+.syntastic_cpp_config
