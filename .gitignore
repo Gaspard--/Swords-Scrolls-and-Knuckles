@@ -36,3 +36,6 @@ ssk
 # Vim stuff
 Session.vim
 .syntastic_cpp_config
+
+# Ogre stuff
+Ogre.log
