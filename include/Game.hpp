@@ -1,16 +1,27 @@
 #ifndef GAME_HPP
 # define GAME_HPP
 
+# include <memory>
 # include <OgreRoot.h>
 # include <OgreRenderWindow.h>
+# include <OgreConfigFile.h>
+# include <OgreResourceGroupManager.h>
+# include <OgreTextureManager.h>
 # include <OgreException.h>
+# include <OgreWindowEventUtilities.h>
+
+# include "Renderer.hpp"
 
 class Game
 {
   private:
     /// Root Ogre instance.
     Ogre::Root _root;
+    std::unique_ptr<Renderer> _renderer;
     std::unique_ptr<Ogre::RenderWindow> _window;
+
+    void setupResources(void);
+    void setupRenderSystem(void);
 
   public:
     Game(void);
@@ -29,6 +40,21 @@ class Game
 
     /// Run the game
     void run(void);
+
+    /// Return the root instance
+    Ogre::Root &getRoot(void);
+    Ogre::Root const &getRoot(void) const;
+
+    /// Return the window instance
+    Ogre::RenderWindow &getWindow(void);
+    Ogre::RenderWindow const &getWindow(void) const;
+
+    /// Return the renderer instance
+    Renderer &getRenderer(void);
+    Renderer const &getRenderer(void) const;
+
+    /// Set the current scene to the selected one.
+    void setCurrentScene(Scene *);
 
     class SetupException : public std::runtime_error {
       public:
