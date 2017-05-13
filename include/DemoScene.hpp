@@ -16,9 +16,11 @@ class DemoScene : public Scene
     DemoScene(Game &);
     DemoScene(DemoScene const &) = delete;
     DemoScene(DemoScene &&) = delete;
-    ~DemoScene(void) = default;
+    virtual ~DemoScene(void) = default;
     DemoScene operator=(DemoScene const &) = delete;
     DemoScene operator=(DemoScene &&) = delete;
+
+    virtual void load(void);
 };
 
 #endif // !DEMO_SCENE_HPP

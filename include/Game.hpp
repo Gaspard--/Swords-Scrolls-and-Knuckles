@@ -18,7 +18,7 @@ class Game
     /// Root Ogre instance.
     Ogre::Root _root;
     std::unique_ptr<Renderer> _renderer;
-    std::unique_ptr<Ogre::RenderWindow> _window;
+    Ogre::RenderWindow *_window;
 
     void setupResources(void);
     void setupRenderSystem(void);

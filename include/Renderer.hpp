@@ -23,9 +23,9 @@ class Renderer
 {
   private:
     Game &_game;
-    std::unique_ptr<Ogre::SceneManager> _scenemgr;
-    std::unique_ptr<Ogre::Camera> _camera;
-    std::unique_ptr<Ogre::Viewport> _viewport;
+    Ogre::SceneManager *_scenemgr;
+    Ogre::Camera *_camera;
+    Ogre::Viewport *_viewport;
     std::unique_ptr<Scene> _scene;
 
   public:
@@ -38,7 +38,7 @@ class Renderer
     Renderer &operator=(Renderer &&) = delete;
 
     /// Switch the current scene to the given one.
-    void switchScene(Scene *);
+    void switchScene(std::unique_ptr<Scene> &&);
 
     /// Returns the scene manager
     Ogre::SceneManager &getSceneManager(void);

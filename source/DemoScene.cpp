@@ -3,6 +3,9 @@
 
 DemoScene::DemoScene(Game &game)
   : Scene(game)
+{}
+
+void DemoScene::load(void)
 {
   std::clog << "Loading demo scene" << std::endl;
   Ogre::Entity *ogreEntity = _renderer.getSceneManager().createEntity("ogrehead.mesh");

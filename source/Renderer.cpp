@@ -19,15 +19,20 @@ Renderer::Renderer(Game &game)
   _camera->setPosition(0, 0, 80);
   _camera->lookAt(0, 0, -3000);
   _camera->setNearClipDistance(5);
-  _viewport.reset(_game.getWindow().addViewport(_camera.get()));
+  _viewport = _game.getWindow().addViewport(_camera);
   _viewport->setBackgroundColour(Ogre::ColourValue(1.0, 0.0, 0.0)); // red
   _camera->setAspectRatio(Ogre::Real(_viewport->getActualWidth()) /
 			  Ogre::Real(_viewport->getActualHeight()));
 }
 
-void Renderer::switchScene(Scene *scene)
+void Renderer::switchScene(std::unique_ptr<Scene> &&ptr)
 {
-  _scene.reset(scene);
+  if (_scene)
+    _scene->unload();
+  _scenemgr->clearScene();
+  _scene = std::move(ptr);
+  if (_scene)
+    _scene->load();
 }
 
 Ogre::SceneManager &Renderer::getSceneManager(void)

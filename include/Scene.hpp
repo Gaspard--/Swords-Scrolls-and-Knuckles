@@ -27,7 +27,10 @@ class Scene
     Scene(Scene &&) = delete;
     Scene &operator=(Scene const &) = delete;
     Scene &operator=(Scene &&) = delete;
-    ~Scene(void) = default;
+    virtual ~Scene(void) = default;
+
+    virtual void load(void);
+    virtual void unload(void);
 };
 
 #endif // !SCENE_HPP

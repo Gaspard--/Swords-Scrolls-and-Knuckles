@@ -1,3 +1,4 @@
+#include <memory>
 #include <stdexcept>
 #include "Game.hpp"
 #include "DemoScene.hpp"
@@ -52,7 +53,7 @@ void Game::setup(void) {
   setupRenderSystem();
 
   // Create the window
-  _window.reset(_root.initialise(true, "Swords, Scrolls and Knuckles"));
+  _window = _root.initialise(true, "Swords, Scrolls and Knuckles");
 
   // Load resources
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -60,7 +61,7 @@ void Game::setup(void) {
 
   // Set up the renderer and initial scene
   _renderer.reset(new Renderer(*this));
-  _renderer->switchScene(new DemoScene(*this));
+  _renderer->switchScene(std::unique_ptr<Scene>(new DemoScene(*this)));
 }
 
 void Game::run(void) {

@@ -15,3 +15,9 @@ Scene::Scene(Game &g)
   : _game(g)
   , _renderer(g.getRenderer())
 {}
+
+void Scene::load(void)
+{}
+
+void Scene::unload(void)
+{}
