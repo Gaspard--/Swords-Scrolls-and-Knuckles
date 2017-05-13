@@ -27,7 +27,11 @@ class Scene
     Scene &operator=(Scene &&) = delete;
     virtual ~Scene(void) = default;
 
+    /// Used to load all the elements of the new scene
     virtual void load(void);
+
+    /// Used to close personnal resources. Do *NOT* free Ogre's scene elements
+    /// (entities, lights etc.).
     virtual void unload(void);
 };
 

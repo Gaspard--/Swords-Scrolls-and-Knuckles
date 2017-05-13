@@ -34,8 +34,13 @@ class Game
     Game &operator=(Game &&) = delete;
     ~Game(void);
 
+    /// Ogre config file path
     static char const *const PLUGINS_CONFIG_PATH;
+
+    /// Ogre resource file path
     static char const *const RESOURCES_CONFIG_PATH;
+
+    /// Singleton getter
     static Game &getSingleton(void);
 
     /// Set up the game (load saves etc.)

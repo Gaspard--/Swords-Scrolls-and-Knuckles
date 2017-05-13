@@ -3,6 +3,7 @@
 
 int main() {
   try {
+    Game::getSingleton().setup();
     Game::getSingleton().run();
     return (0);
   }

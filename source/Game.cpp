@@ -74,7 +74,6 @@ void Game::setup(void) {
 }
 
 void Game::run(void) {
-  setup();
   while (42) {
     Ogre::WindowEventUtilities::messagePump();
 
