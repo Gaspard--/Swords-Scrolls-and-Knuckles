@@ -6,7 +6,7 @@ Survive and FIGHT!
 
 ### Dependencies
 
-Both Windows and Linux version required the same dependencies:
+Both Windows and Linux versions require the same dependencies:
  * Cmake (> 2.6)
  * Ogre 1.10
  * OIS (Generaly presentend as a dependency of Ogre)
@@ -17,7 +17,7 @@ Both Windows and Linux version required the same dependencies:
 
 ### Linux
 
-To compile `Swords Scrolls and Knucles` on Unix-like system, open a terminal and type:
+To compile `Swords Scrolls and Knuckles` on Unix-like system, open a terminal and type:
 
 ```bash
 mkdir build && cd build
