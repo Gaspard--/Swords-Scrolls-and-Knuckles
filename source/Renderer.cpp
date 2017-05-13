@@ -11,16 +11,12 @@
 #include "Renderer.hpp"
 #include "Game.hpp"
 
-Renderer::Renderer(Game &game)
-  : _game(game)
-  , _scenemgr(game.getRoot().createSceneManager(Ogre::ST_GENERIC))
+Renderer::Renderer(void)
+  : _scenemgr(Game::getSingleton().getRoot().createSceneManager(Ogre::ST_GENERIC))
   , _camera(_scenemgr->createCamera("MainCamera"))
+  , _viewport(Game::getSingleton().getWindow().addViewport(_camera))
 {
-  _camera->setPosition(0, 0, 80);
-  _camera->lookAt(0, 0, -3000);
-  _camera->setNearClipDistance(5);
-  _viewport = _game.getWindow().addViewport(_camera);
-  _viewport->setBackgroundColour(Ogre::ColourValue(1.0, 0.0, 0.0)); // red
+  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   _camera->setAspectRatio(Ogre::Real(_viewport->getActualWidth()) /
 			  Ogre::Real(_viewport->getActualHeight()));
 }
@@ -43,4 +39,14 @@ Ogre::SceneManager &Renderer::getSceneManager(void)
 Ogre::SceneManager const &Renderer::getSceneManager(void) const
 {
   return (*_scenemgr);
+}
+
+Ogre::Camera &Renderer::getCamera(void)
+{
+  return (*_camera);
+}
+
+Ogre::Camera const &Renderer::getCamera(void) const
+{
+  return (*_camera);
 }

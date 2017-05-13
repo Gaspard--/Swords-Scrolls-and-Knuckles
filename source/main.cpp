@@ -3,9 +3,7 @@
 
 int main() {
   try {
-    Game game;
-
-    game.run();
+    Game::getSingleton().run();
     return (0);
   }
   catch (Game::SetupException const &e) {

@@ -11,9 +11,8 @@
 #include "Scene.hpp"
 #include "Game.hpp"
 
-Scene::Scene(Game &g)
-  : _game(g)
-  , _renderer(g.getRenderer())
+Scene::Scene(void)
+  : _renderer(Game::getSingleton().getRenderer())
 {}
 
 void Scene::load(void)

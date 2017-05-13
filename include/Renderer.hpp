@@ -22,7 +22,6 @@ class Game;
 class Renderer
 {
   private:
-    Game &_game;
     Ogre::SceneManager *_scenemgr;
     Ogre::Camera *_camera;
     Ogre::Viewport *_viewport;
@@ -30,7 +29,6 @@ class Renderer
 
   public:
     Renderer(void);
-    Renderer(Game &);
     Renderer(Renderer const &) = delete;
     Renderer(Renderer &&) = delete;
     ~Renderer(void) = default;
@@ -43,6 +41,10 @@ class Renderer
     /// Returns the scene manager
     Ogre::SceneManager &getSceneManager(void);
     Ogre::SceneManager const &getSceneManager(void) const;
+
+    /// Returns the camera
+    Ogre::Camera &getCamera(void);
+    Ogre::Camera const &getCamera(void) const;
 };
 
 #endif // !RENDERER_HPP

@@ -6,6 +6,15 @@
 char const *const Game::PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
 char const *const Game::RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
 
+Game Game::gameInstance;
+
+// Singleton
+
+Game &Game::getSingleton(void)
+{
+  return (gameInstance);
+}
+
 // Constructors
 
 Game::Game(void)
@@ -60,8 +69,8 @@ void Game::setup(void) {
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
   // Set up the renderer and initial scene
-  _renderer.reset(new Renderer(*this));
-  _renderer->switchScene(std::unique_ptr<Scene>(new DemoScene(*this)));
+  _renderer.reset(new Renderer());
+  _renderer->switchScene(std::unique_ptr<Scene>(new DemoScene()));
 }
 
 void Game::run(void) {

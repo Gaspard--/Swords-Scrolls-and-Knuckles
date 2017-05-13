@@ -17,12 +17,10 @@ class Renderer;
 class Scene
 {
   protected:
-    Game &_game;
     Renderer &_renderer;
 
   public:
-    Scene(void) = delete;
-    Scene(Game &);
+    Scene(void);
     Scene(Scene const &) = delete;
     Scene(Scene &&) = delete;
     Scene &operator=(Scene const &) = delete;

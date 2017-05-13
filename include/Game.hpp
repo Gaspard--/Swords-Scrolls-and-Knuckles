@@ -15,6 +15,9 @@
 class Game
 {
   private:
+    /// Singleton instance
+    static Game gameInstance;
+
     /// Root Ogre instance.
     Ogre::Root _root;
     std::unique_ptr<Renderer> _renderer;
@@ -33,6 +36,7 @@ class Game
 
     static char const *const PLUGINS_CONFIG_PATH;
     static char const *const RESOURCES_CONFIG_PATH;
+    static Game &getSingleton(void);
 
     /// Set up the game (load saves etc.)
     /// Throws SetupException in case of error.

@@ -12,8 +12,7 @@ class Game;
 class DemoScene : public Scene
 {
   public:
-    DemoScene(void) = delete;
-    DemoScene(Game &);
+    DemoScene(void);
     DemoScene(DemoScene const &) = delete;
     DemoScene(DemoScene &&) = delete;
     virtual ~DemoScene(void) = default;
@@ -21,6 +20,8 @@ class DemoScene : public Scene
     DemoScene operator=(DemoScene &&) = delete;
 
     virtual void load(void);
+  private:
+    Ogre::SceneNode *cameraNode;
 };
 
 #endif // !DEMO_SCENE_HPP
