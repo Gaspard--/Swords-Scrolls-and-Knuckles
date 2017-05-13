@@ -66,13 +66,11 @@ void Game::setup(void) {
 
 void Game::run(void) {
   setup();
-  {
-    while (42) {
-      Ogre::WindowEventUtilities::messagePump();
+  while (42) {
+    Ogre::WindowEventUtilities::messagePump();
 
-      if (_window->isClosed() || !_root.renderOneFrame())
-	break;
-    }
+    if (_window->isClosed() || !_root.renderOneFrame())
+      break;
   }
 }
 
