@@ -1,13 +1,3 @@
-//
-// Renderer.cpp for  in /home/grange_c/rendu/indie/source
-//
-// Made by Benjamin Grange
-// Login   <grange_c@epitech.net>
-//
-// Started on  Fri May 12 18:41:42 2017 Benjamin Grange
-// Last update Fri May 12 18:41:42 2017 Benjamin Grange
-//
-
 #include "Renderer.hpp"
 #include "Game.hpp"
 
