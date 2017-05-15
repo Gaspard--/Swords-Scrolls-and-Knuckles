@@ -6,6 +6,7 @@ Renderer::Renderer(void)
   , _camera(_scenemgr->createCamera("MainCamera"))
   , _viewport(Game::getSingleton().getWindow().addViewport(_camera))
 {
+  _scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   _camera->setAspectRatio(Ogre::Real(_viewport->getActualWidth()) /
 			  Ogre::Real(_viewport->getActualHeight()));
@@ -16,7 +17,7 @@ void Renderer::switchScene(std::unique_ptr<Scene> &&ptr)
   if (_scene)
     _scene->unload();
   _scenemgr->clearScene();
-  _scene = std::move(ptr);
+  std::swap(_scene, ptr);
   if (_scene)
     _scene->load();
 }

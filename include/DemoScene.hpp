@@ -6,6 +6,7 @@
 # include <OgreLight.h>
 # include <OgreSceneNode.h>
 # include "Scene.hpp"
+# include "Entity.hpp"
 
 class Game;
 
@@ -22,6 +23,8 @@ class DemoScene : public Scene
     virtual void load(void);
   private:
     Ogre::SceneNode *cameraNode;
+    Entity ogre;
+    Entity ground;
 };
 
 #endif // !DEMO_SCENE_HPP
