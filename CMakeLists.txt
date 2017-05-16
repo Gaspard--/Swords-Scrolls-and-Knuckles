@@ -58,6 +58,7 @@ add_executable(
 target_link_libraries(
 	${PROJECT_NAME}
 	${OGRE_LIBRARIES}
+	${OIS_LIBRARIES}
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})

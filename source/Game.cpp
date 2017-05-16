@@ -18,11 +18,15 @@ Game &Game::getSingleton(void)
 // Constructors
 
 Game::Game(void)
-  : _root(Game::PLUGINS_CONFIG_PATH)
+  : root(Game::PLUGINS_CONFIG_PATH)
+  , inputManager(nullptr)
 {}
 
 Game::~Game(void)
-{}
+{
+  Ogre::WindowEventUtilities::removeWindowEventListener(window, this);
+  windowClosed(window);
+}
 
 // Private functions
 
@@ -42,17 +46,62 @@ void Game::setupResources(void) {
 
 void Game::setupRenderSystem(void) {
   // Look for the OpenGL render system
-  auto const &rlist = _root.getAvailableRenderers();
+  auto const &rlist = root.getAvailableRenderers();
 
   for (auto const &rs : rlist) {
     if (rs->getName().find("OpenGL") != std::string::npos) {
-      _root.setRenderSystem(rs);
+      root.setRenderSystem(rs);
       rs->setConfigOption("Full Screen", "Yes");
       rs->setConfigOption("Video Mode", "1920 x 1080 @ 32-bit colour");
       return ;
     }
   }
   throw SetupException("Can't find an available Renderer");
+}
+
+void Game::setupOIS(void) {
+  OIS::ParamList pl;
+  size_t windowHnd;
+  std::ostringstream stream;
+
+  windowHnd = 0;
+  window->getCustomAttribute("WINDOW", &windowHnd);
+  stream << windowHnd;
+  pl.insert(std::make_pair(std::string("WINDOW"), stream.str()));
+
+  inputManager = OIS::InputManager::createInputSystem(pl);
+  Ogre::WindowEventUtilities::addWindowEventListener(window, this);
+
+  Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
+}
+
+// Protected functions
+
+bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
+  if (window->isClosed())
+    return (false);
+
+  // Need to capture / update each device
+  Keyboard::getKeyboard()->capture();
+
+  if (Keyboard::getKeys()[OIS::KC_ESCAPE])
+    return (false);
+  return (true);
+}
+
+/// Called when window is closed. Used to unattach OIS before window
+/// shutdown (very important under Linux)
+void Game::windowClosed(Ogre::RenderWindow* rw)
+{
+  if (rw == window)
+  {
+    if (inputManager)
+    {
+      Keyboard::getKeyboard().destroy(inputManager);
+      OIS::InputManager::destroyInputSystem(inputManager);
+      inputManager = nullptr;
+    }
+  }
 }
 
 // Public functions
@@ -62,46 +111,48 @@ void Game::setup(void) {
   setupRenderSystem();
 
   // Create the window
-  _window = _root.initialise(true, "Swords, Scrolls and Knuckles");
+  window = root.initialise(true, "Swords, Scrolls and Knuckles");
 
   // Load resources
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+  // Set up keyboard / mouse handlers
+  setupOIS();
+
   // Set up the renderer and initial scene
-  _renderer.reset(new Renderer());
-  _renderer->switchScene(std::unique_ptr<Scene>(new DemoScene()));
+  renderer.reset(new Renderer());
+  renderer->switchScene(std::unique_ptr<Scene>(new DemoScene()));
+
+  root.addFrameListener(this);
 }
 
 void Game::run(void) {
-  while (42) {
-    Ogre::WindowEventUtilities::messagePump();
-
-    if (_window->isClosed() || !_root.renderOneFrame())
-      break;
-  }
+  root.startRendering();
 }
 
+
+
 Ogre::Root &Game::getRoot(void) {
-  return (_root);
+  return (root);
 }
 
 Ogre::Root const &Game::getRoot(void) const {
-  return (_root);
+  return (root);
 }
 
 Ogre::RenderWindow &Game::getWindow(void) {
-  return (*_window);
+  return (*window);
 }
 
 Ogre::RenderWindow const &Game::getWindow(void) const {
-  return (*_window);
+  return (*window);
 }
 
 Renderer &Game::getRenderer(void) {
-  return (*_renderer);
+  return (*renderer);
 }
 
 Renderer const &Game::getRenderer(void) const {
-  return (*_renderer);
+  return (*renderer);
 }

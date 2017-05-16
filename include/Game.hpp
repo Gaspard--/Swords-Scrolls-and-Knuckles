@@ -9,25 +9,37 @@
 # include <OgreTextureManager.h>
 # include <OgreException.h>
 # include <OgreWindowEventUtilities.h>
+# include <OgreFrameListener.h>
+# include <OISInputManager.h>
 
 # include "Renderer.hpp"
+# include "Keyboard.hpp"
 
-class Game
+class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {
-  private:
     /// Singleton instance
     static Game gameInstance;
 
     /// Root Ogre instance.
-    Ogre::Root _root;
-    std::unique_ptr<Renderer> _renderer;
-    Ogre::RenderWindow *_window;
+    Ogre::Root root;
+    std::unique_ptr<Renderer> renderer;
+    Ogre::RenderWindow *window;
+    OIS::InputManager *inputManager;
 
     void setupResources(void);
     void setupRenderSystem(void);
+    void setupOIS(void);
+
+    Game(void);
+
+  protected:
+    /// Ogre::FrameListener
+    virtual bool frameRenderingQueued(Ogre::FrameEvent const &evt);
+
+    // Ogre::WindowEventListener
+    virtual void windowClosed(Ogre::RenderWindow* rw);
 
   public:
-    Game(void);
     Game(Game const &) = delete;
     Game(Game &&) = delete;
     Game &operator=(Game const &) = delete;

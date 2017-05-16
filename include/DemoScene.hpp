@@ -21,6 +21,7 @@ class DemoScene : public Scene
     DemoScene operator=(DemoScene &&) = delete;
 
     virtual void load(void);
+
   private:
     Ogre::SceneNode *cameraNode;
     Entity ogre;
