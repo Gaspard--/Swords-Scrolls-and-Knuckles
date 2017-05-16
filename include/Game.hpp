@@ -22,14 +22,16 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 
     /// Root Ogre instance.
     Ogre::Root root;
-    std::unique_ptr<Renderer> renderer;
     Ogre::RenderWindow *window;
     OIS::InputManager *inputManager;
+    std::unique_ptr<Renderer> renderer;
 
+    /// Setup functions (called by Keyboard::setup())
     void setupResources(void);
     void setupRenderSystem(void);
     void setupOIS(void);
 
+    /// Private constructor (Singleton)
     Game(void);
 
   protected:
@@ -53,7 +55,7 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     static char const *const RESOURCES_CONFIG_PATH;
 
     /// Singleton getter
-    static Game &getSingleton(void);
+    static Game &getGame(void);
 
     /// Set up the game (load saves etc.)
     /// Throws SetupException in case of error.

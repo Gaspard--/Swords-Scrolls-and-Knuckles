@@ -2,9 +2,9 @@
 #include "Game.hpp"
 
 Renderer::Renderer(void)
-  : _scenemgr(Game::getSingleton().getRoot().createSceneManager(Ogre::ST_GENERIC))
+  : _scenemgr(Game::getGame().getRoot().createSceneManager(Ogre::ST_GENERIC))
   , _camera(_scenemgr->createCamera("MainCamera"))
-  , _viewport(Game::getSingleton().getWindow().addViewport(_camera))
+  , _viewport(Game::getGame().getWindow().addViewport(_camera))
 {
   _scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
   _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black

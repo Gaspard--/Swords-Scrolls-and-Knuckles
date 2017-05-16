@@ -10,7 +10,7 @@ Game Game::gameInstance;
 
 // Singleton
 
-Game &Game::getSingleton(void)
+Game &Game::getGame(void)
 {
   return (gameInstance);
 }

@@ -17,7 +17,7 @@ class Entity
   public:
     Entity(void) = default;
     Entity(std::string const &mesh,
-	   Ogre::SceneNode *parent = Game::getSingleton().getRenderer().getSceneManager().getRootSceneNode());
+	   Ogre::SceneNode *parent = Game::getGame().getRenderer().getSceneManager().getRootSceneNode());
     Entity(Entity const &) = default;
     Entity(Entity &&) = default;
     Entity &operator=(Entity const &) = default;

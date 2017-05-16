@@ -3,8 +3,8 @@
 
 int main() {
   try {
-    Game::getSingleton().setup();
-    Game::getSingleton().run();
+    Game::getGame().setup();
+    Game::getGame().run();
     return (0);
   }
   catch (Game::SetupException const &e) {

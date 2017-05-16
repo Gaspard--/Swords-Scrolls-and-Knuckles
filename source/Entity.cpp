@@ -1,7 +1,7 @@
 #include "Entity.hpp"
 
 Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
-  : ogreEntity(Game::getSingleton().getRenderer().getSceneManager().createEntity(mesh))
+  : ogreEntity(Game::getGame().getRenderer().getSceneManager().createEntity(mesh))
   , sceneNode(parent->createChildSceneNode())
 
 {

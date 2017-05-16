@@ -12,7 +12,9 @@ class Keyboard : public Input<OIS::Keyboard>
     /// Singleton instance
     static Keyboard keyboardInstance;
 
+    /// Private constructor (Singleton)
     Keyboard(void);
+
   protected:
     /// OIS::KeyListener
     virtual bool keyPressed(OIS::KeyEvent const &ke);

@@ -14,7 +14,7 @@ Keyboard::KeyboardKey Keyboard::getKeys(void) {
   return (KeyboardKey());
 }
 
-/// Default constructor
+// Default constructor
 
 Keyboard::Keyboard(void)
   : Input<OIS::Keyboard>()
@@ -38,6 +38,8 @@ bool Keyboard::keyReleased(OIS::KeyEvent const &ke) {
   return (true);
 }
 
+// Public functions
+
 void Keyboard::registerCallback(OIS::KeyCode ke, std::function<bool(bool)> const &fn) {
   keys[ke] = fn;
 }
@@ -46,7 +48,7 @@ void Keyboard::clearCallbacks(void) {
   keys.clear();
 }
 
-// Keys
+// KeyboardKey
 
 bool Keyboard::KeyboardKey::operator[](OIS::KeyCode &&kc) {
   return (Keyboard::getKeyboard()->isKeyDown(kc));
