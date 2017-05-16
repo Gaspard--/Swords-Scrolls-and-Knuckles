@@ -6,12 +6,17 @@
 
 ## General naming:
 
-No name preceded by an underscore.
+- Naming is important: functions should do what is said on the Tin.
 
-Class name in PascalCase.
-Variable & function names in camelCase
-Macros, constexpr variables & template parameters in UPPER_CASE.
-File naming in CamelCase.
+- No name preceded by an underscore.
+
+- Class names in PascalCase.
+
+- Variable & function names in camelCase.
+
+- Macros, constexpr variables & template parameters in UPPER_CASE.
+
+- File naming in CamelCase.
 
 ## Braces:
 
@@ -36,7 +41,7 @@ Please use spaces adequatelly:
 Spaces on empty lines are tolerated.
 
 ## Indenting
-Please indent your code.
+### Please indent your code.
 
 Indenting levels should be 2 spaces wide.
 
@@ -48,29 +53,49 @@ The exact indentation does not matter. It is only important that the code is rea
 
 ## About the code itself
 
-Please adopt strict RAII: no _new_s should be alone. Use std::unique_ptr, std::shared_ptr or something.
-Avoid explicit ressource handling. (encapsulate as much as possible)
-Functions which have to be paired, should be maintained as objects.
-(Exceptions may be granted to this rule if interacting with a cubbersome API)
+- Please be nice to ___miss Cache___. (✿◕‿◕✿)
 
-Naming is important: functions should do what is said on the Tin.
-Templating is encouraged, as well as constexpr usage, however careful: we have to handle more compilers than gcc.
-(Rational: speed and robustness)
-Pointers are discouraged.
-Use of the standart library over home-made loops is encouraged.
-Virtual inheritence must be justified. Please be nice to _miss Cache_.
-Avoid useless checks. Code should be verified compile-time, not run-time.
-Anything that can be constexpr should be. Anything that can be const should be.
-Use struct if all your members are public.
+### RAII
+Rational: robustness
 
-### Constructors:
-Be clear if your object is movable or copiable or none of both.
-Use the default and delete keyword when possible. Don't forget to qualify as constexpr when possible when using them.
-Use the copy-and-swap idiom when appropriate. Use swap in move operator=.
+- Please adopt strict RAII: no `new`s should be alone. Use `std::unique_ptr`, `std::shared_ptr` or something.
+- Avoid explicit ressource handling. (encapsulate as much as possible)
+- Functions which have to be paired, should be maintained as objects.
+- Pointers are discouraged.
 
-### Operators:
+Exceptions to these rules may be granted to this rule if interacting with a cubbersome API, however then exceptions should remain local.
 
-Define `@` from `@=` (i.e. `+` from `+=`) to avoid code duplication.
+### Compile-time over Run-time
+Rational: speed and robustness
+
+- Templating is encouraged, as well as `constexpr` usage, however careful: we have to handle more compilers than gcc.
+- __Anything that can be `constexpr` should be. Anything that can be `const` should be.__
+- Use of the _Standart Template Library_ over home-made loops is encouraged.
+- Avoid useless checks. Code should be verified compile-time, not run-time.
+
+### Virtual inheritence
+
+- Virtual inheritence must be justified.
+- __`dynamique_cast` and any other form of _Run-Time Type Information_ IS FORBIDDEN.__
+
+### Classes
+
+- Use struct if all your members are public.
+- Use `static_cast` when casting classes.
+
+#### Constructors:
+
+- Be clear if your object is movable or copiable or none of both.
+- Use the default and delete keyword when possible.
+- Don't forget to qualify constructors as `constexpr` when possible when using them.
+- Use the copy-and-swap idiom when appropriate. Use swap in move operator=.
+
+#### Operators:
+
+- Operators should be logical, `c = a + b` and `c = a; c += b` should have the same result.
+- Think about operator precedence when overloading.
+- Define `@` from `@=` (i.e. `+` from `+=`) to avoid code duplication.
+
 ```
 constexpr T &T::operator@=(T const &other);
 
@@ -79,5 +104,11 @@ constexpr T operator@(T const &a, T const &b)
   return T(a) += b;
 }
 ```
+
+### Casting
+
+- Use C-style casts when converting primitive types.
+- Use a `static_cast` if a classe is involved,
+- Other casts are strongly discouraged, except `dynamique_cast` which is forbidden.
 
 ## NOTE: this guide is incomplete, and may change in the future. 
