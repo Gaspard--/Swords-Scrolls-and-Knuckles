@@ -80,6 +80,14 @@ Rational: speed and robustness
 
 ### Classes
 
+- classes must be as logically segmented as possible. A classe should't contain to many fields.
+- If a groupe of fields is allways used together, they should be seperated in heir own classe.
+- If you have a setter, consider using a non const getter instead:
+```
+constexpr X &getX();
+
+constexpr X const &getX() const;
+```
 - Use struct if all your members are public.
 - Use `static_cast` when casting classes.
 
