@@ -47,5 +47,11 @@ void DemoScene::load(void)
   light->setPosition(50, 100, 50);
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
 
+  // Keys callback
+  Keyboard::getKeyboard().registerCallback(OIS::KC_W, [this](bool) {
+					   cameraNode->translate(10, 0, 0);
+					   return (true);
+					   });
+
   std::clog << "End loading" << std::endl;
 }

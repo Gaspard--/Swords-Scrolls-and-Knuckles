@@ -17,6 +17,7 @@ void Renderer::switchScene(std::unique_ptr<Scene> &&ptr)
   if (_scene)
     _scene->unload();
   _scenemgr->clearScene();
+  Keyboard::getKeyboard().clearCallbacks();
   std::swap(_scene, ptr);
   if (_scene)
     _scene->load();
