@@ -35,6 +35,11 @@ class Renderer
     /// Returns the camera
     Ogre::Camera &getCamera(void);
     Ogre::Camera const &getCamera(void) const;
+
+
+    /// Returns the current scene
+    std::unique_ptr<Scene> &getScene(void);
+    std::unique_ptr<Scene> const &getScene(void) const;
 };
 
 #endif // !RENDERER_HPP

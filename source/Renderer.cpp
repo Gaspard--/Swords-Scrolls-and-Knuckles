@@ -14,10 +14,10 @@ Renderer::Renderer(void)
 
 void Renderer::switchScene(std::unique_ptr<Scene> &&ptr)
 {
+  Keyboard::getKeyboard().clearCallbacks();
   if (_scene)
     _scene->unload();
   _scenemgr->clearScene();
-  Keyboard::getKeyboard().clearCallbacks();
   std::swap(_scene, ptr);
   if (_scene)
     _scene->load();
@@ -41,4 +41,12 @@ Ogre::Camera &Renderer::getCamera(void)
 Ogre::Camera const &Renderer::getCamera(void) const
 {
   return (*_camera);
+}
+
+std::unique_ptr<Scene> &Renderer::getScene(void) {
+  return (_scene);
+}
+
+std::unique_ptr<Scene> const &Renderer::getScene(void) const {
+  return (_scene);
 }

@@ -78,15 +78,21 @@ void Game::setupOIS(void) {
 // Protected functions
 
 bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
+  bool go_on = true;
+
   if (window->isClosed())
     return (false);
 
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
 
+  if (renderer->getScene()) {
+    go_on &= renderer->getScene()->update();
+  }
+
   if (Keyboard::getKeys()[OIS::KC_ESCAPE])
-    return (false);
-  return (true);
+    go_on = false;
+  return (go_on);
 }
 
 /// Called when window is closed. Used to unattach OIS before window

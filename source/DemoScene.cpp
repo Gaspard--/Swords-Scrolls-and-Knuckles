@@ -39,7 +39,7 @@ void DemoScene::load(void)
 
   // Lights
   _renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
-  Ogre::Light *light = _renderer.getSceneManager().createLight("MainLight");
+  light = _renderer.getSceneManager().createLight("MainLight");
   light->setType(Ogre::Light::LT_DIRECTIONAL);
   light->setDiffuseColour(1.0, 1.0, 1.0);
   light->setSpecularColour(1.0, 1.0, 1.0);
@@ -48,10 +48,38 @@ void DemoScene::load(void)
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
 
   // Keys callback
-  Keyboard::getKeyboard().registerCallback(OIS::KC_W, [this](bool) {
-					   cameraNode->translate(10, 0, 0);
+  Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
+					   if (b) {
+					     light->setDirection(-1, -1, -1);
+					   } else {
+					     light->setDirection(0, 0, 0);
+					   }
 					   return (true);
 					   });
 
   std::clog << "End loading" << std::endl;
+}
+
+bool DemoScene::update(void)
+{
+  // Will add an iterator shortly
+  if (Keyboard::getKeys()[OIS::KC_A]) {
+    cameraNode->roll(Ogre::Degree(2));
+  }
+  if (Keyboard::getKeys()[OIS::KC_E]) {
+    cameraNode->roll(Ogre::Degree(-2));
+  }
+  if (Keyboard::getKeys()[OIS::KC_D]) {
+    cameraNode->translate(10, 0, 0);
+  }
+  if (Keyboard::getKeys()[OIS::KC_Z]) {
+    cameraNode->translate(0, 0, -10);
+  }
+  if (Keyboard::getKeys()[OIS::KC_Q]) {
+    cameraNode->translate(-10, 0, 0);
+  }
+  if (Keyboard::getKeys()[OIS::KC_S]) {
+    cameraNode->translate(0, 0, 10);
+  }
+  return (true);
 }

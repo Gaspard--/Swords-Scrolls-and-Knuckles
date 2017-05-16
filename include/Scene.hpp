@@ -23,6 +23,10 @@ class Scene
     /// Used to close personnal resources. Do *NOT* free Ogre's scene elements
     /// (entities, lights etc.).
     virtual void unload(void);
+
+    /// Called each frame to update scene logic.
+    /// Return value: false to exit the game, true otherwise.
+    virtual bool update(void);
 };
 
 #endif // !SCENE_HPP
