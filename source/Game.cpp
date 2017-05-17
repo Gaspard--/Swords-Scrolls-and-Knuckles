@@ -3,9 +3,6 @@
 #include "Game.hpp"
 #include "DemoScene.hpp"
 
-char const *const Game::PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
-char const *const Game::RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
-
 Game Game::gameInstance;
 
 // Singleton
@@ -86,6 +83,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
 
+  // Update the current scene's logic
   if (renderer->getScene()) {
     go_on &= renderer->getScene()->update();
   }
@@ -95,8 +93,6 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
   return (go_on);
 }
 
-/// Called when window is closed. Used to unattach OIS before window
-/// shutdown (very important under Linux)
 void Game::windowClosed(Ogre::RenderWindow* rw)
 {
   if (rw == window)
@@ -136,8 +132,6 @@ void Game::setup(void) {
 void Game::run(void) {
   root.startRendering();
 }
-
-
 
 Ogre::Root &Game::getRoot(void) {
   return (root);

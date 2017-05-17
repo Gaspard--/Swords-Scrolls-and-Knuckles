@@ -48,11 +48,9 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     Game &operator=(Game &&) = delete;
     ~Game(void);
 
-    /// Ogre config file path
-    static char const *const PLUGINS_CONFIG_PATH;
-
-    /// Ogre resource file path
-    static char const *const RESOURCES_CONFIG_PATH;
+    /// Ogre config plugins & resource path
+    static constexpr char const *PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
+    static constexpr char const *RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
 
     /// Singleton getter
     static Game &getGame(void);
