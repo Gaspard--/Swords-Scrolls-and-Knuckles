@@ -17,7 +17,7 @@ Keyboard::KeyboardKey Keyboard::getKeys(void) {
 // Default constructor
 
 Keyboard::Keyboard(void)
-  : Input<OIS::Keyboard>()
+  : Input<OIS::Keyboard, OIS::KeyListener>()
 {}
 
 // Protected functions

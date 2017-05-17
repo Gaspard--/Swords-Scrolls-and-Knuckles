@@ -8,14 +8,24 @@ Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
   sceneNode->attachObject(ogreEntity);
 }
 
-Ogre::Entity *Entity::getOgre(void)
+Ogre::Entity *&Entity::getOgre(void)
 {
   return (ogreEntity);
 }
 
-Ogre::Entity const *Entity::getOgre(void) const
+Ogre::Entity * const &Entity::getOgre(void) const
 {
   return (ogreEntity);
+}
+
+Ogre::SceneNode *&Entity::getNode(void)
+{
+  return (sceneNode);
+}
+
+Ogre::SceneNode * const &Entity::getNode(void) const
+{
+  return (sceneNode);
 }
 
 void Entity::setPosition(float x, float y, float z)

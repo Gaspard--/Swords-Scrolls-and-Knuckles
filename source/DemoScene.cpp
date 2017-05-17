@@ -10,13 +10,14 @@ DemoScene::DemoScene(void)
 void DemoScene::load(void)
 {
   std::clog << "Loading demo scene" << std::endl;
+  Renderer &renderer = Game::getGame().getRenderer();
 
   // Camera
-  cameraNode = _renderer.getSceneManager().getRootSceneNode()->createChildSceneNode();
-  cameraNode->attachObject(&_renderer.getCamera());
+  cameraNode = renderer.getSceneManager().getRootSceneNode()->createChildSceneNode();
+  cameraNode->attachObject(&renderer.getCamera());
   cameraNode->setPosition(Ogre::Vector3(0, 300, 500));
   cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
-  _renderer.getCamera().setNearClipDistance(5);
+  renderer.getCamera().setNearClipDistance(5);
 
   // Entities
   ogre = Entity("ogrehead.mesh");
@@ -38,8 +39,8 @@ void DemoScene::load(void)
   ground.getOgre()->setMaterialName("rockwall");
 
   // Lights
-  _renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
-  light = _renderer.getSceneManager().createLight("MainLight");
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
+  light = renderer.getSceneManager().createLight("MainLight");
   light->setType(Ogre::Light::LT_DIRECTIONAL);
   light->setDiffuseColour(1.0, 1.0, 1.0);
   light->setSpecularColour(1.0, 1.0, 1.0);
@@ -50,9 +51,9 @@ void DemoScene::load(void)
   // Keys callback
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
 					   if (b) {
-					     light->setDirection(-1, -1, -1);
+					   light->setDirection(-1, -1, -1);
 					   } else {
-					     light->setDirection(0, 0, 0);
+					   light->setDirection(0, 0, 0);
 					   }
 					   return (true);
 					   });

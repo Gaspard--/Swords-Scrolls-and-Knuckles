@@ -4,14 +4,14 @@
 # include <OISEvents.h>
 # include <OISInputManager.h>
 
-template<typename T>
-class Input : public OIS::KeyListener
+template<typename T, typename E>
+class Input : public E
 {
-  T *oisobject;
+  T *oisObject;
 
   protected:
     Input(void)
-      : oisobject(nullptr)
+      : oisObject(nullptr)
     {}
 
   public:
@@ -23,19 +23,19 @@ class Input : public OIS::KeyListener
 
     void init(OIS::Type t, OIS::InputManager *im)
     {
-      oisobject =static_cast<T *>(im->createInputObject(t, true));
-      oisobject->setEventCallback(this);
+      oisObject =static_cast<T *>(im->createInputObject(t, true));
+      oisObject->setEventCallback(this);
     }
 
     void destroy(OIS::InputManager *im)
     {
-      im->destroyInputObject(oisobject);
-      oisobject = nullptr;
+      im->destroyInputObject(oisObject);
+      oisObject = nullptr;
     }
 
 
     T *operator->(void) {
-      return (oisobject);
+      return (oisObject);
     }
 };
 

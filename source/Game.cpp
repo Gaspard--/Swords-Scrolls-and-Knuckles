@@ -17,12 +17,15 @@ Game &Game::getGame(void)
 Game::Game(void)
   : root(Game::PLUGINS_CONFIG_PATH)
   , inputManager(nullptr)
+  , window(nullptr)
 {}
 
 Game::~Game(void)
 {
-  Ogre::WindowEventUtilities::removeWindowEventListener(window, this);
-  windowClosed(window);
+  if (window != nullptr) {
+    Ogre::WindowEventUtilities::removeWindowEventListener(window, this);
+    windowClosed(window);
+  }
 }
 
 // Private functions

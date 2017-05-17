@@ -6,11 +6,8 @@ class Renderer;
 
 class Scene
 {
-  protected:
-    Renderer &_renderer;
-
   public:
-    Scene(void);
+    constexpr Scene(void) {}
     Scene(Scene const &) = delete;
     Scene(Scene &&) = delete;
     Scene &operator=(Scene const &) = delete;

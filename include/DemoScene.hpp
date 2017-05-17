@@ -20,8 +20,8 @@ class DemoScene : public Scene
     DemoScene operator=(DemoScene const &) = delete;
     DemoScene operator=(DemoScene &&) = delete;
 
-    virtual void load(void);
-    virtual bool update(void);
+    virtual void load(void) override;
+    virtual bool update(void) override;
 
   private:
     Ogre::SceneNode *cameraNode;

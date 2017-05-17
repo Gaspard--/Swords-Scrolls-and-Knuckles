@@ -5,7 +5,7 @@
 # include <OISKeyboard.h>
 # include "Input.hpp"
 
-class Keyboard : public Input<OIS::Keyboard>
+class Keyboard : public Input<OIS::Keyboard, OIS::KeyListener>
 {
     std::map<OIS::KeyCode, std::function<bool(bool)>> keys;
 
@@ -17,8 +17,8 @@ class Keyboard : public Input<OIS::Keyboard>
 
   protected:
     /// OIS::KeyListener
-    virtual bool keyPressed(OIS::KeyEvent const &ke);
-    virtual bool keyReleased(OIS::KeyEvent const &ke);
+    virtual bool keyPressed(OIS::KeyEvent const &ke) override;
+    virtual bool keyReleased(OIS::KeyEvent const &ke) override;
 
   public:
     Keyboard(Keyboard const &) = delete;
@@ -45,7 +45,7 @@ class Keyboard : public Input<OIS::Keyboard>
 
     struct KeyboardKey
     {
-	KeyboardKey(void) = default;
+	constexpr KeyboardKey(void) = default;
 	~KeyboardKey(void) = default;
 	bool operator[](OIS::KeyCode &&);
     };

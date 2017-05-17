@@ -36,10 +36,10 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 
   protected:
     /// Ogre::FrameListener
-    virtual bool frameRenderingQueued(Ogre::FrameEvent const &evt);
+    virtual bool frameRenderingQueued(Ogre::FrameEvent const &evt) override;
 
     // Ogre::WindowEventListener
-    virtual void windowClosed(Ogre::RenderWindow* rw);
+    virtual void windowClosed(Ogre::RenderWindow* rw) override;
 
   public:
     Game(Game const &) = delete;
@@ -73,9 +73,6 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     /// Return the renderer instance
     Renderer &getRenderer(void);
     Renderer const &getRenderer(void) const;
-
-    /// Set the current scene to the selected one.
-    void setCurrentScene(Scene *);
 
     class SetupException : public std::runtime_error {
       public:
