@@ -16,8 +16,8 @@ Game &Game::getGame(void)
 
 Game::Game(void)
   : root(Game::PLUGINS_CONFIG_PATH)
-  , inputManager(nullptr)
   , window(nullptr)
+  , inputManager(nullptr)
 {}
 
 Game::~Game(void)
