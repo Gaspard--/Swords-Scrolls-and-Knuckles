@@ -34,12 +34,19 @@ void Game::setupResources(void) {
   // Load resources paths from config file.
   Ogre::ConfigFile cf;
   cf.load(Game::RESOURCES_CONFIG_PATH);
+  Ogre::String name;
+  Ogre::String locType;
 
-  auto const &sections = cf.getSettingsBySection();
-  for (auto const &it : sections) {
-    for (auto const &it2 : it.second) {
-      Ogre::ResourceGroupManager::getSingleton()
-	.addResourceLocation(it2.second, it2.first, it.first);
+  Ogre::ConfigFile::SectionIterator secIt= cf.getSectionIterator();
+  while (secIt.hasMoreElements())
+  {
+    Ogre::ConfigFile::SettingsMultiMap* settings = secIt.getNext();
+    Ogre::ConfigFile::SettingsMultiMap::iterator it;
+    for (it = settings->begin(); it != settings->end(); ++it)
+    {
+      locType = it->first;
+      name = it->second;
+      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
     }
   }
 }
