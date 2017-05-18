@@ -43,6 +43,16 @@ file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
+if (OGRE_RenderSystem_GL_FOUND)
+  # Change path to Ogre in plugins.cfg:
+  message("Found RenderSystem!")
+  file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_PLUGIN_DIR_REL}
+Plugin=RenderSystem_GL
+")
+else()
+  message("Could not find RenderSysteam :(")
+endif()
+
 include_directories(
 	${HEADER_DIRECTORY}
 	${OGRE_INCLUDE_DIRS}
