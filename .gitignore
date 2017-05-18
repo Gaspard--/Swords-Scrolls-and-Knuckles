@@ -32,6 +32,7 @@
 # Cmake stuff
 build
 ssk
+resources/cfg/plugins.cfg
 
 # Vim stuff
 Session.vim
