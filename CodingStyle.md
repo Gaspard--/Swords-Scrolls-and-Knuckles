@@ -102,7 +102,7 @@ constexpr X const &getX() const;
 
 - Operators should be logical, `c = a + b` and `c = a; c += b` should have the same result.
 - Think about operator precedence when overloading.
-- Define `@` from `@=` (i.e. `+` from `+=`) to avoid code duplication.
+- If possible, define `@` from `@=` (i.e. `+` from `+=`) to avoid code duplication.
 
 ```
 constexpr T &T::operator@=(T const &other);
