@@ -45,10 +45,10 @@ find_package(OIS REQUIRED)
 
 if (OGRE_RenderSystem_GL_FOUND)
   # Change path to Ogre in plugins.cfg:
-  message("Found RenderSystem!")
-  file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_PLUGIN_DIR_REL}\nPlugin=RenderSystem_GL\n")
+  message("-- Found RenderSystem at '${OGRE_PLUGIN_DIR}'")
+  file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_PLUGIN_DIR}\nPlugin=RenderSystem_GL\n")
 else()
-  message("Could not find RenderSysteam :(")
+  message(FATAL_ERROR "Could not find RenderSysteam :(")
 endif()
 
 include_directories(
