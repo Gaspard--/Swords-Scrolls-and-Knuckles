@@ -9,7 +9,26 @@ Game::Game(void)
   : root(Game::PLUGINS_CONFIG_PATH)
   , window(nullptr)
   , inputManager(nullptr)
-{}
+{
+  setupResources();
+  setupRenderSystem();
+
+  // Create the window
+  window = root.initialise(true, "Swords, Scrolls and Knuckles");
+
+  // Load resources
+  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+  // Set up keyboard / mouse handlers
+  setupOIS();
+
+  // Set up the renderer and initial scene
+  renderer.reset(new Renderer(*this));
+  renderer->switchScene(*this, std::unique_ptr<Scene>(new DemoScene()));
+
+  root.addFrameListener(this);
+}
 
 Game::~Game(void)
 {
@@ -44,9 +63,7 @@ void Game::setupResources(void) {
 
 void Game::setupRenderSystem(void) {
   // Look for the OpenGL render system
-  auto const &rlist = root.getAvailableRenderers();
-
-  for (auto const &rs : rlist) {
+  for (auto const &rs : root.getAvailableRenderers()) {
     if (rs->getName().find("OpenGL") != std::string::npos) {
       root.setRenderSystem(rs);
       rs->setConfigOption("Full Screen", "Yes");
@@ -108,27 +125,6 @@ void Game::windowClosed(Ogre::RenderWindow* rw)
 }
 
 // Public functions
-
-void Game::setup(void) {
-  setupResources();
-  setupRenderSystem();
-
-  // Create the window
-  window = root.initialise(true, "Swords, Scrolls and Knuckles");
-
-  // Load resources
-  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-  // Set up keyboard / mouse handlers
-  setupOIS();
-
-  // Set up the renderer and initial scene
-  renderer.reset(new Renderer(*this));
-  renderer->switchScene(*this, std::unique_ptr<Scene>(new DemoScene()));
-
-  root.addFrameListener(this);
-}
 
 void Game::run(void) {
   root.startRendering();

@@ -43,10 +43,6 @@ Ogre::Camera const &Renderer::getCamera(void) const
   return (*camera);
 }
 
-std::unique_ptr<Scene> &Renderer::getScene(void) {
-  return (scene);
-}
-
 std::unique_ptr<Scene> const &Renderer::getScene(void) const {
   return (scene);
 }

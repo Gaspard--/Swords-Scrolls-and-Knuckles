@@ -37,8 +37,7 @@ class Renderer
 
 
     /// Returns the current scene
-    std::unique_ptr<Scene> &getScene(void);
-    std::unique_ptr<Scene> const &getScene(void) const;
+    std::unique_ptr<Scene> const & getScene(void) const;
 };
 
 #endif // !RENDERER_HPP

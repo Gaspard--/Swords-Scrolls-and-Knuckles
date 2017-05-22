@@ -47,13 +47,6 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     Game &operator=(Game &&) = delete;
     ~Game(void);
 
-    /// Singleton getter
-    static Game &getGame(void);
-
-    /// Set up the game (load saves etc.)
-    /// Throws SetupException in case of error.
-    void setup(void);
-
     /// Run the game
     void run(void);
 
