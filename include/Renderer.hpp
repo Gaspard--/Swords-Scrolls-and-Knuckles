@@ -7,18 +7,17 @@
 # include <OgreViewport.h>
 # include "Scene.hpp"
 
-class Game;
-
 class Renderer
 {
   private:
-    Ogre::SceneManager *_scenemgr;
-    Ogre::Camera *_camera;
-    Ogre::Viewport *_viewport;
-    std::unique_ptr<Scene> _scene;
+    Ogre::SceneManager *scenemgr;
+    Ogre::Camera *camera;
+    Ogre::Viewport *viewport;
+    std::unique_ptr<Scene> scene;
 
   public:
-    Renderer(void);
+    Renderer(void) = delete;
+    Renderer(Game &);
     Renderer(Renderer const &) = delete;
     Renderer(Renderer &&) = delete;
     ~Renderer(void) = default;
@@ -26,7 +25,7 @@ class Renderer
     Renderer &operator=(Renderer &&) = delete;
 
     /// Switch the current scene to the given one.
-    void switchScene(std::unique_ptr<Scene> &&);
+    void switchScene(Game &game, std::unique_ptr<Scene> &&);
 
     /// Returns the scene manager
     Ogre::SceneManager &getSceneManager(void);

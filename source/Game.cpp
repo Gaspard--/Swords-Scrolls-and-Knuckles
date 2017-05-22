@@ -3,15 +3,6 @@
 #include "Game.hpp"
 #include "DemoScene.hpp"
 
-Game Game::gameInstance;
-
-// Singleton
-
-Game &Game::getGame(void)
-{
-  return (gameInstance);
-}
-
 // Constructors
 
 Game::Game(void)
@@ -95,7 +86,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
 
   // Update the current scene's logic
   if (renderer->getScene()) {
-    go_on &= renderer->getScene()->update();
+    go_on &= renderer->getScene()->update(*this);
   }
 
   if (Keyboard::getKeys()[OIS::KC_ESCAPE])
@@ -133,8 +124,8 @@ void Game::setup(void) {
   setupOIS();
 
   // Set up the renderer and initial scene
-  renderer.reset(new Renderer());
-  renderer->switchScene(std::unique_ptr<Scene>(new DemoScene()));
+  renderer.reset(new Renderer(*this));
+  renderer->switchScene(*this, std::unique_ptr<Scene>(new DemoScene()));
 
   root.addFrameListener(this);
 }

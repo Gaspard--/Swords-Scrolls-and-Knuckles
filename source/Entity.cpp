@@ -1,29 +1,39 @@
 #include "Entity.hpp"
 
-Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
-  : ogreEntity(Game::getGame().getRenderer().getSceneManager().createEntity(mesh))
+Entity::Entity(Renderer &renderer,
+	       std::string const &mesh)
+  : ogreEntity(renderer.getSceneManager().createEntity(mesh))
+  , sceneNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+{
+  sceneNode->attachObject(ogreEntity);
+}
+
+Entity::Entity(Renderer &renderer,
+	       std::string const &mesh,
+	       Ogre::SceneNode *parent)
+  : ogreEntity(renderer.getSceneManager().createEntity(mesh))
   , sceneNode(parent->createChildSceneNode())
 
 {
   sceneNode->attachObject(ogreEntity);
 }
 
-Ogre::Entity *&Entity::getOgre(void)
+Ogre::Entity *Entity::getOgre(void)
 {
   return (ogreEntity);
 }
 
-Ogre::Entity * const &Entity::getOgre(void) const
+Ogre::Entity const *Entity::getOgre(void) const
 {
   return (ogreEntity);
 }
 
-Ogre::SceneNode *&Entity::getNode(void)
+Ogre::SceneNode *Entity::getNode(void)
 {
   return (sceneNode);
 }
 
-Ogre::SceneNode * const &Entity::getNode(void) const
+Ogre::SceneNode const *Entity::getNode(void) const
 {
   return (sceneNode);
 }

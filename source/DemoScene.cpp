@@ -3,14 +3,10 @@
 #include "DemoScene.hpp"
 #include "Game.hpp"
 
-DemoScene::DemoScene(void)
-  : Scene()
-{}
-
-void DemoScene::load(void)
+void DemoScene::load(Game &game)
 {
   std::clog << "Loading demo scene" << std::endl;
-  Renderer &renderer = Game::getGame().getRenderer();
+  Renderer &renderer = game.getRenderer();
 
   // Camera
   cameraNode = renderer.getSceneManager().getRootSceneNode()->createChildSceneNode();
@@ -20,7 +16,7 @@ void DemoScene::load(void)
   renderer.getCamera().setNearClipDistance(5);
 
   // Entities
-  ogre = Entity("ogrehead.mesh");
+  ogre = Entity(renderer, "ogrehead.mesh");
   ogre.setPosition(0, 50, 0);
   ogre.getOgre()->setCastShadows(true);
 
@@ -34,7 +30,7 @@ void DemoScene::load(void)
 		 1, 5, 5,
 		 Ogre::Vector3::UNIT_Z);
 
-  ground = Entity("ground");
+  ground = Entity(renderer, "ground");
   ground.getOgre()->setCastShadows(false);
   ground.getOgre()->setMaterialName("rockwall");
 
@@ -61,7 +57,7 @@ void DemoScene::load(void)
   std::clog << "End loading" << std::endl;
 }
 
-bool DemoScene::update(void)
+bool DemoScene::update(Game &)
 {
   // Will add an iterator shortly
   if (Keyboard::getKeys()[OIS::KC_A]) {

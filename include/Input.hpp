@@ -23,7 +23,7 @@ class Input : public E
 
     void init(OIS::Type t, OIS::InputManager *im)
     {
-      oisObject =static_cast<T *>(im->createInputObject(t, true));
+      oisObject = static_cast<T *>(im->createInputObject(t, true));
       oisObject->setEventCallback(this);
     }
 

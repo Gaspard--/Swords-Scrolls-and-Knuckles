@@ -17,8 +17,9 @@
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {
-    /// Singleton instance
-    static Game gameInstance;
+    /// Ogre config plugins & resource path
+    static constexpr char const *PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
+    static constexpr char const *RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
 
     /// Root Ogre instance.
     Ogre::Root root;
@@ -31,9 +32,6 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     void setupRenderSystem(void);
     void setupOIS(void);
 
-    /// Private constructor (Singleton)
-    Game(void);
-
   protected:
     /// Ogre::FrameListener
     virtual bool frameRenderingQueued(Ogre::FrameEvent const &evt) override;
@@ -42,15 +40,12 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     virtual void windowClosed(Ogre::RenderWindow* rw) override;
 
   public:
+    Game(void);
     Game(Game const &) = delete;
     Game(Game &&) = delete;
     Game &operator=(Game const &) = delete;
     Game &operator=(Game &&) = delete;
     ~Game(void);
-
-    /// Ogre config plugins & resource path
-    static constexpr char const *PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
-    static constexpr char const *RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
 
     /// Singleton getter
     static Game &getGame(void);

@@ -8,27 +8,29 @@
 # include "Scene.hpp"
 # include "Entity.hpp"
 
-class Game;
-
 class DemoScene : public Scene
 {
-  public:
-    DemoScene(void);
-    DemoScene(DemoScene const &) = delete;
-    DemoScene(DemoScene &&) = delete;
-    virtual ~DemoScene(void) = default;
-    DemoScene operator=(DemoScene const &) = delete;
-    DemoScene operator=(DemoScene &&) = delete;
-
-    virtual void load(void) override;
-    virtual bool update(void) override;
-
   private:
     Ogre::SceneNode *cameraNode;
     Ogre::Light *light;
 
     Entity ogre;
     Entity ground;
+
+  public:
+    constexpr DemoScene(void)
+      : cameraNode(nullptr)
+      , light(nullptr)
+    {}
+
+    DemoScene(DemoScene const &) = delete;
+    DemoScene(DemoScene &&) = delete;
+    virtual ~DemoScene(void) = default;
+    DemoScene operator=(DemoScene const &) = delete;
+    DemoScene operator=(DemoScene &&) = delete;
+
+    virtual void load(Game &) override;
+    virtual bool update(Game &) override;
 };
 
 #endif // !DEMO_SCENE_HPP

@@ -1,52 +1,52 @@
 #include "Renderer.hpp"
 #include "Game.hpp"
 
-Renderer::Renderer(void)
-  : _scenemgr(Game::getGame().getRoot().createSceneManager(Ogre::ST_GENERIC))
-  , _camera(_scenemgr->createCamera("MainCamera"))
-  , _viewport(Game::getGame().getWindow().addViewport(_camera))
+Renderer::Renderer(Game &game)
+  : scenemgr(game.getRoot().createSceneManager(Ogre::ST_GENERIC))
+  , camera(scenemgr->createCamera("MainCamera"))
+  , viewport(game.getWindow().addViewport(camera))
 {
-  _scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-  _viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
-  _camera->setAspectRatio(Ogre::Real(_viewport->getActualWidth()) /
-			  Ogre::Real(_viewport->getActualHeight()));
+  scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+  viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
+  camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) /
+			  Ogre::Real(viewport->getActualHeight()));
 }
 
-void Renderer::switchScene(std::unique_ptr<Scene> &&ptr)
+void Renderer::switchScene(Game &game, std::unique_ptr<Scene> &&ptr)
 {
   Keyboard::getKeyboard().clearCallbacks();
-  if (_scene)
-    _scene->unload();
-  _scenemgr->clearScene();
-  std::swap(_scene, ptr);
-  if (_scene)
-    _scene->load();
+  if (scene)
+    scene->unload(game);
+  scenemgr->clearScene();
+  std::swap(scene, ptr);
+  if (scene)
+    scene->load(game);
 }
 
 Ogre::SceneManager &Renderer::getSceneManager(void)
 {
-  return (*_scenemgr);
+  return (*scenemgr);
 }
 
 Ogre::SceneManager const &Renderer::getSceneManager(void) const
 {
-  return (*_scenemgr);
+  return (*scenemgr);
 }
 
 Ogre::Camera &Renderer::getCamera(void)
 {
-  return (*_camera);
+  return (*camera);
 }
 
 Ogre::Camera const &Renderer::getCamera(void) const
 {
-  return (*_camera);
+  return (*camera);
 }
 
 std::unique_ptr<Scene> &Renderer::getScene(void) {
-  return (_scene);
+  return (scene);
 }
 
 std::unique_ptr<Scene> const &Renderer::getScene(void) const {
-  return (_scene);
+  return (scene);
 }

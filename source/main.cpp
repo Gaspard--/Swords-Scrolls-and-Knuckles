@@ -3,8 +3,10 @@
 
 int main() {
   try {
-    Game::getGame().setup();
-    Game::getGame().run();
+    Game game;
+
+    game.setup();
+    game.run();
     return (0);
   }
   catch (Game::SetupException const &e) {

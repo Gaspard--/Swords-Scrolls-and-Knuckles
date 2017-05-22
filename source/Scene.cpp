@@ -1,13 +1,13 @@
 #include "Scene.hpp"
 #include "Game.hpp"
 
-void Scene::load(void)
+void Scene::load(Game &)
 {}
 
-void Scene::unload(void)
+void Scene::unload(Game &)
 {}
 
-bool Scene::update(void)
+bool Scene::update(Game &)
 {
   return (true);
 }

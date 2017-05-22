@@ -2,12 +2,11 @@
 # define SCENE_HPP
 
 class Game;
-class Renderer;
 
 class Scene
 {
   public:
-    constexpr Scene(void) {}
+    constexpr Scene(void) = default;
     Scene(Scene const &) = delete;
     Scene(Scene &&) = delete;
     Scene &operator=(Scene const &) = delete;
@@ -15,15 +14,15 @@ class Scene
     virtual ~Scene(void) = default;
 
     /// Used to load all the elements of the new scene
-    virtual void load(void);
+    virtual void load(Game &);
 
     /// Used to close personnal resources. Do *NOT* free Ogre's scene elements
     /// (entities, lights etc.).
-    virtual void unload(void);
+    virtual void unload(Game &);
 
     /// Called each frame to update scene logic.
     /// Return value: false to exit the game, true otherwise.
-    virtual bool update(void);
+    virtual bool update(Game &);
 };
 
 #endif // !SCENE_HPP
