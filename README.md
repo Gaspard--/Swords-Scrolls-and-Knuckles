@@ -25,4 +25,4 @@ cmake ..
 make
 ```
 
-Now, you can play the game by typing `./ssk` from the build directory! :)
+Now, you can play the game by typing `./ssk` from the project directory! :)
