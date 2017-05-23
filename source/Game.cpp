@@ -47,18 +47,16 @@ void Game::setupResources(void) {
   Ogre::String name;
   Ogre::String locType;
 
-  Ogre::ConfigFile::SectionIterator secIt= cf.getSectionIterator();
+  Ogre::ConfigFile::SectionIterator secIt = cf.getSectionIterator();
   while (secIt.hasMoreElements())
-  {
-    Ogre::ConfigFile::SettingsMultiMap* settings = secIt.getNext();
-    Ogre::ConfigFile::SettingsMultiMap::iterator it;
-    for (it = settings->begin(); it != settings->end(); ++it)
     {
-      locType = it->first;
-      name = it->second;
-      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
+      for (auto const &pair : *secIt.getNext())
+	{
+	  locType = pair.first;
+	  name = pair.second;
+	  Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
+	}
     }
-  }
 }
 
 void Game::setupRenderSystem(void) {
