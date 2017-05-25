@@ -37,6 +37,7 @@ public:
   static bool checkError(bool outputError=true);
   static void clearError();
   unsigned int bufferFromSound(Sounds);
+  bool deleteBuffers(std::initializer_list<Sounds>);
 
 };
 

@@ -3,8 +3,20 @@
 #include "Vect.hpp"
 
 AudioSource::AudioSource(Sounds sound, Vect<3, float> const &pos)
-  :  buffer(AL_NONE)
+  :  id(AL_NONE), buffer(AL_NONE)
 {
+  this->init(sound, pos);
+}
+
+AudioSource::~AudioSource()
+{
+  this->release();
+}
+
+bool AudioSource::init(Sounds sound, Vect<3, float> const &pos)
+{
+  if (id != AL_NONE)
+    return false;
   alGenSources(1, &id);
   Audio::checkError();
   alSourcef(id, AL_PITCH, 1);
@@ -17,12 +29,18 @@ AudioSource::AudioSource(Sounds sound, Vect<3, float> const &pos)
   alSourcef(id, AL_ROLLOFF_FACTOR, 2.);
   alSourcef(id, AL_MAX_DISTANCE, 3.);
   alSourcef(id, AL_REFERENCE_DISTANCE, 0.2);
+  return !Audio::checkError();
 }
 
-AudioSource::~AudioSource()
+bool AudioSource::release()
 {
-  alSourcei(id, AL_BUFFER, 0);
+  if (id == AL_NONE)
+    return false;
+  stop();
+  alSourcei(id, AL_BUFFER, AL_NONE);
   alDeleteSources(1, &id);
+  id = AL_NONE;
+  return !Audio::checkError();
 }
 
 bool AudioSource::setPos(Vect<3, float> const &v)
@@ -40,9 +58,13 @@ bool AudioSource::setLooping(bool b) const
 bool AudioSource::setSound(Sounds s)
 {
   buffer = Audio::getInstance().bufferFromSound(s);
-  if (buffer == 0)
-    return false;
   alSourcei(id, AL_BUFFER, buffer);
+  return !Audio::checkError();
+}
+
+bool AudioSource::setVolume(float f) const
+{
+  alSourcef(id, AL_GAIN, f);
   return !Audio::checkError();
 }
 

@@ -21,9 +21,8 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-  Audio &i = Audio::getInstance();
-  std::for_each(i.sounds.cbegin(), i.sounds.cend(),
-		[](auto &it) { alDeleteBuffers(1, &it.second); });
+  std::for_each(sounds.cbegin(), sounds.cend(),
+		[](auto &it) { std::cout << "deleting " << it.second << std::endl;alDeleteBuffers(1, &it.second); });
   alcCloseDevice(device);
   alutExit();
 }
@@ -35,9 +34,9 @@ Audio &Audio::getInstance(void)
 
 bool Audio::checkError(bool outputError)
 {
-  ALCenum error;
+  ALCenum error = alGetError();
 
-  if ((error = alGetError()) != AL_NO_ERROR)
+  if (error != AL_NO_ERROR)
     {
       if (outputError)
 	std::cerr << alutGetErrorString(error) << std::endl;
@@ -53,6 +52,8 @@ void Audio::clearError(void)
 
 ALuint Audio::bufferFromSound(Sounds s)
 {
+  if (s == Sounds::NONE)
+    return 0;
   auto it = sounds.find(s);
 
   if (it == sounds.end())
@@ -60,22 +61,34 @@ ALuint Audio::bufferFromSound(Sounds s)
   return sounds.at(s);
 }
 
+bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
+{
+  return std::all_of(sndlst.begin(), sndlst.end(),
+		     [this](Sounds s) {
+		     auto it = sounds.find(s);
+		     if (it == sounds.end())
+		       return false;
+		     alDeleteBuffers(1, &(it->second));
+		     if (Audio::checkError())
+		       return false;
+		     this->sounds[s] = AL_NONE;
+		     return true;
+		   });
+}
+
 int main()
 {
-  AudioSource euuh(Sounds::EUUUH1);
-  AudioSource by(Sounds::BOYAUX1);
   Vect<3, float> v {0, 0, 0};
-
+  AudioSource by(Sounds::BOYAUX1, v);
   alDistanceModel(AL_INVERSE_DISTANCE);
 
-  while (1)
-    {
-      by.setPos(v);
-      v[0] += 0.02;
-      by.play();
-      printf("%g\n", v[0]);
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+  by.release();
+  std::cout << Audio::getInstance().deleteBuffers({Sounds::BOYAUX1}) << std::endl;
+  by.init(Sounds::BOYAUX1, v);
+  //euuh.init(Sounds::EUUUH1, v);
+  //std::cout << by.init(Sounds::BOYAUX1, v) << std::endl;
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  std::this_thread::sleep_for(std::chrono::seconds(1));
   /*by.setPos({0.00001, 0, 0});
   by.play();
   std::this_thread::sleep_for(std::chrono::seconds(1));
