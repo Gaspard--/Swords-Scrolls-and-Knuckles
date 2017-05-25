@@ -7,12 +7,15 @@
 #include "Audio.hpp"
 #include "Vect.hpp"
 
+Audio Audio::instance;
+
 Audio::Audio()
- : sounds({
-      {Sounds::BOYAUX1, alutCreateBufferFromFile("resources/sounds/boyaux1.wav")},
-      {Sounds::EUUUH1, alutCreateBufferFromFile("resources/sounds/euuuh1.wav")},
-    })
+ : filenames({
+	 {Sounds::BOYAUX1, "resources/sounds/boyaux1.wav"},
+	 {Sounds::EUUUH1, "resources/sounds/euuuh1.wav"}
+ })
 {
+  alutInit(nullptr, nullptr);
   device = alcOpenDevice(nullptr);
 }
 
@@ -27,7 +30,6 @@ Audio::~Audio()
 
 Audio &Audio::getInstance(void)
 {
-  static Audio instance;
   return instance;
 }
 
@@ -51,29 +53,36 @@ void Audio::clearError(void)
 
 ALuint Audio::bufferFromSound(Sounds s)
 {
-  Audio &instance = Audio::getInstance();
-  auto it = instance.sounds.find(s);
+  auto it = sounds.find(s);
 
-  if (it == instance.sounds.end())
-    return 0;
-  return instance.sounds.at(s);
+  if (it == sounds.end())
+    sounds[s] = alutCreateBufferFromFile(filenames.at(s));
+  return sounds.at(s);
 }
 
 int main()
 {
-  alutInit(nullptr, nullptr);
   AudioSource euuh(Sounds::EUUUH1);
   AudioSource by(Sounds::BOYAUX1);
+  Vect<3, float> v {0, 0, 0};
 
+  alDistanceModel(AL_INVERSE_DISTANCE);
+
+  while (1)
+    {
+      by.setPos(v);
+      v[0] += 0.02;
+      by.play();
+      printf("%g\n", v[0]);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+  /*by.setPos({0.00001, 0, 0});
+  by.play();
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+  by.setPos({0.6, 0, 0});
   by.play();
   std::this_thread::sleep_for(std::chrono::seconds(1));
   by.setPos({1, 0, 0});
   by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  by.setPos({1, 1, 0});
-  by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  by.setPos({1, -1, 0});
-  by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  std::this_thread::sleep_for(std::chrono::seconds(1));*/
 }

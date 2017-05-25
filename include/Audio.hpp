@@ -3,7 +3,7 @@
 
 # include <AL/al.h>
 # include <AL/alc.h>
-# include <map>
+# include <unordered_map>
 # include <AL/alut.h>
 
 template <unsigned int N, class T>
@@ -21,8 +21,11 @@ class Audio
 private:
   Audio();
 
+  static Audio instance;
+
   ALCdevice *device;
-  std::map<Sounds, ALuint> const sounds;
+  std::unordered_map<Sounds, ALuint> sounds;
+  std::unordered_map<Sounds, char const *> const filenames;
 
 public:
   ~Audio();
@@ -33,7 +36,7 @@ public:
   static Audio &getInstance(void);
   static bool checkError(bool outputError=true);
   static void clearError();
-  static unsigned int bufferFromSound(Sounds);
+  unsigned int bufferFromSound(Sounds);
 
 };
 
