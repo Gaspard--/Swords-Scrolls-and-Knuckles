@@ -22,7 +22,7 @@ Audio::Audio()
 Audio::~Audio()
 {
   std::for_each(sounds.cbegin(), sounds.cend(),
-		[](auto &it) { std::cout << "deleting " << it.second << std::endl;alDeleteBuffers(1, &it.second); });
+		[](auto &it) { alDeleteBuffers(1, &it.second); });
   alcCloseDevice(device);
   alutExit();
 }
@@ -63,17 +63,28 @@ ALuint Audio::bufferFromSound(Sounds s)
 
 bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
 {
-  return std::all_of(sndlst.begin(), sndlst.end(),
-		     [this](Sounds s) {
-		     auto it = sounds.find(s);
-		     if (it == sounds.end())
-		       return false;
-		     alDeleteBuffers(1, &(it->second));
-		     if (Audio::checkError())
-		       return false;
-		     this->sounds[s] = AL_NONE;
-		     return true;
-		   });
+  bool ret = true;
+
+  for (auto s : sndlst)
+    {
+      auto it = sounds.find(s);
+      if (it == sounds.end() || it->second == AL_NONE)
+	ret = false;
+      else
+	{
+	  alDeleteBuffers(1, &(it->second));
+	  ALCenum error = alGetError();
+
+	  if (error != AL_NO_ERROR)
+	    {
+	      std::cerr << alutGetErrorString(error) << std::endl;
+	      ret = false;
+	    }
+	  else
+	    this->sounds[s] = AL_NONE;
+	}
+    }
+  return ret;
 }
 
 int main()
@@ -82,9 +93,7 @@ int main()
   AudioSource by(Sounds::BOYAUX1, v);
   alDistanceModel(AL_INVERSE_DISTANCE);
 
-  by.release();
-  std::cout << Audio::getInstance().deleteBuffers({Sounds::BOYAUX1}) << std::endl;
-  by.init(Sounds::BOYAUX1, v);
+  std::cout << Audio::getInstance().deleteBuffers({Sounds::EUUUH1, Sounds::BOYAUX1}) << std::endl;
   //euuh.init(Sounds::EUUUH1, v);
   //std::cout << by.init(Sounds::BOYAUX1, v) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(100));

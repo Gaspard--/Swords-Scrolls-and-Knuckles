@@ -37,6 +37,11 @@ public:
   static bool checkError(bool outputError=true);
   static void clearError();
   unsigned int bufferFromSound(Sounds);
+
+  /*
+  ** Sources using the buffers to be deleted need to release the buffer
+  ** for this function to work properly
+  */
   bool deleteBuffers(std::initializer_list<Sounds>);
 
 };
