@@ -45,7 +45,7 @@ void Entity::setPosition(float x, float y, float z)
 
 void Entity::setPosition(Vect<3, float> v)
 {
-  sceneNode->setPosition(v[0], v[1], v[2]);
+  sceneNode->setPosition(v.x(), v.y(), v.z());
 }
 
 void Entity::setPosition(Ogre::Vector3 pos)
