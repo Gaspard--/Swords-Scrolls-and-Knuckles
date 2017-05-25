@@ -5,7 +5,7 @@
 
 // Constructors
 
-Game::Game(void)
+Game::Game()
   : root(Game::PLUGINS_CONFIG_PATH)
   , window(nullptr)
   , inputManager(nullptr)
@@ -25,7 +25,9 @@ Game::Game(void)
 
   // Set up the renderer and initial scene
   renderer.reset(new Renderer(*this));
-  renderer->switchScene(*this, std::unique_ptr<Scene>(new DemoScene()));
+  renderer->switchScene([this](){
+      return new DemoScene(*this);
+    });
 
   root.addFrameListener(this);
 }
@@ -47,18 +49,14 @@ void Game::setupResources(void) {
   Ogre::String name;
   Ogre::String locType;
 
-  Ogre::ConfigFile::SectionIterator secIt= cf.getSectionIterator();
+  Ogre::ConfigFile::SectionIterator secIt = cf.getSectionIterator();
   while (secIt.hasMoreElements())
-  {
-    Ogre::ConfigFile::SettingsMultiMap* settings = secIt.getNext();
-    Ogre::ConfigFile::SettingsMultiMap::iterator it;
-    for (it = settings->begin(); it != settings->end(); ++it)
-    {
-      locType = it->first;
-      name = it->second;
-      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
-    }
-  }
+    for (auto &&pair : *secIt.getNext())
+      {
+	locType = pair.first;
+	name = pair.second;
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
+      }
 }
 
 void Game::setupRenderSystem(void) {
