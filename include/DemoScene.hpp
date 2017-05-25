@@ -10,27 +10,23 @@
 
 class DemoScene : public Scene
 {
-  private:
-    Ogre::SceneNode *cameraNode;
-    Ogre::Light *light;
+private:
+  Ogre::SceneNode *cameraNode;
+  Ogre::Light *light;
 
-    Entity ogre;
-    Entity ground;
+  Entity ogre;
+  Entity ground;
 
-  public:
-    constexpr DemoScene(void)
-      : cameraNode(nullptr)
-      , light(nullptr)
-    {}
+public:
+  DemoScene(Game &);
 
-    DemoScene(DemoScene const &) = delete;
-    DemoScene(DemoScene &&) = delete;
-    virtual ~DemoScene(void) = default;
-    DemoScene operator=(DemoScene const &) = delete;
-    DemoScene operator=(DemoScene &&) = delete;
+  DemoScene(DemoScene const &) = delete;
+  DemoScene(DemoScene &&) = delete;
+  virtual ~DemoScene(void) = default;
+  DemoScene operator=(DemoScene const &) = delete;
+  DemoScene operator=(DemoScene &&) = delete;
 
-    virtual void load(Game &) override;
-    virtual bool update(Game &) override;
+  virtual bool update(Game &) override;
 };
 
 #endif // !DEMO_SCENE_HPP

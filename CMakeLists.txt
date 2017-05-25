@@ -44,6 +44,8 @@ else()
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations")
 endif(WIN32)
 
+find_package (Threads)
+
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")
 file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
 
@@ -83,6 +85,7 @@ target_link_libraries(
 	${PROJECT_NAME}
 	${OGRE_LIBRARIES}
 	${OIS_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
