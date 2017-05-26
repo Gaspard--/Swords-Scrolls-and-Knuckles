@@ -87,7 +87,7 @@ bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
   return ret;
 }
 
-int main()
+/*int main()
 {
   Vect<3, float> v {0, 0, 0};
   AudioSource by(Sounds::BOYAUX1, v);
@@ -98,7 +98,7 @@ int main()
   //std::cout << by.init(Sounds::BOYAUX1, v) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   std::this_thread::sleep_for(std::chrono::seconds(1));
-  /*by.setPos({0.00001, 0, 0});
+  by.setPos({0.00001, 0, 0});
   by.play();
   std::this_thread::sleep_for(std::chrono::seconds(1));
   by.setPos({0.6, 0, 0});
@@ -106,5 +106,5 @@ int main()
   std::this_thread::sleep_for(std::chrono::seconds(1));
   by.setPos({1, 0, 0});
   by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));*/
-}
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+}*/
