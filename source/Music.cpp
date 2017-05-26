@@ -3,22 +3,26 @@
 #include "Music.hpp"
 #include "Audio.hpp"
 
-Music::Music()
+Music::Music(char const *filename)
+  : source(AL_NONE), loopTime(0.f)
 {
+  init(filename);
+}
 
+Music::~Music()
+{
+  release();
 }
 
 bool Music::init(char const *filename)
 {
   int result;
 
-  oggFile = fopen(filename, "rb");
-  if (!oggFile)
+  if (source != AL_NONE)
     return false;
-  result = ov_open(oggFile, &oggStream, nullptr, 0);
+  result = ov_fopen(filename, &oggStream);
   if (result < 0)
     {
-      fclose(oggFile);
       std::cerr << "Could not open ogg stream from " << filename << std::endl;
       return false;
     }
@@ -40,16 +44,26 @@ bool Music::init(char const *filename)
 
 bool Music::release(void)
 {
+  Audio::clearError();
+  if (source == AL_NONE)
+    return false;
   alSourceStop(source);
   unqueuePending();
   alDeleteSources(1, &source);
-  if (Audio::checkError())
+  source = AL_NONE;
+      ALCenum error = alGetError();
+
+      if (error != AL_NO_ERROR)
+	{
+	  std::cerr << alutGetErrorString(error) << std::endl;
+	  return false;
+	}
+  if (!Audio::checkError())
     return false;
   alDeleteBuffers(1, &buffers[0]);
-  if (Audio::checkError())
+  if (!Audio::checkError())
     return false;
   ov_clear(&oggStream);
-  fclose(oggFile);
   return true;
 }
 
@@ -80,26 +94,16 @@ bool Music::update(void)
   while (processed--)
     {
       alSourceUnqueueBuffers(source, 1, &buffer);
-      ALCenum error = alGetError();
-
-      if (error != AL_NO_ERROR)
-	{
-	  std::cerr << alutGetErrorString(error) << std::endl;
-	  return false;
-	}
+      if (!Audio::checkError())
+	return false;
       active = streamFile(buffer);
       alSourceQueueBuffers(source, 1, &buffer);
-      error = alGetError();
-
-      if (error != AL_NO_ERROR)
-	{
-	  std::cerr << alutGetErrorString(error) << std::endl;
-	  return false;
-	}
+      if (!Audio::checkError())
+	return false;
     }
   if (!active)
     {
-      ov_time_seek(&oggStream, 15.5);
+      ov_time_seek(&oggStream, loopTime);
       std::cerr << "kek" << std::endl;
       active = true;
     }
@@ -115,11 +119,9 @@ bool Music::streamFile(ALuint buffer)
   while (size < BUFFER_SIZE)
     {
       size_read = ov_read(&oggStream, data + size, BUFFER_SIZE - size, 0, 2, 1, 0);
-      // std::cout << "buffer " << buffer << ": read " << size_read << " bytes from ogg file" << std::endl;
       size += size_read;
       if (size_read <= 0)
 	return false;
-
     }
   alBufferData(buffer, format, data, size, vorbisInfo->rate);
   return Audio::checkError();
@@ -134,10 +136,15 @@ bool Music::unqueuePending(void)
   while (queued--)
     {
       alSourceUnqueueBuffers(source, 1, &buffer);
-      if (Audio::checkError())
+      if (!Audio::checkError())
 	return false;
     }
   return true;
+}
+
+void Music::setLoopTime(float f)
+{
+  loopTime = f;
 }
 
 int main(int argc, char **argv)
@@ -146,19 +153,18 @@ int main(int argc, char **argv)
     {
       std::cerr << "provide a filename" << std::endl;
       return 1;
-
     }
 
-  Music m;
+  Music m(argv[1]);
 
-  m.init(argv[1]);
   if (!m.play())
     {
       std::cerr << "olala cpjanti lé zerreur" << std::endl;
       return 1;
     }
-  while (m.update())
+  for (int i = 0; i < 100; i++)
     {
+      m.update();
       if (!m.isPlaying())
 	{
 	  std::cerr << "mins sa sé arété avan la f1" << std::endl;
@@ -167,6 +173,6 @@ int main(int argc, char **argv)
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   std::cout << "ouais c la f1" << std::endl;
-
+  m.release();
   return (0);
 }

@@ -18,22 +18,29 @@ private:
   OggVorbis_File	oggStream;
   vorbis_info		*vorbisInfo;
   vorbis_comment	*vorbisComment;
-  FILE			*oggFile;
   std::array<ALuint, 2>	buffers;
   ALuint		source;
   ALenum		format;
-
+  float			loopTime;
 
 public:
-  Music();
+  Music(char const *filename);
+  ~Music();
 
+  /*
+  ** Do not HAVE to be called (but can be)
+  ** These are only for memory reasons
+  ** to avoid useless destruction/reconstruction of object
+  */
   bool init(char const *);
   bool release(void);
+
   bool unqueuePending(void);
   bool play(void);
   bool isPlaying(void) const;
   bool update(void);
   bool streamFile(ALuint buffer);
+  void setLoopTime(float);
 };
 
 #endif /* !MUSIC_H */
