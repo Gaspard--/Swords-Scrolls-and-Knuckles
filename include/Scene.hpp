@@ -5,24 +5,20 @@ class Game;
 
 class Scene
 {
-  public:
-    constexpr Scene(void) = default;
-    Scene(Scene const &) = delete;
-    Scene(Scene &&) = delete;
-    Scene &operator=(Scene const &) = delete;
-    Scene &operator=(Scene &&) = delete;
-    virtual ~Scene(void) = default;
+public:
+  /// Used to load all the elements of the new scene
+  constexpr Scene(void) = default;
+  
+  Scene(Scene const &) = delete;
+  Scene(Scene &&) = delete;
+  Scene &operator=(Scene const &) = delete;
+  Scene &operator=(Scene &&) = delete;
 
-    /// Used to load all the elements of the new scene
-    virtual void load(Game &);
+  /// Called each frame to update scene logic.
+  /// Return value: false to exit the game, true otherwise.
+  virtual ~Scene(void) = default;
 
-    /// Used to close personnal resources. Do *NOT* free Ogre's scene elements
-    /// (entities, lights etc.).
-    virtual void unload(Game &);
-
-    /// Called each frame to update scene logic.
-    /// Return value: false to exit the game, true otherwise.
-    virtual bool update(Game &);
+  virtual bool update(Game &);
 };
 
 #endif // !SCENE_HPP

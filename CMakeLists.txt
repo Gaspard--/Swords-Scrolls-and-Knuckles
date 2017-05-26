@@ -35,7 +35,16 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 set(OIS_DIR "${CMAKE_SOURCE_DIR}/cmake/")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations")
+set(OGRE_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+
+if (WIN32)
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
+  set(OGRE_HOME "C:\\OgreSDK\\")
+else()
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations")
+endif(WIN32)
+
+find_package (Threads)
 
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")
 file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
@@ -43,7 +52,7 @@ file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 
-if (OGRE_RenderSystem_GL_FOUND)
+if (UNIX AND OGRE_RenderSystem_GL_FOUND)
   if (OGRE_PLUGIN_DIR)
     message("-- Found RenderSystem at '${OGRE_PLUGIN_DIR}'")
     file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_PLUGIN_DIR}\nPlugin=RenderSystem_GL\n")
@@ -53,15 +62,16 @@ if (OGRE_RenderSystem_GL_FOUND)
   else()
     message(FATAL_ERROR "Could not find ogre plugin directory")
   endif()
-
-  # Change path to Ogre in plugins.cfg:
+elseif(WIN32)
+  message("-- Found RenderSystem at '${OGRE_SDK}'")
+  file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_SDK}\nPlugin=RenderSystem_GL\n")
 else()
   message(FATAL_ERROR "Could not find RenderSysteam :(")
 endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
-	${OGRE_INCLUDE_DIRS}
+¨	${OGRE_INCLUDE_DIR}
 	${OIS_INCLUDE_DIR}
 )
 
@@ -75,6 +85,7 @@ target_link_libraries(
 	${PROJECT_NAME}
 	${OGRE_LIBRARIES}
 	${OIS_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})

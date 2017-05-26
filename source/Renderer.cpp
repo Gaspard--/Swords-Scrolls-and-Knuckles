@@ -12,17 +12,6 @@ Renderer::Renderer(Game &game)
 			  Ogre::Real(viewport->getActualHeight()));
 }
 
-void Renderer::switchScene(Game &game, std::unique_ptr<Scene> &&ptr)
-{
-  Keyboard::getKeyboard().clearCallbacks();
-  if (scene)
-    scene->unload(game);
-  scenemgr->clearScene();
-  std::swap(scene, ptr);
-  if (scene)
-    scene->load(game);
-}
-
 Ogre::SceneManager &Renderer::getSceneManager(void)
 {
   return (*scenemgr);

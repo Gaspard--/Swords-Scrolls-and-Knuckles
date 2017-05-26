@@ -3,7 +3,9 @@
 #include "DemoScene.hpp"
 #include "Game.hpp"
 
-void DemoScene::load(Game &game)
+DemoScene::DemoScene(Game &game)
+  : cameraNode(nullptr)
+  , light(nullptr)
 {
   std::clog << "Loading demo scene" << std::endl;
   Renderer &renderer = game.getRenderer();
@@ -46,13 +48,13 @@ void DemoScene::load(Game &game)
 
   // Keys callback
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-					   if (b) {
-					   light->setDirection(-1, -1, -1);
-					   } else {
-					   light->setDirection(0, 0, 0);
-					   }
-					   return (true);
-					   });
+      if (b) {
+	light->setDirection(-1, -1, -1);
+      } else {
+	light->setDirection(0, 0, 0);
+      }
+      return (true);
+    });
 
   std::clog << "End loading" << std::endl;
 }
