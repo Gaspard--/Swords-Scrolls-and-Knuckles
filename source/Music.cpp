@@ -51,13 +51,6 @@ bool Music::release(void)
   unqueuePending();
   alDeleteSources(1, &source);
   source = AL_NONE;
-      ALCenum error = alGetError();
-
-      if (error != AL_NO_ERROR)
-	{
-	  std::cerr << alutGetErrorString(error) << std::endl;
-	  return false;
-	}
   if (!Audio::checkError())
     return false;
   alDeleteBuffers(1, &buffers[0]);

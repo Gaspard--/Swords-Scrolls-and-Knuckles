@@ -73,13 +73,8 @@ bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
       else
 	{
 	  alDeleteBuffers(1, &(it->second));
-	  ALCenum error = alGetError();
-
-	  if (error != AL_NO_ERROR)
-	    {
-	      std::cerr << alutGetErrorString(error) << std::endl;
-	      ret = false;
-	    }
+	  if (!Audio::checkError())
+	    ret = false;
 	  else
 	    this->sounds[s] = AL_NONE;
 	}
