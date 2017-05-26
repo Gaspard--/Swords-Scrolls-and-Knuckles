@@ -23,6 +23,9 @@ private:
   ALenum		format;
   float			loopTime;
 
+  bool unqueuePending(void);
+  bool streamFile(ALuint buffer);
+
 public:
   Music(char const *filename);
   ~Music();
@@ -35,11 +38,9 @@ public:
   bool init(char const *);
   bool release(void);
 
-  bool unqueuePending(void);
   bool play(void);
   bool isPlaying(void) const;
   bool update(void);
-  bool streamFile(ALuint buffer);
   void setLoopTime(float);
 };
 
