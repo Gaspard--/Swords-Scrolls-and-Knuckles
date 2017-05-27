@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "Game.hpp"
 #include "DemoScene.hpp"
+#include "UIManager.hpp"
 
 // Constructors
 
@@ -30,6 +31,9 @@ Game::Game()
     });
 
   root.addFrameListener(this);
+  
+  UIManager *manager = new UIManager();
+  manager->showOverlayByName("hud");
 }
 
 Game::~Game(void)

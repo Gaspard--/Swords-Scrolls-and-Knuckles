@@ -55,7 +55,6 @@ DemoScene::DemoScene(Game &game)
       }
       return (true);
     });
-
   std::clog << "End loading" << std::endl;
 }
 

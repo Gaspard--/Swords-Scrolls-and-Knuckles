@@ -35,7 +35,7 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 set(OIS_DIR "${CMAKE_SOURCE_DIR}/cmake/")
-set(OGRE_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+#set(OGRE_DIR "${CMAKE_SOURCE_DIR}/cmake/")
 
 if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
@@ -71,7 +71,7 @@ endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
-¨	${OGRE_INCLUDE_DIR}
+	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIR}
 )
 
