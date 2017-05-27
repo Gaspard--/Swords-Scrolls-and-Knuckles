@@ -13,7 +13,7 @@ class UIOverlayMenu : public UIOverlay {
 		UIOverlayMenu &operator=(UIOverlayMenu &&) = delete;
 		virtual ~UIOverlayMenu(void) = default;
 		
-		virtual void init(void);
+		virtual void init(Ogre::OverlayManager *);
 
 	private:
 	protected:

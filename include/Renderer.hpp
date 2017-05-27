@@ -5,6 +5,7 @@
 # include <OgreSceneManager.h>
 # include <OgreCamera.h>
 # include <OgreViewport.h>
+# include <Overlay/OgreOverlaySystem.h>
 # include "Keyboard.hpp"
 # include "Scene.hpp"
 

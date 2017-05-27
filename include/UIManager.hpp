@@ -6,7 +6,7 @@
 # include "UIOverlayHUD.hpp"
 # include "UIOverlayMenu.hpp"
 
-class UIManager : public Ogre::OverlayManager {
+class UIManager {
 
 	public:
 		UIManager();
@@ -14,13 +14,14 @@ class UIManager : public Ogre::OverlayManager {
 		UIManager(UIManager &&) = delete;
 		UIManager &operator=(UIManager const &) = delete;
 		UIManager &operator=(UIManager &&) = delete;
-		~UIManager(void);
+		~UIManager(void) = default;
 		
 		void showOverlayByName(std::string const &);
 		void hideOverlayByName(std::string const &);
 		void hideAllOverlays(void);
 		
 	private:
+		Ogre::OverlayManager *overlayManager;
 		
 	protected:
 };

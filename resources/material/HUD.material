@@ -11,3 +11,78 @@ material HUD/StatBorder
 		}
 	}
 }
+
+material HUD/White
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture White.png
+				scale 0.5 0.5
+			}
+		}
+	}
+}
+
+material HUD/Red
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Red.png
+				scale 0.5 0.5
+			}
+		}
+	}
+}
+
+material HUD/Yellow
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Yellow.png
+				scale 0.5 0.5
+			}
+		}
+	}
+}
+
+material HUD/Green
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Green.png
+				scale 0.5 0.5
+			}
+		}
+	}
+}
+
+material HUD/Blue
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Blue.png
+				scale 0.5 0.5
+			}
+		}
+	}
+}

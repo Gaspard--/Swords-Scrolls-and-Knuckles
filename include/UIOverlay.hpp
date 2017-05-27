@@ -1,6 +1,7 @@
 #ifndef UIOVERLAY_HPP
 # define UIOVERLAY_HPP
 
+# include <Overlay/OgreOverlayManager.h>
 # include <Overlay/OgreOverlay.h>
 
 class UIOverlay {
@@ -14,7 +15,7 @@ class UIOverlay {
 		virtual ~UIOverlay(void) = default;
 		
 		void setOverlay(Ogre::Overlay *);
-		virtual void init(void) = 0;
+		virtual void init(Ogre::OverlayManager *) = 0;
 
 	private:
 	protected:

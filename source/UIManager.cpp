@@ -1,39 +1,35 @@
 #include "UIManager.hpp"
 
 UIManager::UIManager()
-	: Ogre::OverlayManager()
+	: overlayManager(Ogre::OverlayManager::getSingletonPtr())
 {
-	// UIOverlayHUD *hud = static_cast<UIOverlayHUD *>(create("hud"));
-	// UIOverlayMenu *menu = static_cast<UIOverlayMenu *>(create("menu"));
 	
 	UIOverlayHUD *hud = new UIOverlayHUD();
-	Ogre::Overlay *overlayHUD = create("hud");
+	Ogre::Overlay *overlayHUD = overlayManager->create("hud");
 	hud->setOverlay(overlayHUD);
-	hud->init();
-	
-	// hud->init();
-	// menu->init();
-}
+	hud->init(overlayManager);
 
-UIManager::~UIManager(void) {
-
+	UIOverlayMenu *menu = new UIOverlayMenu();
+	Ogre::Overlay *overlayMenu = overlayManager->create("menu");
+	menu->setOverlay(overlayMenu);
+	menu->init(overlayManager);
 }
 
 // PUBLIC FUNCTIONS
 
 void UIManager::showOverlayByName(std::string const &name) {
 
-	getByName(name)->show();
+	overlayManager->getByName(name)->show();
 }
 
 void UIManager::hideOverlayByName(std::string const &name) {
 
-	getByName(name)->hide();
+	overlayManager->getByName(name)->hide();
 }
 
 void UIManager::hideAllOverlays(void) {
 
-	OverlayMapIterator it = getOverlayIterator();
+	Ogre::OverlayManager::OverlayMapIterator it = overlayManager->getOverlayIterator();
 	while (it.hasMoreElements()) {
 		auto pair = it.getNext();
 		pair->hide();
