@@ -1,13 +1,5 @@
 #include "AnimatedEntity.hpp"
 
-AnimatedEntity::AnimatedEntity(Renderer & renderer, std::string const & mesh)
-  : AnimatedEntity(renderer, mesh, renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
-{}
-
-AnimatedEntity::AnimatedEntity(Renderer & renderer, std::string const & mesh, Ogre::SceneNode * parent)
-  : entity(renderer, mesh, parent)
-{}
-
 Entity &AnimatedEntity::getEntity(void)
 {
   return (entity);
@@ -33,9 +25,8 @@ void AnimatedEntity::setAnimation(std::string const &s, bool reset, bool loop)
 
 void AnimatedEntity::addAnimation(std::string const &s, bool reset, bool loop)
 {
-  Ogre::AnimationState *as;
-  
-  as = entity.getOgre()->getAnimationState(s);
+  Ogre::AnimationState *as(entity.getOgre()->getAnimationState(s));
+
   as->setEnabled(true);
   as->setLoop(loop);
   as->setTimePosition(as->getTimePosition() * !reset);

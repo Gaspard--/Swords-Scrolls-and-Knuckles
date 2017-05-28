@@ -12,24 +12,14 @@ class AnimatedEntity
   Entity entity;
 
 public:
-  constexpr AnimatedEntity(void)
-    : entity()
+
+  template<class... P>
+  AnimatedEntity(P&&... params)
+    : entity(std::forward<P>(params)...)
   {}
 
-  AnimatedEntity(Renderer &renderer,
-		 std::string const &mesh);
-
-  AnimatedEntity(Renderer &renderer,
-		 std::string const &mesh,
-		 Ogre::SceneNode *parent);
-
-  constexpr AnimatedEntity(AnimatedEntity const &ae)
-    : entity(ae.entity)
-  {}
-
-  constexpr AnimatedEntity(AnimatedEntity &&ae)
-    : entity(ae.entity)
-  {}
+  constexpr AnimatedEntity(AnimatedEntity const &ae) = default;
+  constexpr AnimatedEntity(AnimatedEntity &&ae) = default;
 
   AnimatedEntity &operator=(AnimatedEntity const &) = default;
   AnimatedEntity &operator=(AnimatedEntity &&) = default;
