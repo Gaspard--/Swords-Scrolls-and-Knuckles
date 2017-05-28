@@ -55,7 +55,12 @@ DemoScene::DemoScene(Game &game)
       }
       return (true);
     });
-
+  Keyboard::getKeyboard().registerCallback(OIS::KC_I, [this](bool b) {
+    if (!b) {
+      illidan.addAnimation("Attack", true, false);
+    }
+    return (true);
+  });
   std::clog << "End loading" << std::endl;
 }
 
@@ -83,9 +88,6 @@ bool DemoScene::update(Game &, Ogre::FrameEvent const &fe)
 
   if (Keyboard::getKeys()[OIS::KC_U]) {
     illidan.stopAnimation();
-  }
-  if (Keyboard::getKeys()[OIS::KC_I]) {
-    illidan.setAnimation("Attack");
   }
   if (Keyboard::getKeys()[OIS::KC_O]) {
     illidan.setAnimation("Move", false);
