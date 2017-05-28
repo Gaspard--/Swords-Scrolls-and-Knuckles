@@ -66,6 +66,8 @@ DemoScene::DemoScene(Game &game)
 
 bool DemoScene::update(Game &, Ogre::FrameEvent const &fe)
 {
+  illidan.updateAnimations(fe.timeSinceLastFrame);
+
   // Will add an iterator shortly
   if (Keyboard::getKeys()[OIS::KC_A]) {
     cameraNode->roll(Ogre::Degree(2));
@@ -95,6 +97,5 @@ bool DemoScene::update(Game &, Ogre::FrameEvent const &fe)
   if (Keyboard::getKeys()[OIS::KC_P]) {
     illidan.setAnimation("Stand", false);
   }
-  illidan.updateAnimations(fe.timeSinceLastFrame);
   return (true);
 }
