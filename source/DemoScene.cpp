@@ -18,9 +18,9 @@ DemoScene::DemoScene(Game &game)
   renderer.getCamera().setNearClipDistance(5);
 
   // Entities
-  ogre = Entity(renderer, "ogrehead.mesh");
-  ogre.setPosition(0, 50, 0);
-  ogre.getOgre()->setCastShadows(true);
+  illidan = AnimatedEntity(renderer, "illidan.mesh");
+  illidan.getEntity().setPosition(0, 50, 0);
+  illidan.getEntity().getOgre()->setCastShadows(true);
 
   Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
   Ogre::MeshManager::getSingleton()
@@ -59,7 +59,7 @@ DemoScene::DemoScene(Game &game)
   std::clog << "End loading" << std::endl;
 }
 
-bool DemoScene::update(Game &)
+bool DemoScene::update(Game &, Ogre::FrameEvent const &fe)
 {
   // Will add an iterator shortly
   if (Keyboard::getKeys()[OIS::KC_A]) {
@@ -80,5 +80,19 @@ bool DemoScene::update(Game &)
   if (Keyboard::getKeys()[OIS::KC_S]) {
     cameraNode->translate(0, 0, 10);
   }
+
+  if (Keyboard::getKeys()[OIS::KC_U]) {
+    illidan.stopAnimation();
+  }
+  if (Keyboard::getKeys()[OIS::KC_I]) {
+    illidan.setAnimation("Attack");
+  }
+  if (Keyboard::getKeys()[OIS::KC_O]) {
+    illidan.setAnimation("Move", false);
+  }
+  if (Keyboard::getKeys()[OIS::KC_P]) {
+    illidan.setAnimation("Stand", false);
+  }
+  illidan.updateAnimations(fe.timeSinceLastFrame);
   return (true);
 }

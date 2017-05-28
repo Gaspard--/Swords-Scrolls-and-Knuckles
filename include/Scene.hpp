@@ -1,6 +1,8 @@
 #ifndef SCENE_HPP
 # define SCENE_HPP
 
+# include <OgreFrameListener.h>
+
 class Game;
 
 class Scene
@@ -18,7 +20,7 @@ public:
   /// Return value: false to exit the game, true otherwise.
   virtual ~Scene(void) = default;
 
-  virtual bool update(Game &);
+  virtual bool update(Game &, Ogre::FrameEvent const &);
 };
 
 #endif // !SCENE_HPP

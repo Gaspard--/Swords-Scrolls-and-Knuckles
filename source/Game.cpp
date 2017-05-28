@@ -3,7 +3,7 @@
 #include "Game.hpp"
 #include "DemoScene.hpp"
 
-// Constructors
+// Constructor
 
 Game::Game()
   : root(Game::PLUGINS_CONFIG_PATH)
@@ -90,7 +90,7 @@ void Game::setupOIS(void) {
 
 // Protected functions
 
-bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
+bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   bool go_on = true;
 
   if (window->isClosed())
@@ -101,7 +101,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
 
   // Update the current scene's logic
   if (renderer->getScene()) {
-    go_on &= renderer->getScene()->update(*this);
+    go_on &= renderer->getScene()->update(*this, fe);
   }
 
   if (Keyboard::getKeys()[OIS::KC_ESCAPE])

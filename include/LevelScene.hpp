@@ -19,7 +19,7 @@ public:
 
   virtual ~LevelScene(void);
 
-  virtual bool update(Game &) override;
+  virtual bool update(Game &, Ogre::FrameEvent const &) override;
 };
 
 #endif
