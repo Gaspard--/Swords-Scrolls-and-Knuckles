@@ -5,15 +5,25 @@
 #include "AudioListener.hpp"
 #include "AudioSource.hpp"
 #include "Audio.hpp"
+#include "Music.hpp"
 #include "Vect.hpp"
+#include "AudioError.hpp"
+
+std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const Audio::soundFilenames
+{{
+  nullptr,
+  "resources/sounds/boyaux1.wav",
+  "resources/sounds/euuuh1.wav"
+}};
+std::array<char const *, static_cast<size_t>(Musics::SIZE)> const Audio::musicFilenames
+{{
+  nullptr,
+  "resources/musics/small_world.ogg"
+}};
 
 Audio Audio::instance;
 
 Audio::Audio()
- : filenames({
-	 {Sounds::BOYAUX1, "resources/sounds/boyaux1.wav"},
-	 {Sounds::EUUUH1, "resources/sounds/euuuh1.wav"}
- })
 {
   alutInit(nullptr, nullptr);
   device = alcOpenDevice(nullptr);
@@ -32,15 +42,16 @@ Audio &Audio::getInstance(void)
   return instance;
 }
 
-bool Audio::checkError(bool outputError)
+bool Audio::checkError(bool throws)
 {
   ALCenum error = alGetError();
 
   if (error != AL_NO_ERROR)
     {
-      if (outputError)
-	std::cerr << alutGetErrorString(error) << std::endl;
-      return false;
+      if (throws)
+	throw AudioError(alutGetErrorString(error));
+      else
+	return false;
     }
   return true;
 }
@@ -52,13 +63,21 @@ void Audio::clearError(void)
 
 ALuint Audio::bufferFromSound(Sounds s)
 {
-  if (s == Sounds::NONE)
+  if (s == Sounds::NONE || s == Sounds::SIZE)
     return 0;
   auto it = sounds.find(s);
 
   if (it == sounds.end())
-    sounds[s] = alutCreateBufferFromFile(filenames.at(s));
+    {
+      sounds[s] = alutCreateBufferFromFile(Audio::soundFilenames[static_cast<size_t>(s)]);
+      Audio::checkError();
+    }
   return sounds.at(s);
+}
+
+char const *Audio::getMusicFileName(Musics s)
+{
+  return musicFilenames[static_cast<size_t>(s)];
 }
 
 bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
@@ -73,7 +92,7 @@ bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
       else
 	{
 	  alDeleteBuffers(1, &(it->second));
-	  if (!Audio::checkError())
+	  if (!Audio::checkError(false))
 	    ret = false;
 	  else
 	    this->sounds[s] = AL_NONE;
@@ -81,25 +100,3 @@ bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
     }
   return ret;
 }
-
-/*int main()
-{
-  Vect<3, float> v {0, 0, 0};
-  AudioSource by(Sounds::BOYAUX1, v);
-  alDistanceModel(AL_INVERSE_DISTANCE);
-
-  std::cout << Audio::getInstance().deleteBuffers({Sounds::EUUUH1, Sounds::BOYAUX1}) << std::endl;
-  //euuh.init(Sounds::EUUUH1, v);
-  //std::cout << by.init(Sounds::BOYAUX1, v) << std::endl;
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  by.setPos({0.00001, 0, 0});
-  by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  by.setPos({0.6, 0, 0});
-  by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  by.setPos({1, 0, 0});
-  by.play();
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-}*/

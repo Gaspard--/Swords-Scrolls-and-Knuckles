@@ -12,6 +12,8 @@
 
 # define BUFFER_SIZE (4096 * 8)
 
+enum class Musics;
+
 class Music
 {
 private:
@@ -23,24 +25,19 @@ private:
   ALenum		format;
   float			loopTime;
 
-  bool unqueuePending(void);
+  void unqueuePending(void);
   bool streamFile(ALuint buffer);
 
 public:
-  Music(char const *filename);
+  Music(Musics m, float loop=0);
   ~Music();
 
-  /*
-  ** Do not HAVE to be called (but can be)
-  ** These are only for memory reasons
-  ** to avoid useless destruction/reconstruction of object
-  */
-  bool init(char const *);
-  bool release(void);
+  Music(Music const &) = delete;
+  Music &operator=(Music const &) = delete;
 
   bool play(void);
+  void update(void);
   bool isPlaying(void) const;
-  bool update(void);
   void setLoopTime(float);
 };
 

@@ -18,21 +18,14 @@ public:
   AudioSource(Sounds, Vect<3, float> const &);
   ~AudioSource();
 
-  /*
-  ** Do not HAVE to be called (but can be)
-  ** These are only for memory reasons
-  ** to avoid useless destruction/reconstruction of object
-  ** (eg: release when too far and init when coming up closer)
-  */
-  bool init(Sounds, Vect<3, float> const &);
-  bool release();
+  AudioSource(AudioSource const &) = delete;
+  AudioSource &operator=(AudioSource const &) = delete;
 
-  bool setPos(Vect<3, float> const &);
-  bool setLooping(bool) const;
-  bool setSound(Sounds);
-  bool setVolume(float) const;
-  bool play(void) const;
-  bool stop(void) const;
+  void setPos(Vect<3, float> const &);
+  void setLooping(bool) const;
+  void setVolume(float) const;
+  void play(void) const;
+  void stop(void) const;
 };
 
 #endif /* !AUDIOSOURCE_H */
