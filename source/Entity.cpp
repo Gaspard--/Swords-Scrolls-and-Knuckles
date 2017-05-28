@@ -2,11 +2,8 @@
 
 Entity::Entity(Renderer &renderer,
 	       std::string const &mesh)
-  : ogreEntity(renderer.getSceneManager().createEntity(mesh))
-  , sceneNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
-{
-  sceneNode->attachObject(ogreEntity);
-}
+  : Entity(renderer, mesh, renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+{}
 
 Entity::Entity(Renderer &renderer,
 	       std::string const &mesh,
