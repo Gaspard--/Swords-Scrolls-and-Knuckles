@@ -62,11 +62,10 @@ bool Music::isPlaying(void) const
   alGetSourcei(source, AL_SOURCE_STATE, &state);
   return state == AL_PLAYING;
 }
-
 void Music::update(void)
 {
-  ALuint buffer;
-  int processed;
+  ALuint buffer = AL_NONE;
+  int processed = AL_NONE;
   bool active = true;
 
   alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
@@ -88,7 +87,7 @@ void Music::update(void)
 bool Music::streamFile(ALuint buffer)
 {
   char data[BUFFER_SIZE];
-  int size_read;
+  int size_read = 0;
   int size = 0;
 
   while (size < BUFFER_SIZE)
@@ -105,8 +104,8 @@ bool Music::streamFile(ALuint buffer)
 
 void Music::unqueuePending(void)
 {
-  int queued;
-  ALuint buffer;
+  ALuint buffer = AL_NONE;
+  int queued = AL_NONE;
 
   alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
   while (queued--)
