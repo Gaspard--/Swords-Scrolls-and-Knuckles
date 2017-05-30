@@ -1,9 +1,4 @@
-#include "Scoreboard.hpp"
-
-// bool operator <(std::vector<PlayerData> a, std::vector<PlayerData> b)
-// {
-//     return a[0].playerScore < b[0].playerScore;
-// }
+#include "../include/Scoreboard.hpp"
 
 std::ostream    &operator<<(std::ostream &stream, PlayerData &data)
 {
@@ -56,6 +51,7 @@ void            Scoreboard::dumpInfo(std::string path)
   std::ofstream sc;
 
   sc.open(path);
+  sort();
   for (auto &line : scoreboard)
   {
     for (auto &playerData : line)
@@ -71,13 +67,4 @@ void              Scoreboard::sort()
 {
   std::sort(scoreboard.begin(), scoreboard.end(), [](std::vector<PlayerData> a, std::vector<PlayerData> b){
 return a[0].playerScore < b[0].playerScore; });
-}
-
-int               main(void)
-{
-  Scoreboard  board;
-
-  board.loadDataFromFile("scoreboard.scb");
-  board.sort();
-  board.dumpInfo("sscoreboard.scb");
 }
