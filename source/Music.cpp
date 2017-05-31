@@ -15,21 +15,25 @@ Music::Music(Musics m, float loop)
   alGenSources(1, &source);
   Audio::checkError();
   alGenBuffers(2, buffers.data());
-  try
-    {
-      Audio::checkError();
-    }
-  catch (AudioError const &)
+  if (!Audio::checkError(false))
     {
       alDeleteSources(1, &source);
-      throw;
+      ov_clear(&oggStream);
+      throw AudioError("Couldn't generate 1 buffer in Music::Music");
     }
+
   alSource3f(source, AL_POSITION, 0., 0., 0.);
   alSource3f(source, AL_VELOCITY, 0., 0., 0.);
   alSource3f(source, AL_DIRECTION, 0., 0., 0.);
   alSourcef(source, AL_ROLLOFF_FACTOR, 0.);
   alSourcef(source, AL_SOURCE_RELATIVE, AL_TRUE);
-  Audio::checkError();
+  if (!Audio::checkError(false))
+    {
+      alDeleteSources(1, &source);
+      ov_clear(&oggStream);
+      alDeleteBuffers(1, &buffers[0]);
+      throw AudioError("Couldn't generate 1 buffer in Music::Music");
+    }
 }
 
 Music::~Music()
