@@ -23,7 +23,7 @@ public:
 
   void play(void) const;
   void stop(void) const;
-  void setPos(Vect<3, float> const &);
+  void setPos(Vect<3, float> const &) const;
   void setLooping(bool) const;
   void setVolume(float) const;
 };
