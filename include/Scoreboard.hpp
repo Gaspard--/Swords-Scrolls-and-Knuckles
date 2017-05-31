@@ -8,10 +8,9 @@
 #include <vector>
 #include <algorithm>
 
-class PlayerData
+struct PlayerData
 {
-public:
-  bool            isScore;
+  bool            isScore = false;
   std::string     playerName;
   std::string     playerClass;
   int             playerScore;
@@ -29,10 +28,9 @@ public:
   void  sort(void);
   void  loadDataFromFile(std::string);
   void  dumpInfo(std::string);
-  //une fonction qui ajoute
 };
 
-std::ostream                &operator<<(std::ostream &, PlayerData &);
+std::ostream                &operator<<(std::ostream &, PlayerData const &);
 std::vector<PlayerData>     lineToPlayerInfo(std::string);
 
 #endif

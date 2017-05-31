@@ -1,6 +1,6 @@
 #include "../include/Scoreboard.hpp"
 
-std::ostream    &operator<<(std::ostream &stream, PlayerData &data)
+std::ostream    &operator<<(std::ostream &stream, PlayerData const &data)
 {
   stream << data.playerName << ":" << data.playerClass << ":" << data.playerScore << " ";
   return (stream);
@@ -11,13 +11,21 @@ PlayerData::PlayerData(std::string buf)
   std::istringstream        strstream(buf);
   std::string               token;
 
+  try
+  {
+    getline(strstream, token, ':');
+    playerName = token;
+    getline(strstream, token, ':');
+    playerClass = token;
+    getline(strstream, token, ':');
+    playerScore = stoi(token);
+  }
+  catch (std::runtime_error)
+  {
+    isScore = false;
+    throw std::runtime_error(std::string("Reading Scoreboard file failed:"));
+  }
   isScore = true;
-  getline(strstream, token, ':');
-  playerName = token;
-  getline(strstream, token, ':');
-  playerClass = token;
-  getline(strstream, token, ':');
-  playerScore = atoi(token.data());
 }
 
 std::vector<PlayerData>     lineToPlayerInfo(std::string buf)
@@ -37,13 +45,10 @@ void            Scoreboard::loadDataFromFile(std::string path)
   std::string   buf;
 
   sc.open(path);
-  if (sc.is_open())
-  {
-    while (getline(sc, buf))
-      scoreboard.emplace_back(lineToPlayerInfo(buf));
-  }
-  else
+  if (!sc.is_open())
     throw std::runtime_error(std::string("Opening Scoreboard file failed: " + path));
+  while (getline(sc, buf))
+    scoreboard.emplace_back(lineToPlayerInfo(buf));
 }
 
 void            Scoreboard::dumpInfo(std::string path)
@@ -52,9 +57,9 @@ void            Scoreboard::dumpInfo(std::string path)
 
   sc.open(path);
   sort();
-  for (auto &line : scoreboard)
+  for (auto const &line : scoreboard)
   {
-    for (auto &playerData : line)
+    for (auto const &playerData : line)
     {
       if (playerData.isScore)
         sc << playerData;
@@ -65,6 +70,6 @@ void            Scoreboard::dumpInfo(std::string path)
 
 void              Scoreboard::sort()
 {
-  std::sort(scoreboard.begin(), scoreboard.end(), [](std::vector<PlayerData> a, std::vector<PlayerData> b){
+  std::sort(scoreboard.begin(), scoreboard.end(), [](std::vector<PlayerData> const &a, std::vector<PlayerData> const &b){
 return a[0].playerScore < b[0].playerScore; });
 }
