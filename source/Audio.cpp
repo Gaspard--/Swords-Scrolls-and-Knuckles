@@ -55,8 +55,8 @@ void Audio::clearError(void)
 
 ALuint Audio::bufferFromSound(Sounds s)
 {
-  if (s == Sounds::NONE || s == Sounds::SIZE)
-    return 0;
+  if (s <= Sounds::NONE || s >= Sounds::SIZE)
+    throw std::invalid_argument("Audio::bufferFromSound called with invalid Sounds");
   auto it(sounds.find(s));
 
   if (it == sounds.end())
@@ -69,6 +69,8 @@ ALuint Audio::bufferFromSound(Sounds s)
 
 char const *Audio::getMusicFileName(Musics s)
 {
+  if (s <= Musics::NONE || s >= Musics::SIZE)
+    throw std::invalid_argument("Audio::getMusicFileName called with invalid Musics");
   return musicFilenames[static_cast<size_t>(s)];
 }
 

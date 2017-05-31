@@ -1,7 +1,6 @@
 #include <iostream>
 #include <thread>
 #include "Music.hpp"
-#include "Audio.hpp"
 #include "AudioError.hpp"
 
 Music::Music(Musics m, float loop)
@@ -45,13 +44,12 @@ Music::~Music()
   ov_clear(&oggStream);
 }
 
-bool Music::play(void)
+void Music::play(void)
 {
   if (!streamFile(buffers[0]) || !streamFile(buffers[1]))
-    return false;
+    throw AudioError("Couldn't play music");
   alSourceQueueBuffers(source, 2, buffers.data());
   alSourcePlay(source);
-  return true;
 }
 
 void Music::setLoopTime(float f)
@@ -82,9 +80,7 @@ void Music::update(void)
       Audio::checkError();
     }
   if (!active)
-    {
-      ov_time_seek(&oggStream, loopTime);
-    }
+    ov_time_seek(&oggStream, loopTime);
 }
 
 bool Music::streamFile(ALuint buffer)

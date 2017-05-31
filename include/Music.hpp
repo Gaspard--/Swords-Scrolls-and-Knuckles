@@ -9,8 +9,7 @@
 # include "al.h"
 # include "alc.h"
 # include "alut.h"
-
-enum class Musics;
+# include "Audio.hpp"
 
 class Music
 {
@@ -34,10 +33,7 @@ public:
   Music(Music const &) = delete;
   Music &operator=(Music const &) = delete;
 
-  /*
-  ** Returns false if the music could not be played
-  */
-  bool play(void);
+  void play(void);
 
   /*
   ** To be called regularly (since the file is read a chunk at a time)
