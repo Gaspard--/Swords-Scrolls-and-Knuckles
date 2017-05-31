@@ -27,6 +27,7 @@ Audio::Audio()
 {
   alutInit(nullptr, nullptr);
   device = alcOpenDevice(nullptr);
+  Audio::checkError();
 }
 
 Audio::~Audio()

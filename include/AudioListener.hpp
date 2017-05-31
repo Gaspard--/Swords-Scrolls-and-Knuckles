@@ -7,7 +7,7 @@ class Vect;
 class AudioListener
 {
 public:
-  AudioListener(Vect<3, float> const &);
+  AudioListener(Vect<3, float> const &pos);
 
   void setPos(Vect<3, float> const &) const;
   void setVolume(float f) const;
