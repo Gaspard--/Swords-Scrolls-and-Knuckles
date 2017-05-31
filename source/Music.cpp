@@ -90,8 +90,7 @@ bool Music::streamFile(ALuint buffer)
 
   while (size < BUFFER_SIZE)
     {
-      int size_read(0);
-      size_read = ov_read(&oggStream, data + size, BUFFER_SIZE - size, 0, 2, 1, 0);
+      int size_read(ov_read(&oggStream, data + size, BUFFER_SIZE - size, 0, 2, 1, 0));
       size += size_read;
       if (size_read <= 0)
 	return false;
