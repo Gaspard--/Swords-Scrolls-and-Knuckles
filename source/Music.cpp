@@ -118,33 +118,3 @@ void Music::unqueuePending(void)
       Audio::checkError();
     }
 }
-
-/*int main(int argc, char **argv)
-{
-  if (argc != 2)
-    {
-      std::cerr << "provide a filename" << std::endl;
-      return 1;
-    }
-
-  Music m(argv[1]);
-
-  if (!m.play())
-    {
-      std::cerr << "olala cpjanti lé zerreur" << std::endl;
-      return 1;
-    }
-  for (int i = 0; i < 100; i++)
-    {
-      m.update();
-      if (!m.isPlaying())
-	{
-	  std::cerr << "mins sa sé arété avan la f1" << std::endl;
-	  return 1;
-	}
-      std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60));
-    }
-  std::cout << "ouais c la f1" << std::endl;
-  m.release();
-  return (0);
-}*/
