@@ -34,7 +34,7 @@ AudioSource::~AudioSource()
   alDeleteSources(1, &id);
 }
 
-void AudioSource::setPos(Vect<3, float> const &v)
+void AudioSource::setPos(Vect<3, float> const &v) const
 {
   alSource3f(id, AL_POSITION, v[0], v[1], v[2]);
   Audio::checkError();

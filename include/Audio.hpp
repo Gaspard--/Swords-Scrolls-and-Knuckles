@@ -10,6 +10,13 @@
 template <unsigned int N, class T>
 class Vect;
 
+/*
+** If you want to add sounds/musics, just add an element in the corresponding enum below,
+** (between NONE and SIZE, these must remain at beginning/end respectively)
+** and fill the corresponding std::array in source/Audio.cpp with the file name.
+** (The filenames and the elements in the enums must be in the same order)
+*/
+
 enum class Sounds
 {
   NONE,
@@ -54,7 +61,6 @@ public:
   ** for this function to work properly
   */
   bool deleteBuffers(std::initializer_list<Sounds>);
-
 };
 
 #endif /* !AUDIO_H */
