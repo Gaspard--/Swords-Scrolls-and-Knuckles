@@ -29,14 +29,22 @@ private:
   bool streamFile(ALuint buffer);
 
 public:
-  Music(Musics m, float loop=0);
+  Music(Musics m, float loopTime=0.);
   ~Music();
 
   Music(Music const &) = delete;
   Music &operator=(Music const &) = delete;
 
+  /*
+  ** Returns false if the music could not be played
+  */
   bool play(void);
+
+  /*
+  ** To be called regularly (since the file is read a chunk at a time)
+  */
   void update(void);
+
   bool isPlaying(void) const;
   void setLoopTime(float);
 };
