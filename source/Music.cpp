@@ -66,31 +66,31 @@ bool Music::isPlaying(void) const
 }
 void Music::update(void)
 {
-  ALuint buffer(AL_NONE);
+  ALuint buffer[1];
   int processed(AL_NONE);
   bool active(true);
 
   alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
-  if (processed--)
+  if (processed)
     {
-      alSourceUnqueueBuffers(source, 1, &buffer);
+      alSourceUnqueueBuffers(source, 1, buffer);
       Audio::checkError();
-      active = streamFile(buffer);
-      alSourceQueueBuffers(source, 1, &buffer);
+      active = streamFile(buffer[0]);
+      alSourceQueueBuffers(source, 1, buffer);
       Audio::checkError();
+      if (!active)
+	ov_time_seek(&oggStream, loopTime);
     }
-  if (!active)
-    ov_time_seek(&oggStream, loopTime);
 }
 
 bool Music::streamFile(ALuint buffer)
 {
   char data[BUFFER_SIZE];
-  int size_read(0);
   unsigned int size(0);
 
   while (size < BUFFER_SIZE)
     {
+      int size_read(0);
       size_read = ov_read(&oggStream, data + size, BUFFER_SIZE - size, 0, 2, 1, 0);
       size += size_read;
       if (size_read <= 0)

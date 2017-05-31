@@ -57,9 +57,8 @@ ALuint Audio::bufferFromSound(Sounds s)
 {
   if (s <= Sounds::NONE || s >= Sounds::SIZE)
     throw std::invalid_argument("Audio::bufferFromSound called with invalid Sounds");
-  auto it(sounds.find(s));
 
-  if (it == sounds.end())
+  if (sounds.find(s) == sounds.end())
     {
       sounds[s] = alutCreateBufferFromFile(Audio::soundFilenames[static_cast<size_t>(s)]);
       Audio::checkError();
