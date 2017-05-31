@@ -1,5 +1,5 @@
-#ifndef AUDIOSOURCE_H
-# define AUDIOSOURCE_H
+#ifndef AUDIOSOURCE_HPP
+# define AUDIOSOURCE_HPP
 
 # include "Audio.hpp"
 
@@ -26,4 +26,4 @@ public:
   void setVolume(float) const;
 };
 
-#endif /* !AUDIOSOURCE_H */
+#endif /* !AUDIOSOURCE_HPP */

@@ -1,5 +1,5 @@
-#ifndef MUSIC_H
-# define MUSIC_H
+#ifndef MUSIC_HPP
+# define MUSIC_HPP
 
 # include <array>
 # include <ogg/ogg.h>
@@ -10,20 +10,19 @@
 # include "alc.h"
 # include "alut.h"
 
-# define BUFFER_SIZE (4096 * 8)
-
 enum class Musics;
 
 class Music
 {
 private:
-  OggVorbis_File	oggStream;
-  vorbis_info		*vorbisInfo;
-  vorbis_comment	*vorbisComment;
+  static constexpr unsigned int BUFFER_SIZE = 4096 * 8;
+  OggVorbis_File oggStream;
+  vorbis_info *vorbisInfo;
+  vorbis_comment *vorbisComment;
   std::array<ALuint, 2>	buffers;
-  ALuint		source;
-  ALenum		format;
-  float			loopTime;
+  ALuint source;
+  ALenum format;
+  float	loopTime;
 
   void unqueuePending(void);
   bool streamFile(ALuint buffer);
@@ -49,4 +48,4 @@ public:
   void setLoopTime(float);
 };
 
-#endif /* !MUSIC_H */
+#endif /* !MUSIC_HPP */

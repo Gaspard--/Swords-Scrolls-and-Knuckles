@@ -1,16 +1,13 @@
-#ifndef AUDIOLISTENER_H
-# define AUDIOLISTENER_H
+#ifndef AUDIOLISTENER_HPP
+# define AUDIOLISTENER_HPP
 
 template <unsigned int N, class T>
 class Vect;
 
-class AudioListener
+namespace AudioListener
 {
-public:
-  AudioListener(Vect<3, float> const &pos);
-
-  void setPos(Vect<3, float> const &) const;
-  void setVolume(float f) const;
+  void setPos(Vect<3, float> const &);
+  void setVolume(float f);
 };
 
-#endif /* !AUDIOLISTENER_H */
+#endif /* !AUDIOLISTENER_HPP */

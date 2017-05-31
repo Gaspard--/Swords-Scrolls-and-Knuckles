@@ -19,7 +19,7 @@ Music::Music(Musics m, float loop)
     {
       alDeleteSources(1, &source);
       ov_clear(&oggStream);
-      throw AudioError("Couldn't generate 1 buffer in Music::Music");
+      throw AudioError("Couldn't generate a buffer in Music::Music");
     }
 
   alSource3f(source, AL_POSITION, 0., 0., 0.);
@@ -32,7 +32,7 @@ Music::Music(Musics m, float loop)
       alDeleteSources(1, &source);
       ov_clear(&oggStream);
       alDeleteBuffers(1, &buffers[0]);
-      throw AudioError("Couldn't generate 1 buffer in Music::Music");
+      throw AudioError("Couldn't generate a buffer in Music::Music");
     }
 }
 
@@ -68,12 +68,12 @@ bool Music::isPlaying(void) const
 }
 void Music::update(void)
 {
-  ALuint buffer = AL_NONE;
-  int processed = AL_NONE;
-  bool active = true;
+  ALuint buffer(AL_NONE);
+  int processed(AL_NONE);
+  bool active(true);
 
   alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
-  while (processed--)
+  if (processed--)
     {
       alSourceUnqueueBuffers(source, 1, &buffer);
       Audio::checkError();
@@ -84,15 +84,14 @@ void Music::update(void)
   if (!active)
     {
       ov_time_seek(&oggStream, loopTime);
-      active = true;
     }
 }
 
 bool Music::streamFile(ALuint buffer)
 {
   char data[BUFFER_SIZE];
-  int size_read = 0;
-  int size = 0;
+  int size_read(0);
+  unsigned int size(0);
 
   while (size < BUFFER_SIZE)
     {
@@ -108,8 +107,8 @@ bool Music::streamFile(ALuint buffer)
 
 void Music::unqueuePending(void)
 {
-  ALuint buffer = AL_NONE;
-  int queued = AL_NONE;
+  ALuint buffer(AL_NONE);
+  int queued(AL_NONE);
 
   alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
   while (queued--)

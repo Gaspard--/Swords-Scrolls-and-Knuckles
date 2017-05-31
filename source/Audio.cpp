@@ -9,17 +9,8 @@
 #include "Vect.hpp"
 #include "AudioError.hpp"
 
-std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const Audio::soundFilenames
-{{
-  nullptr,
-  "resources/sounds/boyaux1.wav",
-  "resources/sounds/euuuh1.wav"
-}};
-std::array<char const *, static_cast<size_t>(Musics::SIZE)> const Audio::musicFilenames
-{{
-  nullptr,
-  "resources/musics/small_world.ogg"
-}};
+constexpr std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const Audio::soundFilenames;
+constexpr std::array<char const *, static_cast<size_t>(Musics::SIZE)> const Audio::musicFilenames;
 
 Audio Audio::instance;
 
@@ -45,7 +36,7 @@ Audio &Audio::getInstance(void)
 
 bool Audio::checkError(bool throws)
 {
-  ALCenum error = alGetError();
+  ALCenum error(alGetError());
 
   if (error != AL_NO_ERROR)
     {
@@ -66,7 +57,7 @@ ALuint Audio::bufferFromSound(Sounds s)
 {
   if (s == Sounds::NONE || s == Sounds::SIZE)
     return 0;
-  auto it = sounds.find(s);
+  auto it(sounds.find(s));
 
   if (it == sounds.end())
     {
@@ -83,11 +74,11 @@ char const *Audio::getMusicFileName(Musics s)
 
 bool Audio::deleteBuffers(std::initializer_list<Sounds> sndlst)
 {
-  bool ret = true;
+  bool ret(true);
 
   for (auto s : sndlst)
     {
-      auto it = sounds.find(s);
+      auto it(sounds.find(s));
       if (it == sounds.end() || it->second == AL_NONE)
 	ret = false;
       else

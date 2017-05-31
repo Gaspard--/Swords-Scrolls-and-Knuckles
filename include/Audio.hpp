@@ -1,5 +1,5 @@
-#ifndef AUDIO_H
-# define AUDIO_H
+#ifndef AUDIO_HPP
+# define AUDIO_HPP
 
 # include <unordered_map>
 # include <array>
@@ -41,8 +41,17 @@ private:
 
   ALCdevice *device;
   std::unordered_map<Sounds, ALuint> sounds;
-  static std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const soundFilenames;
-  static std::array<char const *, static_cast<size_t>(Musics::SIZE)> const musicFilenames;
+  static constexpr std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const soundFilenames
+{{
+  nullptr,
+  "resources/sounds/boyaux1.wav",
+  "resources/sounds/euuuh1.wav"
+}};
+  static constexpr std::array<char const *, static_cast<size_t>(Musics::SIZE)> const musicFilenames
+{{
+  nullptr,
+  "resources/musics/small_world.ogg"
+}};
 
 public:
   ~Audio();
@@ -63,4 +72,4 @@ public:
   bool deleteBuffers(std::initializer_list<Sounds>);
 };
 
-#endif /* !AUDIO_H */
+#endif /* !AUDIO_HPP */
