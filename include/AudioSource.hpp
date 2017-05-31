@@ -1,8 +1,6 @@
 #ifndef AUDIOSOURCE_H
 # define AUDIOSOURCE_H
 
-# include <AL/al.h>
-# include <AL/alc.h>
 # include "Audio.hpp"
 
 template <unsigned int N, class T>

@@ -1,14 +1,14 @@
 #ifndef MUSIC_H
 # define MUSIC_H
 
-# include <AL/al.h>
-# include <AL/alc.h>
-# include <AL/alut.h>
+# include <array>
 # include <ogg/ogg.h>
 # include <vorbis/codec.h>
 # include <vorbis/vorbisfile.h>
 # include <vorbis/vorbisenc.h>
-# include <array>
+# include "al.h"
+# include "alc.h"
+# include "alut.h"
 
 # define BUFFER_SIZE (4096 * 8)
 

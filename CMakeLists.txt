@@ -74,6 +74,7 @@ include_directories(
 	${HEADER_DIRECTORY}
         ${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIR}
+        ${OPENAL_INCLUDE_DIR}
 )
 
 add_executable(

@@ -1,11 +1,11 @@
 #ifndef AUDIO_H
 # define AUDIO_H
 
-# include <AL/al.h>
-# include <AL/alc.h>
-# include <AL/alut.h>
 # include <unordered_map>
 # include <array>
+# include "al.h"
+# include "alc.h"
+# include "alut.h"
 
 template <unsigned int N, class T>
 class Vect;

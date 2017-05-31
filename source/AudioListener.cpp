@@ -1,6 +1,5 @@
-#include <AL/al.h>
-#include "Audio.hpp"
 #include "Vect.hpp"
+#include "Audio.hpp"
 #include "AudioListener.hpp"
 
 AudioListener::AudioListener(Vect<3, float> const &pos)
