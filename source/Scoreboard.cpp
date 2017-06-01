@@ -21,7 +21,9 @@ PlayerData::PlayerData(std::string buf)
     playerScore = stoi(token);
   }
   catch (std::runtime_error)
+  {
     throw std::runtime_error(std::string("Reading Scoreboard file failed"));
+  }
   isScore = true;
 }
 
