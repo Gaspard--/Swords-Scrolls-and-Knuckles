@@ -17,10 +17,6 @@ Game::Game()
   // Create the window
   window = root.initialise(true, "Swords, Scrolls and Knuckles");
 
-  // Load resources
-  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
   // Set up keyboard / mouse handlers
   setupOIS();
 
@@ -31,6 +27,10 @@ Game::Game()
     });
 
   root.addFrameListener(this);
+   
+  // Load resources
+  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   
   UIManager *manager = new UIManager();
   manager->showOverlayByName("hud");
@@ -69,7 +69,10 @@ void Game::setupRenderSystem(void) {
     if (rs->getName().find("OpenGL") != std::string::npos) {
       root.setRenderSystem(rs);
       rs->setConfigOption("Full Screen", "Yes");
-      rs->setConfigOption("Video Mode", "1920 x 1080 @ 32-bit colour");
+      // rs->setConfigOption("Video Mode", "1920 x 1080 @ 32-bit colour");
+	  rs->setConfigOption("Video Mode",
+			  std::to_string(Game::WIDTH) + " x " + std::to_string(Game::HEIGHT)
+			  + " @ 32-bit colour");
       return ;
     }
   }

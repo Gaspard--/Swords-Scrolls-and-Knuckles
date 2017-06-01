@@ -31,7 +31,7 @@ void UIManager::hideAllOverlays(void) {
 
 	Ogre::OverlayManager::OverlayMapIterator it = overlayManager->getOverlayIterator();
 	while (it.hasMoreElements()) {
-		auto pair = it.getNext();
-		pair->hide();
+		auto ov = it.getNext();
+		ov->hide();
 	}
 }

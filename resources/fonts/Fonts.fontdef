@@ -1,0 +1,7 @@
+HUD/Font
+{
+	type truetype
+	source ff_font.ttf
+	size 50
+	resolution 96
+}

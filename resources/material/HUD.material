@@ -1,4 +1,4 @@
-material HUD/StatBorder
+material HUD/Black
 {
 	technique
 	{
@@ -6,7 +6,7 @@ material HUD/StatBorder
 		{
 			texture_unit
 			{
-				texture StatBorder.png
+				texture BorderBlack.png
 			}
 		}
 	}
