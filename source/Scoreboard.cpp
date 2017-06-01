@@ -1,4 +1,4 @@
-#include "../include/Scoreboard.hpp"
+#include "Scoreboard.hpp"
 
 std::ostream    &operator<<(std::ostream &stream, PlayerData const &data)
 {
@@ -13,18 +13,15 @@ PlayerData::PlayerData(std::string buf)
 
   try
   {
-    getline(strstream, token, ':');
+    std::getline(strstream, token, ':');
     playerName = token;
-    getline(strstream, token, ':');
+    std::getline(strstream, token, ':');
     playerClass = token;
-    getline(strstream, token, ':');
+    std::getline(strstream, token, ':');
     playerScore = stoi(token);
   }
   catch (std::runtime_error)
-  {
-    isScore = false;
-    throw std::runtime_error(std::string("Reading Scoreboard file failed:"));
-  }
+    throw std::runtime_error(std::string("Reading Scoreboard file failed"));
   isScore = true;
 }
 
@@ -34,7 +31,7 @@ std::vector<PlayerData>     lineToPlayerInfo(std::string buf)
     std::string             token;
     std::vector<PlayerData> data;
 
-    while (getline(strstream, token, ' '))
+    while (std::getline(strstream, token, ' '))
       data.emplace_back(token);
     return (data);
 }
@@ -47,7 +44,7 @@ void            Scoreboard::loadDataFromFile(std::string path)
   sc.open(path);
   if (!sc.is_open())
     throw std::runtime_error(std::string("Opening Scoreboard file failed: " + path));
-  while (getline(sc, buf))
+  while (std::getline(sc, buf))
     scoreboard.emplace_back(lineToPlayerInfo(buf));
 }
 

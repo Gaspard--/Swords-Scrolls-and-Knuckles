@@ -1,16 +1,12 @@
 #ifndef SCOREBOARD_HPP_
 #define SCOREBOARD_HPP_
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <cstring>
 #include <vector>
 #include <algorithm>
 
 struct PlayerData
 {
-  bool            isScore = false;
+  bool            isScore;
   std::string     playerName;
   std::string     playerClass;
   int             playerScore;
