@@ -267,30 +267,6 @@ public:
     return length2() > 0 ? ((*this) / sqrt(length2())) : *this;
   }
 
-  template<unsigned int _dim = dim, typename std::enable_if<(_dim > 0)>::type* = nullptr>
-  T x() const
-  {
-    return (data[0]);
-  }
-
-  template<unsigned int _dim = dim, typename std::enable_if<(_dim > 1)>::type* = nullptr>
-  T y() const
-  {
-    return (data[1]);
-  }
-
-  template<unsigned int _dim = dim, typename std::enable_if<(_dim > 2)>::type* = nullptr>
-  T z() const
-  {
-    return (data[2]);
-  }
-
-  template<unsigned int _dim = dim, typename std::enable_if<(_dim > 3)>::type* = nullptr>
-  T w() const
-  {
-    return (data[3]);
-  }
-
   T reduce()
   {
 
@@ -303,13 +279,6 @@ public:
     while (i < dim && data[i])
       i = i + 1;
     return (i == dim);
-  }
-
-  typedef T (&tab)[dim];
-
-  operator tab()
-  {
-    return (data);
   }
 
   template<class L>

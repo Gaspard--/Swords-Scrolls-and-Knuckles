@@ -37,6 +37,20 @@ resources/cfg/plugins.cfg
 # Vim stuff
 Session.vim
 .syntastic_cpp_config
+*~
 
 # Ogre stuff
 Ogre.log
+
+# VS stuff
+*.sln
+Debug
+Release
+ssk.dir
+Win32
+.vs
+
+# emacs backup files and locks
+*~
+.#*
+*#

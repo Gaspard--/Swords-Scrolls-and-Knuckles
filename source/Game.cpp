@@ -3,9 +3,9 @@
 #include "Game.hpp"
 #include "DemoScene.hpp"
 
-// Constructors
+// Constructor
 
-Game::Game(void)
+Game::Game()
   : root(Game::PLUGINS_CONFIG_PATH)
   , window(nullptr)
   , inputManager(nullptr)
@@ -25,7 +25,9 @@ Game::Game(void)
 
   // Set up the renderer and initial scene
   renderer.reset(new Renderer(*this));
-  renderer->switchScene(*this, std::unique_ptr<Scene>(new DemoScene()));
+  renderer->switchScene([this](){
+      return new DemoScene(*this);
+    });
 
   root.addFrameListener(this);
 }
@@ -47,18 +49,14 @@ void Game::setupResources(void) {
   Ogre::String name;
   Ogre::String locType;
 
-  Ogre::ConfigFile::SectionIterator secIt= cf.getSectionIterator();
+  Ogre::ConfigFile::SectionIterator secIt = cf.getSectionIterator();
   while (secIt.hasMoreElements())
-  {
-    Ogre::ConfigFile::SettingsMultiMap* settings = secIt.getNext();
-    Ogre::ConfigFile::SettingsMultiMap::iterator it;
-    for (it = settings->begin(); it != settings->end(); ++it)
-    {
-      locType = it->first;
-      name = it->second;
-      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
-    }
-  }
+    for (auto &&pair : *secIt.getNext())
+      {
+	locType = pair.first;
+	name = pair.second;
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
+      }
 }
 
 void Game::setupRenderSystem(void) {
@@ -92,7 +90,7 @@ void Game::setupOIS(void) {
 
 // Protected functions
 
-bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
+bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   bool go_on = true;
 
   if (window->isClosed())
@@ -103,7 +101,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
 
   // Update the current scene's logic
   if (renderer->getScene()) {
-    go_on &= renderer->getScene()->update(*this);
+    go_on &= renderer->getScene()->update(*this, fe);
   }
 
   if (Keyboard::getKeys()[OIS::KC_ESCAPE])
