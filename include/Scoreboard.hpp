@@ -1,6 +1,10 @@
 #ifndef SCOREBOARD_HPP_
 #define SCOREBOARD_HPP_
 
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <stdexcept>
 #include <vector>
 #include <algorithm>
 
