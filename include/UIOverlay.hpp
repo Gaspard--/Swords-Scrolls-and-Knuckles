@@ -19,6 +19,8 @@ class UIOverlay {
 		static Ogre::Vector2 relativeToPixels(Ogre::Vector2);
 		
 		void setOverlay(Ogre::Overlay *);
+		Ogre::Overlay *getOverlay(void) const;
+		
 		virtual void init(Ogre::OverlayManager *) = 0;
 
 	private:

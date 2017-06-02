@@ -5,6 +5,11 @@ void UIOverlay::setOverlay(Ogre::Overlay *ov) {
 	overlay = ov;
 }
 
+Ogre::Overlay *UIOverlay::getOverlay(void) const {
+
+	return overlay;
+}
+
 Ogre::Vector2 UIOverlay::pixelsToRelative(Ogre::Vector2 pixels) {
 
 	Ogre::Real x;
