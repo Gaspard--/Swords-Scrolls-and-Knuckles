@@ -20,20 +20,23 @@ Game::Game()
   // Set up keyboard / mouse handlers
   setupOIS();
 
-  // Set up the renderer and initial scene
+  // Set up the renderer
   renderer.reset(new Renderer(*this));
-  renderer->switchScene([this](){
-      return new DemoScene(*this);
-    });
-
-  root.addFrameListener(this);
-   
+  
   // Load resources
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   
+  // Init scene
+  renderer->switchScene([this](){
+      return new DemoScene(*this);
+    });
+  root.addFrameListener(this);
+   
+  // Init UIManager
   UIManager *manager = new UIManager();
   manager->showOverlayByName("hud");
+  // static_cast<UIOverlayHUD *>(manager->getByName("hud"))->updateScoreByName("Wizzard", 25);
 }
 
 Game::~Game(void)

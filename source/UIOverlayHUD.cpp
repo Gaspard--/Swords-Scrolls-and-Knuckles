@@ -2,27 +2,28 @@
 
 // UICharStat
 
-UICharStat::UICharStat(Ogre::String const &name)
-	: Ogre::BorderPanelOverlayElement(name)
+UICharStat::UICharStat(Ogre::OverlayManager *manager, Ogre::String const &name)
 {
+	panel
+		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", name));
 }
 
 void UICharStat::init(Ogre::String const &materialName, Ogre::String const &borderName,
 		Ogre::Real width, Ogre::Real height, Ogre::Real x, Ogre::Real y) {
 	
-	setMaterialName(materialName);
-	setDimensions(0.25 * width, height);
-	setPosition(x, y);
+	panel->setMaterialName(materialName);
+	panel->setDimensions(0.25 * width, height);
+	panel->setPosition(x, y);
 	
-	setBorderMaterialName(borderName);
-	setBorderSize(0.0075);
+	panel->setBorderMaterialName(borderName);
+	panel->setBorderSize(0.0075);
 }
 
 void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &elementName,
 		Ogre::DisplayString const &txt) {
 
-	Ogre::Vector2 panelSize = UIOverlay::relativeToPixels({getWidth(), getHeight()});
-	Ogre::Vector2 panelPos = UIOverlay::relativeToPixels({getLeft(), getTop()});
+	Ogre::Vector2 panelSize = UIOverlay::relativeToPixels({panel->getWidth(), panel->getHeight()});
+	Ogre::Vector2 panelPos = UIOverlay::relativeToPixels({panel->getLeft(), panel->getTop()});
 	
 	Ogre::TextAreaOverlayElement *text
 		= static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", elementName));
@@ -59,12 +60,43 @@ void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &ele
 	healthTxt->setCharHeight(20);
 	healthTxt->setAlignment(Ogre::TextAreaOverlayElement::Center);
 	
-	addChild(text);
-	addChild(scoreTxt);
-	addChild(healthTxt);
+	panel->addChild(text);
+	panel->addChild(scoreTxt);
+	panel->addChild(healthTxt);
+}
+
+void UICharStat::updateScore(Ogre::String const &name, int score) {
+
+	std::string data(name);
+	data += "TextScore";
+	Ogre::TextAreaOverlayElement *scoreTxt
+		= static_cast<Ogre::TextAreaOverlayElement *>(panel->getChild(data));
+	scoreTxt->setCaption("Score: " + std::to_string(score));
+}
+
+void UICharStat::updateHealth(Ogre::String const &name, int health) {
+
+	std::string data(name);
+	data += "TextHealth";
+	Ogre::TextAreaOverlayElement *healthTxt
+		= static_cast<Ogre::TextAreaOverlayElement *>(panel->getChild(data));
+	healthTxt->setCaption("Health: " + std::to_string(health));
+}
+
+Ogre::BorderPanelOverlayElement *UICharStat::getPanel(void) const {
+
+	return panel;
 }
 
 // UIOverlayHUD
+
+UIOverlayHUD::~UIOverlayHUD(void) {
+
+	delete chars["Wizzard"];
+	delete chars["Warrior"];
+	delete chars["Archer"];
+	delete chars["Valkyrie"];
+}
 
 void UIOverlayHUD::init(Ogre::OverlayManager *manager) {
 
@@ -74,38 +106,41 @@ void UIOverlayHUD::init(Ogre::OverlayManager *manager) {
 
 	Ogre::PanelOverlayElement *stats
 		= static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", "Stats"));
-	stats->setMaterialName("HUD/White");
-	stats->setTransparent(true);
 	stats->setDimensions(width, height);
 	stats->setPosition(0.5 - width / 2, 1 - height);
 
-	Ogre::BorderPanelOverlayElement *wizzard
-		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", "Wizzard"));
-	(static_cast<UICharStat *>(wizzard))->init("HUD/Black", "HUD/Yellow",
-			width, height, 0.0, 0.0);
-	(static_cast<UICharStat *>(wizzard))->initText(manager, "WizzardText", "Wizzard");
+	UICharStat *wizzard = new UICharStat(manager, "Wizzard");
+	wizzard->init("HUD/Black", "HUD/Yellow", width, height, 0.0, 0.0);
+	wizzard->initText(manager, "WizzardText", "Wizzard");
+	chars["Wizzard"] = wizzard;
 	
-	Ogre::BorderPanelOverlayElement *warrior
-		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", "Warrior"));
-	(static_cast<UICharStat *>(warrior))->init("HUD/Black", "HUD/Red",
-			width, height, 0.25 * width, 0.0);
-	(static_cast<UICharStat *>(warrior))->initText(manager, "WarriorText", "Warrior");
+	UICharStat *warrior = new UICharStat(manager, "Warrior");
+	warrior->init("HUD/Black", "HUD/Red", width, height, 0.25 * width, 0.0);
+	warrior->initText(manager, "WarriorText", "Warrior");
+	chars["Warrior"] = warrior;
 	
-	Ogre::BorderPanelOverlayElement *archer
-		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", "Bowman"));
-	(static_cast<UICharStat *>(archer))->init("HUD/Black", "HUD/Green",
-			width, height, 0.25 * width * 2.0, 0.0);
-	(static_cast<UICharStat *>(archer))->initText(manager, "ArcherText", "Archer");
-
-	Ogre::BorderPanelOverlayElement *valkyrie
-		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", "Valkyrie"));
-	(static_cast<UICharStat *>(valkyrie))->init("HUD/Black", "HUD/Blue",
-			width, height, 0.25 * width * 3.0, 0.0);
-	(static_cast<UICharStat *>(valkyrie))->initText(manager, "ValkyrieText", "Valkyrie");
-
-	stats->addChild(wizzard);
-	stats->addChild(warrior);
-	stats->addChild(archer);
-	stats->addChild(valkyrie);
+	UICharStat *archer = new UICharStat(manager, "Archer");
+	archer->init("HUD/Black", "HUD/Green", width, height, 0.25 * width * 2.0, 0.0);
+	archer->initText(manager, "ArcherText", "Archer");
+	chars["Archer"] = archer;
+	
+	UICharStat *valkyrie = new UICharStat(manager, "Valkyrie");
+	valkyrie->init("HUD/Black", "HUD/Blue", width, height, 0.25 * width * 3.0, 0.0);
+	valkyrie->initText(manager, "ValkyrieText", "Valkyrie");
+	
+	stats->addChild(wizzard->getPanel());
+	stats->addChild(warrior->getPanel());
+	stats->addChild(archer->getPanel());
+	stats->addChild(valkyrie->getPanel());
 	overlay->add2D(stats);
+}
+
+void UIOverlayHUD::updateScoreByName(Ogre::String const &name, int score) {
+
+	chars[name]->updateScore(name, score);
+}
+
+void UIOverlayHUD::updateHealthByName(Ogre::String const &name, int health) {
+
+	chars[name]->updateHealth(name, health);
 }

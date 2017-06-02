@@ -7,10 +7,10 @@
 # include "UIOverlay.hpp"
 # include "UIChar.hpp"
 
-class UICharStat : public Ogre::BorderPanelOverlayElement {
+class UICharStat {
 
 	public:
-		UICharStat(Ogre::String const &);
+		UICharStat(Ogre::OverlayManager *, Ogre::String const &);
 		UICharStat(UICharStat const &) = delete;
 		UICharStat(UICharStat &&) = delete;
 		UICharStat &operator=(UICharStat const &) = delete;
@@ -21,7 +21,13 @@ class UICharStat : public Ogre::BorderPanelOverlayElement {
 				Ogre::Real, Ogre::Real, Ogre::Real, Ogre::Real);
 		void initText(Ogre::OverlayManager *, Ogre::String const &, Ogre::DisplayString const &);
 		
+		void updateScore(Ogre::String const &, int);
+		void updateHealth(Ogre::String const &, int);
+		
+		Ogre::BorderPanelOverlayElement *getPanel(void) const;
+		
 	private:
+		Ogre::BorderPanelOverlayElement *panel;
 		UIChar *character;
 };
 
@@ -33,13 +39,17 @@ class UIOverlayHUD : public UIOverlay {
 		UIOverlayHUD(UIOverlayHUD &&) = delete;
 		UIOverlayHUD &operator=(UIOverlayHUD const &) = delete;
 		UIOverlayHUD &operator=(UIOverlayHUD &&) = delete;
-		virtual ~UIOverlayHUD(void) = default;
+		virtual ~UIOverlayHUD(void);
 
 		virtual void init(Ogre::OverlayManager *);
+		
+		void updateScoreByName(Ogre::String const &, int);
+		void updateHealthByName(Ogre::String const &, int);
 
 	private:
 		Ogre::Real width;
 		Ogre::Real height;
+		std::map<Ogre::String, UICharStat *> chars;
 		
 	protected:
 };

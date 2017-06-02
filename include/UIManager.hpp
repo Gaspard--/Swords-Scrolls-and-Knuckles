@@ -19,9 +19,11 @@ class UIManager {
 		void showOverlayByName(std::string const &);
 		void hideOverlayByName(std::string const &);
 		void hideAllOverlays(void);
+		UIOverlay *getByName(Ogre::String const &);
 		
 	private:
 		Ogre::OverlayManager *overlayManager;
+		std::map<Ogre::String, UIOverlay *> overlays;
 		
 	protected:
 };
