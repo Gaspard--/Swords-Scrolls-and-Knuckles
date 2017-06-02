@@ -35,7 +35,7 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 set(OIS_DIR "${CMAKE_SOURCE_DIR}/cmake/")
-#set(OGRE_DIR "${CMAKE_SOURCE_DIR}/cmake/")
+# set(OGRE_DIR "${CMAKE_SOURCE_DIR}/cmake/")
 
 if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
@@ -51,6 +51,7 @@ file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
 
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
+find_package(OpenAL REQUIRED)
 
 if (UNIX AND OGRE_RenderSystem_GL_FOUND)
   if (OGRE_PLUGIN_DIR)
@@ -73,6 +74,7 @@ include_directories(
 	${HEADER_DIRECTORY}
 	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIR}
+	${OPENAL_INCLUDE_DIR}
 )
 
 add_executable(
@@ -86,6 +88,10 @@ target_link_libraries(
 	${OGRE_LIBRARIES}
 	${OIS_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
+        ${OPENAL_LIBRARY}
+        alut
+        vorbisfile
+        ogg
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})

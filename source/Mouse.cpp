@@ -30,7 +30,6 @@ bool Mouse::mousePressed(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
 	while (it.hasMoreElements()) {
 		auto ov = it.getNext();
 		if (ov->isVisible()) {
-			std::clog << ov->getName() << " is visible." << std::endl;
 			UIManager::getByName(ov->getName())->mousePressed(state.X.abs, state.Y.abs);
 		}
 	}
