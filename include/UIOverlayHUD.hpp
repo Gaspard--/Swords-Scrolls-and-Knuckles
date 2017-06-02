@@ -50,8 +50,6 @@ class UIOverlayHUD : public UIOverlay {
 		Ogre::Real width;
 		Ogre::Real height;
 		std::map<Ogre::String, UICharStat *> chars;
-		
-	protected:
 };
 
 #endif // !UIOVERLAYHUD_HPP

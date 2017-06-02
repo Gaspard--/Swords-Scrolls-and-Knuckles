@@ -21,25 +21,25 @@ UIManager::UIManager()
 
 // PUBLIC FUNCTIONS
 
-void UIManager::showOverlayByName(std::string const &name) const {
+void UIManager::showOverlayByName(std::string const &name) {
 
 	overlays[name]->getOverlay()->show();
 }
 
-void UIManager::hideOverlayByName(std::string const &name) const {
+void UIManager::hideOverlayByName(std::string const &name) {
 
 	overlays[name]->getOverlay()->hide();
 }
 
-void UIManager::hideAllOverlays(void) const {
+void UIManager::hideAllOverlays(void) {
 
 	std::map<Ogre::String, UIOverlay *>::iterator it;
 	for (it = overlays.begin(); it != overlays.end(); ++it) {
-		it->second->hide();
+		it->second->getOverlay()->hide();
 	}
 }
 
-UIOverlay *UIManager::getByName(Ogre::String const &name) const {
+UIOverlay *UIManager::getByName(Ogre::String const &name) {
 
 	return overlays[name];
 }

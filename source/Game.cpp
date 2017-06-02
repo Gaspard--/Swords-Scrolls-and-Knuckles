@@ -35,7 +35,8 @@ Game::Game()
    
   // Init UIManager
   UIManager *manager = new UIManager();
-  manager->showOverlayByName("hud");
+  // manager->showOverlayByName("hud");
+  manager->showOverlayByName("menu");
   // static_cast<UIOverlayHUD *>(manager->getByName("hud"))->updateScoreByName("Wizzard", 25);
 }
 

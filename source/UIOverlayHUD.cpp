@@ -2,8 +2,8 @@
 
 // UICharStat
 
-UICharStat::UICharStat(Ogre::OverlayManager *manager, Ogre::String const &name)
-{
+UICharStat::UICharStat(Ogre::OverlayManager *manager, Ogre::String const &name) {
+
 	panel
 		= static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", name));
 }
@@ -44,7 +44,7 @@ void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &ele
 	scoreTxt->setColour(Ogre::ColourValue::White);
 	scoreTxt->setMetricsMode(Ogre::GMM_PIXELS);
 	scoreTxt->setLeft(panelSize.x / 2.0);
-	scoreTxt->setTop(panelPos.y + panelSize.y / 5.0 * 2.0);
+	scoreTxt->setTop(panelPos.y + panelSize.y / 5.0 * 3.0);
 	scoreTxt->setCharHeight(20);
 	scoreTxt->setAlignment(Ogre::TextAreaOverlayElement::Center);
 

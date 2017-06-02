@@ -6,7 +6,24 @@ material HUD/Black
 		{
 			texture_unit
 			{
-				texture BorderBlack.png
+				texture Black.png
+			}
+		}
+	}
+}
+
+material HUD/TransparentBlack
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 0 0 0
+				alpha_op_ex source1 src_manual src_current 0.75
 			}
 		}
 	}

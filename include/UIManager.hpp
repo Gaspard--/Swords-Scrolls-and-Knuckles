@@ -16,10 +16,10 @@ class UIManager {
 		UIManager &operator=(UIManager &&) = delete;
 		~UIManager(void) = default;
 		
-		void showOverlayByName(std::string const &) const;
-		void hideOverlayByName(std::string const &) const;
-		void hideAllOverlays(void) const;
-		UIOverlay *getByName(Ogre::String const &) const;
+		void showOverlayByName(std::string const &);
+		void hideOverlayByName(std::string const &);
+		void hideAllOverlays(void);
+		UIOverlay *getByName(Ogre::String const &);
 		
 	private:
 		Ogre::OverlayManager *overlayManager;
