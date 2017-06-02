@@ -9,21 +9,25 @@
 class UIManager {
 
 	public:
-		UIManager();
 		UIManager(UIManager const &) = delete;
 		UIManager(UIManager &&) = delete;
 		UIManager &operator=(UIManager const &) = delete;
 		UIManager &operator=(UIManager &&) = delete;
 		~UIManager(void) = default;
 		
-		void showOverlayByName(std::string const &);
-		void hideOverlayByName(std::string const &);
-		void hideAllOverlays(void);
-		UIOverlay *getByName(Ogre::String const &);
+		static void init();
+		
+		static void showOverlayByName(std::string const &);
+		static void hideOverlayByName(std::string const &);
+		static void hideAllOverlays(void);
+		static UIOverlay *getByName(Ogre::String const &);
+		
+		static std::vector<UIOverlay *> getOverlays(void);
 		
 	private:
-		Ogre::OverlayManager *overlayManager;
-		std::map<Ogre::String, UIOverlay *> overlays;
+		UIManager();
+		
+		static std::map<Ogre::String, UIOverlay *> overlays;
 		
 	protected:
 };

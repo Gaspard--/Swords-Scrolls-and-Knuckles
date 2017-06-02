@@ -27,17 +27,22 @@ Game::Game()
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   
-  // Init scene
-  renderer->switchScene([this](){
-      return new DemoScene(*this);
-    });
   root.addFrameListener(this);
    
   // Init UIManager
-  UIManager *manager = new UIManager();
-  // manager->showOverlayByName("hud");
-  manager->showOverlayByName("menu");
-  // static_cast<UIOverlayHUD *>(manager->getByName("hud"))->updateScoreByName("Wizzard", 25);
+  UIManager::init();
+  UIManager::showOverlayByName("menu");
+  UIManager::getByName("menu")->registerCallbackByName("Exit",
+		  [this]() { std::clog << "Exit game." << std::endl; });
+  UIManager::getByName("menu")->registerCallbackByName("Play",
+		  [this]() { 
+		  // Init scene
+		  renderer->switchScene([this](){
+				  return new DemoScene(*this);
+				  });
+		  UIManager::hideOverlayByName("menu");
+		  UIManager::showOverlayByName("hud");
+		  });
 }
 
 Game::~Game(void)
@@ -92,11 +97,24 @@ void Game::setupOIS(void) {
   window->getCustomAttribute("WINDOW", &windowHnd);
   stream << windowHnd;
   pl.insert(std::make_pair(std::string("WINDOW"), stream.str()));
-
+  
+#if defined OIS_WIN32_PLATFORM
+  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
+  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+  pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+  pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+#elif defined OIS_LINUX_PLATFORM
+  pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+  pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+  pl.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+  pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
+  
   inputManager = OIS::InputManager::createInputSystem(pl);
   Ogre::WindowEventUtilities::addWindowEventListener(window, this);
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
+  Mouse::getMouse().init(OIS::OISMouse, inputManager);
 }
 
 // Protected functions
@@ -109,6 +127,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &event) {
 
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
+  Mouse::getMouse()->capture();
 
   // Update the current scene's logic
   if (renderer->getScene()) {
@@ -127,6 +146,7 @@ void Game::windowClosed(Ogre::RenderWindow* rw)
     if (inputManager)
     {
       Keyboard::getKeyboard().destroy(inputManager);
+	  Mouse::getMouse().destroy(inputManager);
       OIS::InputManager::destroyInputSystem(inputManager);
       inputManager = nullptr;
     }

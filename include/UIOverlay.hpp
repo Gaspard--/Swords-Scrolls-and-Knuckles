@@ -22,6 +22,8 @@ class UIOverlay {
 		Ogre::Overlay *getOverlay(void) const;
 		
 		virtual void init(Ogre::OverlayManager *) = 0;
+		virtual void registerCallbackByName(Ogre::String const &, std::function<void(void)>) = 0;
+		virtual bool mousePressed(Ogre::Real, Ogre::Real) = 0;
 
 	private:
 	protected:

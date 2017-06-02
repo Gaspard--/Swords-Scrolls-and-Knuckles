@@ -14,6 +14,7 @@
 
 # include "Renderer.hpp"
 # include "Keyboard.hpp"
+# include "Mouse.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {

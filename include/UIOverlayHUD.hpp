@@ -42,6 +42,8 @@ class UIOverlayHUD : public UIOverlay {
 		virtual ~UIOverlayHUD(void);
 
 		virtual void init(Ogre::OverlayManager *);
+		virtual void registerCallbackByName(Ogre::String const &, std::function<void(void)>);
+		virtual bool mousePressed(Ogre::Real, Ogre::Real);
 		
 		void updateScoreByName(Ogre::String const &, int);
 		void updateHealthByName(Ogre::String const &, int);

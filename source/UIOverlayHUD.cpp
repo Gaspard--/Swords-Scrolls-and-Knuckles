@@ -135,6 +135,19 @@ void UIOverlayHUD::init(Ogre::OverlayManager *manager) {
 	overlay->add2D(stats);
 }
 
+bool UIOverlayHUD::mousePressed(Ogre::Real x, Ogre::Real y) {
+
+	(void)x;
+	(void)y;
+	return true;
+}
+
+void UIOverlayHUD::registerCallbackByName(Ogre::String const &name, std::function<void(void)> func) {
+
+	(void)name;
+	(void)func;
+}
+
 void UIOverlayHUD::updateScoreByName(Ogre::String const &name, int score) {
 
 	chars[name]->updateScore(name, score);

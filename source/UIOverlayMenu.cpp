@@ -43,32 +43,6 @@ Ogre::BorderPanelOverlayElement *UIButton::getButton(void) const {
 	return button;
 }
 
-void UIButton::setCallback(std::function<void(void)> func) {
-
-	callback = func;
-}
-
-bool UIButton::mouseMoved(OIS::MouseEvent const &event) {
-
-	(void)event;
-	return true;
-}
-
-bool UIButton::mousePressed(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
-
-	(void)event;
-	(void)id;
-	std::clog << "MOUSE PRESSED" << std::endl;
-	return true;
-}
-
-bool UIButton::mouseReleased(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
-
-	(void)event;
-	(void)id;
-	return true;
-}
-
 // UIOverlayMenu
 
 void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
@@ -90,7 +64,7 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 	title->setMetricsMode(Ogre::GMM_PIXELS);
 	title->setCharHeight(100);
 	title->setLeft(Game::WIDTH / 2- gameTitle.size() / 2);
-	title->setTop(20);
+	title->setTop(40);
 	title->setAlignment(Ogre::TextAreaOverlayElement::Center);
 	
 	UIButton *play = new UIButton(manager, "Play");
@@ -112,8 +86,28 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 	overlay->add2D(bg);
 }
 
+bool UIOverlayMenu::mousePressed(Ogre::Real x, Ogre::Real y) {
+
+	std::clog << "UIOverlayMenu::MousePressed: " << x << ":" << y << std::endl;
+	std::map<Ogre::String, UIButton *>::iterator it;
+	for (it = buttons.begin(); it != buttons.end(); ++it) {
+
+		Ogre::BorderPanelOverlayElement *menuButton = it->second->getButton();
+		Ogre::Vector2 buttonSize = UIOverlay::relativeToPixels({menuButton->getWidth(),
+				menuButton->getHeight()});
+		Ogre::Vector2 buttonPos = UIOverlay::relativeToPixels({menuButton->getLeft(),
+				menuButton->getTop()});
+		if ((x >= buttonPos.x && x <= buttonPos.x + buttonSize.x)
+				&& (y >= buttonPos.y && y <= buttonPos.y + buttonSize.y)) {
+			std::clog << menuButton->getName() << " pressed !" << std::endl;
+			callbacks[menuButton->getName()]();
+		}
+	}
+	return true;
+}
+
 void UIOverlayMenu::registerCallbackByName(Ogre::String const &buttonName,
 		std::function<void(void)> func) {
 
-	buttons[buttonName]->setCallback(func);
+	callbacks[buttonName] = func;
 }

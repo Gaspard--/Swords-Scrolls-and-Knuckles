@@ -1,25 +1,40 @@
 #include "UIManager.hpp"
 
-UIManager::UIManager()
-	: overlayManager(Ogre::OverlayManager::getSingletonPtr())
-{
-	
+std::map<Ogre::String, UIOverlay *> UIManager::overlays;
+
+UIManager::UIManager(void)
+{}
+
+void UIManager::init() {
+
 	UIOverlayHUD *hud = new UIOverlayHUD();
-	Ogre::Overlay *overlayHUD = overlayManager->create("hud");
+	Ogre::Overlay *overlayHUD = Ogre::OverlayManager::getSingleton().create("hud");
 	hud->setOverlay(overlayHUD);
-	hud->init(overlayManager);
+	hud->init(Ogre::OverlayManager::getSingletonPtr());
 	
 	overlays["hud"] = hud;
 
 	UIOverlayMenu *menu = new UIOverlayMenu();
-	Ogre::Overlay *overlayMenu = overlayManager->create("menu");
+	Ogre::Overlay *overlayMenu = Ogre::OverlayManager::getSingleton().create("menu");
 	menu->setOverlay(overlayMenu);
-	menu->init(overlayManager);
+	menu->init(Ogre::OverlayManager::getSingletonPtr());
 	
 	overlays["menu"] = menu;
 }
 
 // PUBLIC FUNCTIONS
+
+std::vector<UIOverlay *> UIManager::getOverlays(void) {
+
+	std::vector<UIOverlay *> ov;
+	
+	std::map<Ogre::String, UIOverlay *>::iterator it;
+	for (it = overlays.begin(); it != overlays.end(); ++it) {
+		ov.push_back(it->second);
+	}
+	
+	return ov;
+}
 
 void UIManager::showOverlayByName(std::string const &name) {
 
