@@ -66,6 +66,8 @@ public:
   constexpr Vect(U... ts) : data{static_cast<T>(ts)...}
   {}
 
+  Vect() = default;
+
   template<class Operation>
   void applyOnSelf(Operation op)
   {
@@ -236,43 +238,32 @@ private:
 
 
 public:
-  T sum(void) const
+  constexpr T sum(void) const
   {
-    unsigned int	i;
-    T			result;
+    T			result(0);
 
-    result = 0u;
-    i = 0u;
-    while (i < dim)
-      {
-	result = result + data[i];
-	i = i + 1u;
-      }
+    for (unsigned int i = 0; i < dim; ++i)
+      result += data[i];
     return (result);
   }
-
-  T scalar(Vect<dim, T> const &other) const
+  
+  constexpr T scalar(Vect<dim, T> const &other) const
   {
     return ((*this * other).sum());
   }
 
-  T length2() const
+  constexpr T length2() const
   {
-    return ((*this * *this).sum());
+    return (this->scalar(*this));
   }
 
-  Vect<dim, T> normalized()
+  constexpr Vect<dim, T> normalized()
 
   {
     return length2() > 0 ? ((*this) / sqrt(length2())) : *this;
   }
-
-  T reduce()
-  {
-
-  }
-
-  bool all()
+  
+  constexpr bool all()
   {
     unsigned int i(0);
 
@@ -291,5 +282,17 @@ public:
 	l(index);
   }
 };
+
+#include <ostream>
+
+template<unsigned int dim, class T>
+std::ostream &operator<<(std::ostream &out, Vect<dim, T> vect)
+{
+  out << "(";
+  for (unsigned int i(0); i != dim - 1; ++i)
+    out << vect[i] << ", ";
+  out << vect[dim - 1] << ")";
+  return out;
+}
 
 #endif // VECT_HPP_

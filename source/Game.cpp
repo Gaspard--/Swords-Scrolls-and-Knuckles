@@ -1,7 +1,7 @@
 #include <memory>
 #include <stdexcept>
 #include "Game.hpp"
-#include "DemoScene.hpp"
+#include "LevelScene.hpp"
 
 // Constructor
 
@@ -26,9 +26,8 @@ Game::Game()
   // Set up the renderer and initial scene
   renderer.reset(new Renderer(*this));
   renderer->switchScene([this](){
-      return new DemoScene(*this);
+      return new LevelScene(*renderer);
     });
-
   root.addFrameListener(this);
 }
 

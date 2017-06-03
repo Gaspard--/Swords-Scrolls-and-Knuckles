@@ -5,13 +5,76 @@
 bool Logic::tick()
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
-  std::cout << "[Logic] tick" << std::endl;
+
+  for (auto &player : gameState.players)
+    player.update(*this);
+  for (auto &enemy : gameState.enemies)
+    enemy.update(*this);
+  for (auto &projectile : gameState.projectiles)
+    projectile.update(*this);
+
+  if (!(rand() % 120))
+    {
+      projectiles.add([this](){
+	  return entityFactory.spawnOgreHead();
+	}, Vect<2u, double>{0.0, 0.0}, Vect<2u, double>{(rand() % 10), (rand() % 10)} * 0.1);
+    }
+  projectiles.removeIf([](auto &projectile)
+		       {
+			 return projectile.pos[1] > 100;
+		       });
+
+  Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
+			 gameState.enemies.begin(), gameState.enemies.end(),
+			 [](auto &player, auto &enemy){
+			   enemy.hit(player);
+			 });
+  Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
+			 gameState.enemies.begin(), gameState.enemies.end(),
+			 [](auto &projectile, auto &enemy){
+			   projectile.hit(enemy);
+			 });
+  Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
+			 [](auto &playerA, auto &playerB){
+			   // TODO: push them appart?
+			 });
+  Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(),
+			 [](auto &enemyA, auto &enemyB){
+			   // TODO: push them appart?
+			 });
   return stop;
 }
 
-Logic::Logic()
+Logic::Logic(LevelScene &levelScene, Renderer &renderer)
   : stop(false)
+  , players(gameState.players, levelScene.players)
+  , enemies(gameState.enemies, levelScene.enemies)
+  , projectiles(gameState.projectiles, levelScene.projectiles)
+  , entityFactory(renderer)
 {
+}
+
+void Logic::run()
+{
+  constexpr std::chrono::microseconds TICK_TIME{1000000 / 120};
+
+  lastUpdate = Clock::now();
+  while (!tick())
+    {
+      auto now(Clock::now());
+
+      if (now > lastUpdate + TICK_TIME * 3)
+	{
+	  lastUpdate = now;
+	  continue ;
+	}
+      lastUpdate += TICK_TIME;
+      if (now < lastUpdate)
+	{
+	  std::this_thread::sleep_for(lastUpdate - now);
+	}
+    }
+  std::clog << "[Logic] thread exiting" << std::endl;
 }
 
 void Logic::exit()
@@ -19,27 +82,18 @@ void Logic::exit()
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   stop = true;
-  std::cout << "[Logic] stoping thread" << std::endl;
-}
-
-void Logic::run()
-{
-  constexpr std::chrono::microseconds TICK_TIME{83333};
-
-  last_update = Clock::now();
-  while (!tick())
-    {
-      auto now = Clock::now();
-      if (now > last_update + TICK_TIME * 3) // run is playing catchup by at leaset 3 frames
-	last_update = now;
-      std::this_thread::sleep_until(last_update += TICK_TIME);
-    }
-  std::cout << "[Logic] thread exiting" << std::endl;
+  std::clog << "[Logic] stoping thread" << std::endl;
 }
 
 void Logic::updateDisplay(LevelScene &levelScene)
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
-  // TODO
+  players.updateTarget();
+  enemies.updateTarget();
+  projectiles.updateTarget();
+  projectiles.forEach([](Entity &entity, Projectile &projectile)
+		      {
+			entity.setPosition(projectile.pos[0], 50, projectile.pos[1]);
+		      });
 }

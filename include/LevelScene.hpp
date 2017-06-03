@@ -1,8 +1,11 @@
 #ifndef LEVEL_SCENE_HPP
 # define LEVEL_SCENE_HPP
 
+#include <vector>
 #include "Scene.hpp"
+#include "Entity.hpp"
 #include "LogicThread.hpp"
+#include "Physics.hpp"
 
 /**
  * Class representation of the ingame scene.
@@ -13,10 +16,19 @@
 class LevelScene : public Scene
 {
 private:
+  Ogre::SceneNode *cameraNode;
+  std::vector<Ogre::Light *> lights;
+  Entity ground;
+
+public:
+  std::vector<Entity> players;
+  std::vector<Entity> enemies;
+  std::vector<Entity> projectiles;
+
+private:
   LogicThread logicThread;
 public:
-  LevelScene(Game &);
-
+  LevelScene(Renderer &);
   virtual ~LevelScene(void);
 
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
