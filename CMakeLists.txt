@@ -52,6 +52,7 @@ file(GLOB_RECURSE HEADERS_FILE "${HEADER_DIRECTORY}/*.hpp")
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 find_package(OpenAL REQUIRED)
+find_package(PythonLibs REQUIRED)
 
 if (UNIX AND OGRE_RenderSystem_GL_FOUND)
   if (OGRE_PLUGIN_DIR)
@@ -75,6 +76,7 @@ include_directories(
         ${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIR}
         ${OPENAL_INCLUDE_DIR}
+	${PYTHON_INCLUDE_DIR}
 )
 
 add_executable(
@@ -89,6 +91,9 @@ target_link_libraries(
 	${OIS_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
+	${PYTHON_LIBRARY}
+	dl
+	util
         alut
         vorbisfile
         ogg
