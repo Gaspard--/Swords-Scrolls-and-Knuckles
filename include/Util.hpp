@@ -1,6 +1,11 @@
 #ifndef UTIL_HPP_
 # define UTIL_HPP_
 
+# include <utility>
+/*
+ * TODO: clean up this file.
+ */
+
 template<class R, class Op>
 class Supplier
 {
@@ -32,5 +37,24 @@ public:
     return op(x);
   }
 };
+
+template<class PREDICATE>
+struct Not
+{
+  PREDICATE predicate;
+
+  template<class... PARAMS>
+  constexpr auto operator()(PARAMS &&... params)
+  {
+    return !predicate(std::forward<PARAMS>(params)...);
+  }
+};
+
+template<class T>
+auto makeNot(T t)
+{
+  return (Not<T>{t});
+}
+
 
 #endif // !UTIL_HPP_

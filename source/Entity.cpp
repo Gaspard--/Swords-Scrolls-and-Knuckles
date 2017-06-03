@@ -2,8 +2,9 @@
 
 Entity::Entity(Renderer &renderer,
 	       std::string const &mesh)
-  : Entity(renderer, mesh, renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
-{}
+  : Entity(renderer, mesh, renderer.getSceneManager().getRootSceneNode())
+{
+}
 
 Entity::Entity(Renderer &renderer,
 	       std::string const &mesh,
