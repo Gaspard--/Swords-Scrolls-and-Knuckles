@@ -41,7 +41,7 @@ if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
   set(OGRE_HOME "C:\\OgreSDK\\")
 else()
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -Wno-unused-but-set-parameter")
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -Wno-unused-but-set-parameter -g -O3")
 endif(WIN32)
 
 find_package (Threads)
@@ -73,7 +73,7 @@ endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
-        ${OGRE_INCLUDE_DIRS}
+	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIR}
         ${OPENAL_INCLUDE_DIR}
 	${PYTHON_INCLUDE_DIR}
@@ -88,6 +88,7 @@ add_executable(
 target_link_libraries(
 	${PROJECT_NAME}
 	${OGRE_LIBRARIES}
+        ${OGRE_Overlay_LIBRARIES}
 	${OIS_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
