@@ -86,6 +86,7 @@ add_executable(
 target_link_libraries(
 	${PROJECT_NAME}
 	${OGRE_LIBRARIES}
+        ${OGRE_Overlay_LIBRARIES}
 	${OIS_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
