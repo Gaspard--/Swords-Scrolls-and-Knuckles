@@ -90,57 +90,60 @@ public:
     return (data[index]);
   }
 
-  Vect<dim, T>& operator+=(Vect<dim, T> const &other)
+  constexpr Vect<dim, T>& operator+=(Vect<dim, T> const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i){return this->data[i] + other[i];});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] += other[i];
     return (*this);
   }
 
-  Vect<dim, T>& operator-=(Vect<dim, T> const &other)
+  constexpr Vect<dim, T>& operator-=(Vect<dim, T> const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i){return this->data[i] - other[i];});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] -= other[i];
     return (*this);
   }
 
   Vect<dim, T>& operator*=(Vect<dim, T> const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i){return this->data[i] * other[i];});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] *= other[i];
     return (*this);
   }
 
   Vect<dim, T>& operator/=(T const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i){return this->data[i] / other;});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] /= other[i];
     return (*this);
   }
 
   Vect<dim, T>& operator*=(T const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i){return this->data[i] * other;});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] *= other;
     return (*this);
   }
 
 
   Vect<dim, T>& operator^=(Vect<dim, T> const &other)
   {
-    this->applyOnSelf([this, other](unsigned int i) {return this->data[i] ^ other[i];});
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] ^= other[i];
     return (*this);
   }
 
-  // TODO optimize ?
-  bool operator==(Vect<dim, T> const& other) const
+  /**
+   * This is not operator== because that one should operate component-wise
+   */
+  constexpr bool equals(Vect<dim, T> const& other) const
   {
     for (unsigned int i = 0; i < dim; i++)
       {
-	if (data[i] != other.data[i])
+	if (data[i] != other[i])
 	  return false;
       }
     return true;
-  }
-
-  bool operator!=(Vect<dim, T> const& other) const
-  {
-    return !operator==(other);
   }
 
   // constexpr Vect<dim, bool> operator==(Vect<dim, T> const &other) const
