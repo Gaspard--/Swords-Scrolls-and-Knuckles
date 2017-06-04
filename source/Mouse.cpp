@@ -19,7 +19,7 @@ bool Mouse::mouseMoved(OIS::MouseEvent const &) {
 
 bool Mouse::mousePressed(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
 
-	OIS::MouseState const &state = const_cast<OIS::MouseState const &>(event.state);
+	OIS::MouseState const &state(event.state);
 	if (id == OIS::MB_Left) {
 		Ogre::OverlayManager::OverlayMapIterator it(Ogre::OverlayManager::getSingleton().getOverlayIterator());
 		while (it.hasMoreElements()) {

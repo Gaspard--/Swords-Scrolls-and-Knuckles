@@ -107,10 +107,5 @@ bool UIOverlayMenu::mousePressed(Ogre::Real x, Ogre::Real y) {
 void UIOverlayMenu::registerCallbackByName(Ogre::String const &buttonName,
 		std::function<void(void)> func) {
 
-	try {
-		callbacks.at(buttonName) = func;
-	}
-	catch (std::out_of_range const &) {
-		throw std::out_of_range("Button " + buttonName + " does not exist.");
-	}
+	callbacks[buttonName] = func;
 }
