@@ -21,14 +21,14 @@ public:
     void executeAI();
 
 private:
-    py::object main;
+    py::object _main;
     // Put this on every mob :
     // py::object globals;
 
     // The std::string may be replaced to match the type of monster's type id.
     // EDIT: if we do only make one class, a map will not be necessary.
-    std::map<std::string, py::object> modules;
-    std::map<std::string, py::object> wrappers;
+    std::map<std::string, py::object> _modules;
+    std::map<std::string, py::object> _wrappers;
 };
 
 #endif // !PYBINDINSTANCE_HPP_

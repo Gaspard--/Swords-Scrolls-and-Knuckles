@@ -1,8 +1,8 @@
 #include "PyBindInstance.hpp"
 
 PyBindInstance::PyBindInstance()
+: _main(py::module::import("__main__"))
 {
-    this->main = py::module::import("__main__");
     // Add an initialisation for every module/wrapper.
 
     // Put this on every mob :
@@ -13,9 +13,9 @@ PyBindInstance::~PyBindInstance()
 {
 }
 
-py::object PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
+py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
 {
-    py::dict lcl;
+    py::dict  lcl;
     lcl["path"]        = py::cast(path);
     lcl["module_name"] = py::cast(mod);
 
