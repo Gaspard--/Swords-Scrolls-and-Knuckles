@@ -3,6 +3,7 @@
 
 # include <memory>
 # include <functional>
+# include <unordered_map>
 # include <Overlay/OgreTextAreaOverlayElement.h>
 # include <Overlay/OgrePanelOverlayElement.h>
 # include <Overlay/OgreBorderPanelOverlayElement.h>
@@ -43,8 +44,8 @@ class UIOverlayMenu : public UIOverlay {
 	private:
 		Ogre::Real width;
 		Ogre::Real height;
-		std::map<Ogre::String, std::unique_ptr<UIButton>> buttons;
-		std::map<Ogre::String, std::function<void(void)>> callbacks;
+		std::unordered_map<Ogre::String, std::unique_ptr<UIButton>> buttons;
+		std::unordered_map<Ogre::String, std::function<void(void)>> callbacks;
 		
 	protected:
 };

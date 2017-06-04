@@ -25,7 +25,7 @@ class UIManager {
 		
 	private:
 		UIManager();
-		static std::map<Ogre::String, std::unique_ptr<UIOverlay>> overlays;
+		static std::unordered_map<Ogre::String, std::unique_ptr<UIOverlay>> overlays;
 		
 	protected:
 };

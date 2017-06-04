@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include "DemoScene.hpp"
 #include "UIManager.hpp"
+#include "LevelScene.hpp"
 
 // Constructor
 

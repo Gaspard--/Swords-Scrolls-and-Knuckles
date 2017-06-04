@@ -22,8 +22,8 @@ void UICharStat::init(Ogre::String const &materialName, Ogre::String const &bord
 void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &elementName,
 		Ogre::DisplayString const &txt) {
 
-	Ogre::Vector2 panelSize = UIOverlay::relativeToPixels({panel->getWidth(), panel->getHeight()});
-	Ogre::Vector2 panelPos = UIOverlay::relativeToPixels({panel->getLeft(), panel->getTop()});
+	Ogre::Vector2 panelSize(UIOverlay::relativeToPixels({panel->getWidth(), panel->getHeight()}));
+	Ogre::Vector2 panelPos(UIOverlay::relativeToPixels({panel->getLeft(), panel->getTop()}));
 
 	Ogre::TextAreaOverlayElement *text
 		= static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", elementName));
@@ -127,10 +127,20 @@ void UIOverlayHUD::registerCallbackByName(Ogre::String const &, std::function<vo
 
 void UIOverlayHUD::updateScoreByName(Ogre::String const &name, int score) {
 
-	chars[name]->updateScore(name, score);
+	try {
+		chars.at(name)->updateScore(name, score);
+	}
+	catch (std::out_of_range const &) {
+		throw std::out_of_range("Character " + name + " does not exist.");
+	}
 }
 
 void UIOverlayHUD::updateHealthByName(Ogre::String const &name, int health) {
 
-	chars[name]->updateHealth(name, health);
+	try {
+		chars.at(name)->updateHealth(name, health);
+	}
+	catch (std::out_of_range const &) {
+		throw std::out_of_range("Character " + name + " does not exist.");
+	}
 }

@@ -18,13 +18,13 @@ void UIButton::init(Ogre::OverlayManager *manager, Ogre::String const &materialN
 	button->setBorderMaterialName(borderName);
 	button->setBorderSize(0.0075);
 
-	Ogre::Vector2 buttonSize = UIOverlay::relativeToPixels({button->getWidth(), button->getHeight()});
+	Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({button->getWidth(), button->getHeight()}));
 
 	Ogre::TextAreaOverlayElement *text
 		= static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", button->getName() + "Text"));
 	text->setFontName("HUD/Font");
 
-	std::string name = button->getName();
+	std::string name(button->getName());
 	std::transform(name.begin(), name.end(), name.begin(), ::toupper);
 	text->setCaption(name);
 
@@ -55,7 +55,7 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 		= static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", "BG"));
 	bg->setMaterialName("HUD/Black");
 
-	std::string gameTitle = "SWORDS SCROLLS AND KNUCKLES";
+	std::string gameTitle("SWORDS SCROLLS AND KNUCKLES");
 	Ogre::TextAreaOverlayElement *title
 		= static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", "Title"));
 	title->setFontName("HUD/Font");
@@ -90,7 +90,7 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 bool UIOverlayMenu::mousePressed(Ogre::Real x, Ogre::Real y) {
 
 	for (auto &&button : buttons) {
-		Ogre::BorderPanelOverlayElement *menuButton = button.second->getButton();
+		Ogre::BorderPanelOverlayElement *menuButton(button.second->getButton());
 		Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({menuButton->getWidth(),
 					menuButton->getHeight()}));
 		Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({menuButton->getLeft(),
@@ -107,5 +107,10 @@ bool UIOverlayMenu::mousePressed(Ogre::Real x, Ogre::Real y) {
 void UIOverlayMenu::registerCallbackByName(Ogre::String const &buttonName,
 		std::function<void(void)> func) {
 
-	callbacks[buttonName] = func;
+	try {
+		callbacks.at(buttonName) = func;
+	}
+	catch (std::out_of_range const &) {
+		throw std::out_of_range("Button " + buttonName + " does not exist.");
+	}
 }

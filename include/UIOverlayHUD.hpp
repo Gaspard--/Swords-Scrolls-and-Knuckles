@@ -2,6 +2,7 @@
 # define UIOVERLAYHUD_HPP
 
 # include <memory>
+# include <unordered_map>
 # include <Overlay/OgreTextAreaOverlayElement.h>
 # include <Overlay/OgrePanelOverlayElement.h>
 # include <Overlay/OgreBorderPanelOverlayElement.h>
@@ -55,7 +56,7 @@ class UIOverlayHUD : public UIOverlay {
 	private:
 		Ogre::Real width;
 		Ogre::Real height;
-		std::map<Ogre::String, std::unique_ptr<UICharStat>> chars;
+		std::unordered_map<Ogre::String, std::unique_ptr<UICharStat>> chars;
 };
 
 #endif // !UIOVERLAYHUD_HPP
