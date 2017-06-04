@@ -1,6 +1,7 @@
 #ifndef UIMANAGER_HPP
 # define UIMANAGER_HPP
 
+# include <memory>
 # include <Overlay/OgreOverlayManager.h>
 # include "UIOverlay.hpp"
 # include "UIOverlayHUD.hpp"
@@ -20,14 +21,11 @@ class UIManager {
 		static void showOverlayByName(std::string const &);
 		static void hideOverlayByName(std::string const &);
 		static void hideAllOverlays(void);
-		static UIOverlay *getByName(Ogre::String const &);
-		
-		static std::vector<UIOverlay *> getOverlays(void);
+		static std::unique_ptr<UIOverlay> &getByName(Ogre::String const &);
 		
 	private:
 		UIManager();
-		
-		static std::map<Ogre::String, UIOverlay *> overlays;
+		static std::map<Ogre::String, std::unique_ptr<UIOverlay>> overlays;
 		
 	protected:
 };

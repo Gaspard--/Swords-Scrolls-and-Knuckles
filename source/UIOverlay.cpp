@@ -12,20 +12,10 @@ Ogre::Overlay *UIOverlay::getOverlay(void) const {
 
 Ogre::Vector2 UIOverlay::pixelsToRelative(Ogre::Vector2 pixels) {
 
-	Ogre::Real x;
-	Ogre::Real y;
-	
-	x = pixels.x / (Ogre::Real)Game::WIDTH;
-	y = pixels.y / (Ogre::Real)Game::HEIGHT;
-	return Ogre::Vector2(x, y);
+	return Ogre::Vector2(pixels.x / (Ogre::Real)Game::WIDTH, pixels.y / (Ogre::Real)Game::HEIGHT);
 }
 
 Ogre::Vector2 UIOverlay::relativeToPixels(Ogre::Vector2 relative) {
 	
-	Ogre::Real x;
-	Ogre::Real y;
-	
-	x = relative.x * (Ogre::Real)Game::WIDTH;
-	y = relative.y * (Ogre::Real)Game::HEIGHT;
-	return Ogre::Vector2(x, y);
+	return Ogre::Vector2(relative.x * (Ogre::Real)Game::WIDTH, relative.y * (Ogre::Real)Game::HEIGHT);
 }

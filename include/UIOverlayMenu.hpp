@@ -1,6 +1,7 @@
 #ifndef UIOVERLAYMENU_HPP
 # define UIOVERLAYMENU_HPP
 
+# include <memory>
 # include <functional>
 # include <Overlay/OgreTextAreaOverlayElement.h>
 # include <Overlay/OgrePanelOverlayElement.h>
@@ -42,7 +43,7 @@ class UIOverlayMenu : public UIOverlay {
 	private:
 		Ogre::Real width;
 		Ogre::Real height;
-		std::map<Ogre::String, UIButton *> buttons;
+		std::map<Ogre::String, std::unique_ptr<UIButton>> buttons;
 		std::map<Ogre::String, std::function<void(void)>> callbacks;
 		
 	protected:

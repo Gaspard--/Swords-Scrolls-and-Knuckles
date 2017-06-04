@@ -7,9 +7,7 @@ Renderer::Renderer(Game &game)
   , viewport(game.getWindow().addViewport(camera))
 {
   scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-
-  Ogre::OverlaySystem* pOverlaySystem = new Ogre::OverlaySystem();
-  scenemgr->addRenderQueueListener(pOverlaySystem);
+  scenemgr->addRenderQueueListener(new Ogre::OverlaySystem());
 
   viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) /

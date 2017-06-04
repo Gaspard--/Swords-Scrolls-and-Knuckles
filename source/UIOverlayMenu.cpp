@@ -67,38 +67,36 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 	title->setTop(40);
 	title->setAlignment(Ogre::TextAreaOverlayElement::Center);
 	
-	UIButton *play = new UIButton(manager, "Play");
+	std::unique_ptr<UIButton> play(new UIButton(manager, "Play"));
 	play->init(manager, "HUD/Black", "HUD/Green", width, height, 0.5 - width / 2.0, 0.3);
-	buttons["play"] = play;
 	
-	UIButton *credits = new UIButton(manager, "Credits");
+	std::unique_ptr<UIButton> credits(new UIButton(manager, "Credits"));
 	credits->init(manager, "HUD/Black", "HUD/Yellow", width, height, 0.5 - width / 2.0, 0.5);
-	buttons["credits"] = credits;
 	
-	UIButton *exit = new UIButton(manager, "Exit");
+	std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit"));
 	exit->init(manager, "HUD/Black", "HUD/Red", width, height, 0.5 - width / 2.0, 0.7);
-	buttons["exit"] = exit;
 	
 	bg->addChild(title);
 	bg->addChild(play->getButton());
 	bg->addChild(credits->getButton());
 	bg->addChild(exit->getButton());
 	overlay->add2D(bg);
+	
+	buttons["Play"] = std::move(play);
+	buttons["Credits"] = std::move(credits);
+	buttons["Exit"] = std::move(exit);
 }
 
 bool UIOverlayMenu::mousePressed(Ogre::Real x, Ogre::Real y) {
 
-	std::clog << "UIOverlayMenu::MousePressed: " << x << ":" << y << std::endl;
-	std::map<Ogre::String, UIButton *>::iterator it;
-	for (it = buttons.begin(); it != buttons.end(); ++it) {
-
-		Ogre::BorderPanelOverlayElement *menuButton = it->second->getButton();
-		Ogre::Vector2 buttonSize = UIOverlay::relativeToPixels({menuButton->getWidth(),
-				menuButton->getHeight()});
-		Ogre::Vector2 buttonPos = UIOverlay::relativeToPixels({menuButton->getLeft(),
-				menuButton->getTop()});
-		if ((x >= buttonPos.x && x <= buttonPos.x + buttonSize.x)
-				&& (y >= buttonPos.y && y <= buttonPos.y + buttonSize.y)) {
+	for (auto &&button : buttons) {
+		Ogre::BorderPanelOverlayElement *menuButton = button.second->getButton();
+		Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({menuButton->getWidth(),
+					menuButton->getHeight()}));
+		Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({menuButton->getLeft(),
+					menuButton->getTop()}));
+		if (x >= buttonPos.x && x <= buttonPos.x + buttonSize.x
+				&& y >= buttonPos.y && y <= buttonPos.y + buttonSize.y) {
 			std::clog << menuButton->getName() << " pressed !" << std::endl;
 			callbacks[menuButton->getName()]();
 		}

@@ -41,7 +41,7 @@ if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
   set(OGRE_HOME "C:\\OgreSDK\\")
 else()
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -g -O3")
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -Wno-unused-but-set-parameter -g -O3")
 endif(WIN32)
 
 find_package (Threads)
