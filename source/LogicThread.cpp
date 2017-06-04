@@ -1,12 +1,5 @@
 #include "LogicThread.hpp"
 
-LogicThread::LogicThread()
-  : logic{}
-  , thread([this](){
-      logic.run();
-    })
-{}
-
 LogicThread::~LogicThread()
 {
   logic.exit();

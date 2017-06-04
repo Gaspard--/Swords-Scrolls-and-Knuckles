@@ -1,7 +1,6 @@
 #include <memory>
 #include <stdexcept>
 #include "Game.hpp"
-#include "DemoScene.hpp"
 #include "UIManager.hpp"
 #include "LevelScene.hpp"
 
@@ -39,7 +38,7 @@ Game::Game()
 		  [this]() { 
 		  // Init scene
 		  renderer->switchScene([this](){
-				  return new DemoScene(*this);
+            return new LevelScene(*renderer);
 				  });
 		  UIManager::hideOverlayByName("menu");
 		  UIManager::showOverlayByName("hud");
