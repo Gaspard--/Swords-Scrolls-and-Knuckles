@@ -1,6 +1,7 @@
 #include <memory>
 #include <stdexcept>
 #include "Game.hpp"
+#include "UIManager.hpp"
 #include "LevelScene.hpp"
 
 // Constructor
@@ -16,19 +17,32 @@ Game::Game()
   // Create the window
   window = root.initialise(true, "Swords, Scrolls and Knuckles");
 
-  // Load resources
-  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
   // Set up keyboard / mouse handlers
   setupOIS();
 
-  // Set up the renderer and initial scene
+  // Set up the renderer
   renderer.reset(new Renderer(*this));
-  renderer->switchScene([this](){
-      return new LevelScene(*renderer);
-    });
+  
+  // Load resources
+  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+  Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+  
   root.addFrameListener(this);
+   
+  // Init UIManager
+  UIManager::init();
+  UIManager::showOverlayByName("menu");
+  UIManager::getByName("menu")->registerCallbackByName("Exit",
+		  [this]() { std::clog << "Exit game." << std::endl; });
+  UIManager::getByName("menu")->registerCallbackByName("Play",
+		  [this]() { 
+		  // Init scene
+		  renderer->switchScene([this](){
+            return new LevelScene(*renderer);
+				  });
+		  UIManager::hideOverlayByName("menu");
+		  UIManager::showOverlayByName("hud");
+		  });
 }
 
 Game::~Game(void)
@@ -64,7 +78,10 @@ void Game::setupRenderSystem(void) {
     if (rs->getName().find("OpenGL") != std::string::npos) {
       root.setRenderSystem(rs);
       rs->setConfigOption("Full Screen", "Yes");
-      rs->setConfigOption("Video Mode", "1920 x 1080 @ 32-bit colour");
+      // rs->setConfigOption("Video Mode", "1920 x 1080 @ 32-bit colour");
+	  rs->setConfigOption("Video Mode",
+			  std::to_string(Game::WIDTH) + " x " + std::to_string(Game::HEIGHT)
+			  + " @ 32-bit colour");
       return ;
     }
   }
@@ -80,11 +97,24 @@ void Game::setupOIS(void) {
   window->getCustomAttribute("WINDOW", &windowHnd);
   stream << windowHnd;
   pl.insert(std::make_pair(std::string("WINDOW"), stream.str()));
-
+  
+#if defined OIS_WIN32_PLATFORM
+  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
+  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+  pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+  pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+#elif defined OIS_LINUX_PLATFORM
+  pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+  pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+  pl.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+  pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
+  
   inputManager = OIS::InputManager::createInputSystem(pl);
   Ogre::WindowEventUtilities::addWindowEventListener(window, this);
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
+  Mouse::getMouse().init(OIS::OISMouse, inputManager);
 }
 
 // Protected functions
@@ -97,6 +127,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
 
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
+  Mouse::getMouse()->capture();
 
   // Update the current scene's logic
   if (renderer->getScene()) {
@@ -115,6 +146,7 @@ void Game::windowClosed(Ogre::RenderWindow* rw)
     if (inputManager)
     {
       Keyboard::getKeyboard().destroy(inputManager);
+	  Mouse::getMouse().destroy(inputManager);
       OIS::InputManager::destroyInputSystem(inputManager);
       inputManager = nullptr;
     }

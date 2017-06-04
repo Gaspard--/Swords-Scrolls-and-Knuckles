@@ -47,14 +47,6 @@ DemoScene::DemoScene(Game &game)
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
 
   // Keys callback
-  Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-      if (b) {
-	light->setDirection(-1, -1, -1);
-      } else {
-	light->setDirection(0, 0, 0);
-      }
-      return (true);
-    });
   Keyboard::getKeyboard().registerCallback(OIS::KC_I, [this](bool b) {
     if (!b) {
       illidan.addAnimation("Attack", true, false);
