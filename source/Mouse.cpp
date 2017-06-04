@@ -29,7 +29,7 @@ bool Mouse::mousePressed(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
 			}
 		}
 	}
-	
+
 	return true;
 }
 

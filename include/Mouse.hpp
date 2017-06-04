@@ -15,9 +15,9 @@ class Mouse : public Input<OIS::Mouse, OIS::MouseListener> {
 		virtual ~Mouse(void) = default;
 		Mouse &operator=(Mouse const &) = delete;
 		Mouse &operator=(Mouse &&) = delete;
-		
+
 		static Mouse &getMouse(void);
-		
+
 	protected:
 		virtual bool mouseMoved(OIS::MouseEvent const &);
 		virtual bool mousePressed(OIS::MouseEvent const &, OIS::MouseButtonID);

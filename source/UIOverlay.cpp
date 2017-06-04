@@ -16,6 +16,6 @@ Ogre::Vector2 UIOverlay::pixelsToRelative(Ogre::Vector2 pixels) {
 }
 
 Ogre::Vector2 UIOverlay::relativeToPixels(Ogre::Vector2 relative) {
-	
+
 	return Ogre::Vector2(relative.x * (Ogre::Real)Game::WIDTH, relative.y * (Ogre::Real)Game::HEIGHT);
 }

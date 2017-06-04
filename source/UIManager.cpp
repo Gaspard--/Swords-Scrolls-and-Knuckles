@@ -11,14 +11,14 @@ void UIManager::init() {
 	Ogre::Overlay *overlayHUD = Ogre::OverlayManager::getSingleton().create("hud");
 	hud->setOverlay(overlayHUD);
 	hud->init(Ogre::OverlayManager::getSingletonPtr());
-	
+
 	overlays["hud"] = std::move(hud);
-	
+
 	std::unique_ptr<UIOverlay> menu(new UIOverlayMenu());
 	Ogre::Overlay *overlayMenu = Ogre::OverlayManager::getSingleton().create("menu");
 	menu->setOverlay(overlayMenu);
 	menu->init(Ogre::OverlayManager::getSingletonPtr());
-	
+
 	overlays["menu"] = std::move(menu);
 }
 
