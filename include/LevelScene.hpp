@@ -30,7 +30,7 @@ private:
   LogicThread logicThread;
 public:
   LevelScene(Renderer &);
-  virtual ~LevelScene(void);
+  virtual ~LevelScene(void) = default;
 
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
 };

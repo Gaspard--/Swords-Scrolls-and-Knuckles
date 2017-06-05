@@ -9,6 +9,7 @@ class Controllable : public Fixture
 {
 private:
   Vect<2u, double> input;
+  Vect<2u, double> dir;
   unsigned int stun;
 
 public:
@@ -23,7 +24,10 @@ public:
   constexpr void update(Logic &)
   {
     if (!stun)
-      speed = input;
+      {
+	speed = input;
+	dir = input;
+      }
     else
       --stun;
     pos += speed;
@@ -35,9 +39,20 @@ public:
     this->stun = stun;
   }
 
-  constexpr bool isWalking()
+  constexpr bool isWalking() const
   {
     return !stun && !input.equals({0.0, 0.0});
+  }
+
+  // setter only.
+  constexpr void setInput(Vect<2u, double> input)
+  {
+    this->input = input;
+  }
+
+  constexpr Vect<2u, double> getDir() const
+  {
+    return dir;
   }
 };
 

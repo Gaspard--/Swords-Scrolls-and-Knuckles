@@ -260,13 +260,12 @@ public:
     return (this->scalar(*this));
   }
 
-  constexpr Vect<dim, T> normalized()
-
+  constexpr Vect<dim, T> normalized() const
   {
     return length2() > 0 ? ((*this) / sqrt(length2())) : *this;
   }
   
-  constexpr bool all()
+  constexpr bool all() const
   {
     unsigned int i(0);
 

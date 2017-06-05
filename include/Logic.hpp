@@ -27,6 +27,7 @@ private:
 
   std::mutex lock;
   std::chrono::time_point<Clock> lastUpdate;
+  unsigned int updatesSinceLastFrame;
   bool stop;
 
   GameState gameState;

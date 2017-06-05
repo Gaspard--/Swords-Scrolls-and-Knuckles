@@ -6,14 +6,14 @@ Entity EntityFactory::spawnOgreHead()
 {
   Entity ogre(renderer, "ogrehead.mesh");
 
-  ogre.getOgre()->setCastShadows(false);
+  ogre.getOgre()->setCastShadows(true);
   return ogre;
 }
 
 AnimatedEntity EntityFactory::spawnIllidan()
 {
   AnimatedEntity illidan(renderer, "illidan.mesh");
-  illidan.getEntity().getOgre()->setCastShadows(true);
 
+  illidan.getEntity().getOgre()->setCastShadows(true);
   return illidan;
 }

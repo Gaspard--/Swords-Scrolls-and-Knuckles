@@ -11,7 +11,7 @@ private:
 
 public:
   using Controllable::Controllable;
-  void update(Logic &);
+  using Controllable::update;
 };
 
 #endif
