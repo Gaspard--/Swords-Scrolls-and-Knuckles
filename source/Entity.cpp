@@ -1,3 +1,4 @@
+#include <OgreVector3.h>
 #include "Entity.hpp"
 
 Entity::Entity(Renderer &renderer,
@@ -44,6 +45,11 @@ void Entity::setPosition(float x, float y, float z)
 void Entity::setPosition(Vect<3, float> v)
 {
   sceneNode->setPosition(v[0], v[1], v[2]);
+}
+
+void Entity::setDirection(Vect<2u, double> v)
+{
+  sceneNode->setDirection(v[0], 0, v[1], Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Z);
 }
 
 void Entity::setPosition(Ogre::Vector3 pos)

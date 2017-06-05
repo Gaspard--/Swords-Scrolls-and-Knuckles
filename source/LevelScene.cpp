@@ -12,7 +12,7 @@ LevelScene::LevelScene(Renderer &renderer)
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
       
 		 cameraNode->attachObject(&renderer.getCamera());
-		 cameraNode->setPosition(Ogre::Vector3(0, 300, 500));
+		 cameraNode->setPosition(Ogre::Vector3(0, 1500, 500));
 		 cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
@@ -28,8 +28,7 @@ LevelScene::LevelScene(Renderer &renderer)
 			    true,
 			    1, 5, 5,
 			    Ogre::Vector3::UNIT_Z);
-
-	     auto ground(Entity(renderer, "ground"));
+	     Entity ground(renderer, "ground");
 
 	     ground.getOgre()->setCastShadows(false);
 	     ground.getOgre()->setMaterialName("rockwall");
@@ -41,16 +40,13 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // obviously horrible & will be replaced.
   auto light(renderer.getSceneManager().createLight("MainLight"));
+
   light->setType(Ogre::Light::LT_DIRECTIONAL);
-  light->setDiffuseColour(1.0, 1.0, 0.0);
+  light->setDiffuseColour(1.0, 0.0, 0.0);
   light->setSpecularColour(1.0, 0.0, 1.0);
-  light->setDirection(-1, -1, -1);
+  light->setDirection(1, -1, -1);
   light->setPosition(50, 100, 50);
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
-}
-
-LevelScene::~LevelScene()
-{
 }
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)

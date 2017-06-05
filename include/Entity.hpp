@@ -53,6 +53,9 @@ public:
   void setPosition(float x, float y, float z);
   void setPosition(Vect<3, float> pos);
   void setPosition(Ogre::Vector3 pos);
+
+
+  void setDirection(Vect<2u, double> v);
 };
 
 #endif // !ENTITY_HPP

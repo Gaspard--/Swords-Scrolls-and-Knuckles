@@ -1,15 +1,17 @@
 #ifndef PLAYER_HPP
 # define PLAYER_HPP
 
-#include "Fixture.hpp"
+# include "Controllable.hpp"
 
 class Logic;
 
-class Player : public Fixture
+class Player : public Controllable
 {
 private:
+
 public:
-  void update(Logic &);
+  using Controllable::Controllable;
+  using Controllable::update;
 };
 
 #endif
