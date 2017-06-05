@@ -52,6 +52,10 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
+  players.add([this]()
+	      {
+		return entityFactory.spawnIllidan();
+	      }, 1.0, Vect<2u, double>{0.0, -10.0});
 }
 
 void Logic::run()
@@ -92,6 +96,14 @@ void Logic::updateDisplay(LevelScene &levelScene)
   players.updateTarget();
   enemies.updateTarget();
   projectiles.updateTarget();
+  players.forEach([](AnimatedEntity &animatedEntity, Player &player)
+		  {
+		    animatedEntity.getEntity().setPosition(player.pos[0], 50, player.pos[1]);
+		  });
+  enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
+		 {
+		   animatedEntity.getEntity().setPosition(enemy.pos[0], 50, enemy.pos[1]);
+		 });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
 			entity.setPosition(projectile.pos[0], 50, projectile.pos[1]);

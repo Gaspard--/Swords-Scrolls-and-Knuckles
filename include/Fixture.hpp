@@ -5,7 +5,7 @@
 
 struct Fixture
 {
-  float radius;
+  double radius;
   Vect<2u, double> pos;
   Vect<2u, double> speed;
 

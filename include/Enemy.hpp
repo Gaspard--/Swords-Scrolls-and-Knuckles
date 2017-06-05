@@ -1,15 +1,17 @@
 #ifndef ENEMY_HPP
 # define ENEMY_HPP
 
-# include "Fixture.hpp"
+# include "Controllable.hpp"
 
 class Player;
 class Logic;
 
-class Enemy : public Fixture
+class Enemy : public Controllable
 {
 private:
+
 public:
+  using Controllable::Controllable;
   void hit(Player &player);
   void update(Logic &logic);
 };

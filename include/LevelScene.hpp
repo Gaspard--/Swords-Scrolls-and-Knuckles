@@ -4,6 +4,7 @@
 #include <vector>
 #include "Scene.hpp"
 #include "Entity.hpp"
+#include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
 #include "Physics.hpp"
 
@@ -21,8 +22,8 @@ private:
   Entity ground;
 
 public:
-  std::vector<Entity> players;
-  std::vector<Entity> enemies;
+  std::vector<AnimatedEntity> players;
+  std::vector<AnimatedEntity> enemies;
   std::vector<Entity> projectiles;
 
 private:

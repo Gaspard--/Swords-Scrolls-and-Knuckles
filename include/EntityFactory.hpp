@@ -3,6 +3,7 @@
 
 class Renderer;
 class Entity;
+class AnimatedEntity;
 
 class EntityFactory
 {
@@ -14,6 +15,7 @@ public:
   {}
 
   Entity spawnOgreHead();
+  AnimatedEntity spawnIllidan();
 };
 
 #endif
