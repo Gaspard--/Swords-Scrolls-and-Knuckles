@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <iostream>
+#include <functional>
 
 #include "Util.hpp"
 
@@ -25,7 +26,7 @@ private:
     unsigned int removalStart;
     std::vector<std::pair<unsigned int, unsigned int>> removals;
   };
-    
+
   std::vector<Mod> mods;
 
 public:

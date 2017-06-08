@@ -10,7 +10,7 @@ LevelScene::LevelScene(Renderer &renderer)
   : cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
-      
+
 		 cameraNode->attachObject(&renderer.getCamera());
 		 cameraNode->setPosition(Ogre::Vector3(0, 1500, 500));
 		 cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
@@ -51,7 +51,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
+  std::cout << "\ncamera : " << cameraNode->getPosition() << std::endl;
   logicThread->updateDisplay(*this);
   return true;
 }
-

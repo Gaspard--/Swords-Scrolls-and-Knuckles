@@ -17,16 +17,16 @@
 class LevelScene : public Scene
 {
 private:
-  Ogre::SceneNode *cameraNode;
-  std::vector<Ogre::Light *> lights;
-  Entity ground;
 
 public:
+  Ogre::SceneNode *cameraNode;
   std::vector<AnimatedEntity> players;
   std::vector<AnimatedEntity> enemies;
   std::vector<Entity> projectiles;
 
 private:
+  std::vector<Ogre::Light *> lights;
+  Entity ground;
   LogicThread logicThread;
 public:
   LevelScene(Renderer &);
