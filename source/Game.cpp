@@ -32,17 +32,21 @@ Game::Game()
   // Init UIManager
   UIManager::init();
   UIManager::showOverlayByName("menu");
-  UIManager::getByName("menu")->registerCallbackByName("Exit",
-		  [this]() { std::clog << "Exit game." << std::endl; });
-  UIManager::getByName("menu")->registerCallbackByName("Play",
-		  [this]() { 
-		  // Init scene
-		  renderer->switchScene([this](){
-            return new LevelScene(*renderer);
-				  });
-		  UIManager::hideOverlayByName("menu");
-		  UIManager::showOverlayByName("hud");
-		  });
+  UIManager::getByName("menu")
+    ->registerCallbackByName("Exit",
+			     [this]() { std::clog << "Exit game." << std::endl; });
+  UIManager::getByName("menu")
+    ->registerCallbackByName("Play",
+			     [this](){ 
+			       // Init scene
+			       renderer->switchScene([this](){
+				   LevelScene::createWallMesh();
+				   
+				   return new LevelScene(*renderer);
+				 });
+			       UIManager::hideOverlayByName("menu");
+			       UIManager::showOverlayByName("hud");
+			     });
 }
 
 Game::~Game(void)

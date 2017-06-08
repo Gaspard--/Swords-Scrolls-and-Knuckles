@@ -59,28 +59,24 @@ public:
 
   template<class... U, typename std::enable_if<sizeof...(U) == dim - 1>::type * = nullptr>
   constexpr Vect(Vect<dim - 1, T> const &other, T added, U... indices)
-    : Vect(other.data[indices]..., added)
+    : Vect(other[indices]..., added)
   {}
 
   template<class... U, typename std::enable_if<sizeof...(U) == dim>::type * = nullptr>
-  constexpr Vect(U... ts) : data{static_cast<T>(ts)...}
+  constexpr Vect(U &&... ts)
+  : data{static_cast<T>(ts)...}
   {}
 
-  Vect() = default;
+  constexpr Vect() = default;
 
   template<class Operation>
-  void applyOnSelf(Operation op)
+  constexpr void applyOnSelf(Operation op)
   {
-    unsigned int i(0);
-
-    while (i < dim)
-      {
-	data[i] = op(i);
-	i = i + 1;
-      }
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] = op(i);
   }
 
-  T &operator[](unsigned int index)
+  constexpr T &operator[](unsigned int index)
   {
     return (data[index]);
   }
@@ -104,21 +100,29 @@ public:
     return (*this);
   }
 
-  Vect<dim, T>& operator*=(Vect<dim, T> const &other)
+  constexpr Vect<dim, T>& operator*=(Vect<dim, T> const &other)
   {
     for (unsigned int i(0); i != dim; ++i)
       data[i] *= other[i];
     return (*this);
   }
 
-  Vect<dim, T>& operator/=(T const &other)
+  constexpr Vect<dim, T>& operator/=(Vect<dim, T> const &other)
   {
     for (unsigned int i(0); i != dim; ++i)
       data[i] /= other[i];
     return (*this);
   }
 
-  Vect<dim, T>& operator*=(T const &other)
+  template<class U>
+  constexpr Vect<dim, T>& operator/=(U const &other)
+  {
+    for (unsigned int i(0); i != dim; ++i)
+      data[i] /= other;
+    return (*this);
+  }
+
+  constexpr Vect<dim, T>& operator*=(T const &other)
   {
     for (unsigned int i(0); i != dim; ++i)
       data[i] *= other;
@@ -126,7 +130,7 @@ public:
   }
 
 
-  Vect<dim, T>& operator^=(Vect<dim, T> const &other)
+  constexpr Vect<dim, T>& operator^=(Vect<dim, T> const &other)
   {
     for (unsigned int i(0); i != dim; ++i)
       data[i] ^= other[i];
@@ -139,26 +143,10 @@ public:
   constexpr bool equals(Vect<dim, T> const& other) const
   {
     for (unsigned int i = 0; i < dim; i++)
-      {
-	if (data[i] != other[i])
+      if (data[i] != other[i])
 	  return false;
-      }
     return true;
   }
-
-  // constexpr Vect<dim, bool> operator==(Vect<dim, T> const &other) const
-  // {
-  //   return Supplier<T, Vect<dim, bool>([this, other](unsigned int i){
-  // 	return other[i] == (*this)[i];
-  //     })>();
-  // }
-
-  // constexpr Vect<dim, bool> operator!=(Vect<dim, T> const &other) const
-  // {
-  //   return Vect<dim, bool>([this, other](unsigned int i){
-  // 	return other[i] != (*this)[i];
-  //     });
-  // }
 
   template<class Op>
   constexpr static Vect<dim, T> applyOp(Op const op)
@@ -185,51 +173,38 @@ public:
   template<class U>
   constexpr Vect<dim, T> operator+(Vect<dim, U> const &other) const
   {
-    return Vect<dim, T>::applyOpPerComponent([](T a, U b) {
-	return (a + b);
-      }, other);
+    return Vect<dim, T>(*this) += other;
   }
 
   constexpr Vect<dim, T> operator*(Vect<dim, T> const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] * other[i];
-      });
+    return Vect<dim, T>(*this) *= other;
   }
 
   constexpr Vect<dim, T> operator*(T const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] * other;
-      });
+    return Vect<dim, T>(*this) *= other;
   }
 
   constexpr Vect<dim, T> operator/(Vect<dim, T> const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] / other[i];
-      });
+    return Vect<dim, T>(*this) /= other;
   }
 
-  constexpr Vect<dim, T> operator/(T const &other) const
+  template<class U>
+  constexpr Vect<dim, T> operator/(U const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] / other;
-      });
+    return Vect<dim, T>(*this) /= other;
   }
 
   constexpr Vect<dim, T> operator%(Vect<dim, T> const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] % other[i];
-      });
+    return Vect<dim, T>(*this) %= other;
   }
 
   constexpr Vect<dim, T> operator-(Vect<dim, T> const &other) const
   {
-    return Vect<dim, T>::applyOp([this, other](unsigned int i){
-	return (*this)[i] - other[i];
-      });
+    return Vect<dim, T>(*this) -= other;
   }
 
   constexpr Vect<dim, T> operator-(void) const
@@ -243,7 +218,7 @@ private:
 public:
   constexpr T sum(void) const
   {
-    T			result(0);
+    T result(0);
 
     for (unsigned int i = 0; i < dim; ++i)
       result += data[i];
@@ -262,15 +237,14 @@ public:
 
   constexpr Vect<dim, T> normalized() const
   {
-    return length2() > 0 ? ((*this) / sqrt(length2())) : *this;
+    return length2() > 0 ? ((*this) / std::sqrt(length2())) : *this;
   }
-  
+
   constexpr bool all() const
   {
     unsigned int i(0);
 
-    while (i < dim && data[i])
-      i = i + 1;
+    for (; i != dim && data[i]; ++i)
     return (i == dim);
   }
 

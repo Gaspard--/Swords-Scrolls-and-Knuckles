@@ -1,28 +1,39 @@
 #include <iostream>
 #include "Logic.hpp"
+#include "Physics.hpp"
 #include "LevelScene.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
 
+// TODO: extract as mush as possible to gameState.
+// Logic could be passed as ref for spawning and & so on.
 bool Logic::tick()
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   ++updatesSinceLastFrame;
-  for (auto &player : gameState.players)
-    player.update(*this);
-  for (auto &enemy : gameState.enemies)
-    enemy.update(*this);
-  for (auto &projectile : gameState.projectiles)
-    projectile.update(*this);
 
-  if (!(rand() % 120))
+  auto const updateElements([this](auto &fixtures)
+			    {
+			      for (auto &fixture : fixtures)
+				{
+				  fixture.update(*this);
+				  gameState.terrain.correctFixture(fixture);
+				}
+			    });
+
+  updateElements(gameState.players);
+  updateElements(gameState.enemies);
+  updateElements(gameState.projectiles);
+  if (!(rand() % 10))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{0.0, 0.0}, Vect<2u, double>{(rand() % 10), (rand() % 10)} * 0.1);
+	}, Vect<2u, double>{5.0, 5.0}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 100;
+			 return projectile.pos[0] > 20.0 || projectile.pos[1] > 20.0;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -34,7 +45,7 @@ bool Logic::tick()
 			 [](auto &projectile, auto &enemy){
 			   projectile.hit(enemy);
 			 });
-  constexpr auto correctOverlap([](auto &a, auto &b){
+  constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
       auto const overlap((a.pos - b.pos).normalized() * (a.radius + b.radius));
 
@@ -46,25 +57,16 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities)
   : stop(false)
-  , players(gameState.players, levelScene.players)
+  , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  players.add([this]()
-	      {
-		return entityFactory.spawnIllidan();
-	      }, 50.0, Vect<2u, double>{0.0, 0.0});
-  players.add([this]()
-	      {
-		return entityFactory.spawnIllidan();
-	      }, 50.0, Vect<2u, double>{50.0, 0.0});
-  players.add([this]()
-	      {
-		return entityFactory.spawnIllidan();
-	      }, 50.0, Vect<2u, double>{0.0, 50.0});
+  for (unsigned int i(0); i != 1u; ++i) // TODO: obviously players should be passed as parameter or something.
+    gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 4.0 + i});
+  levelScene.setTerrain(gameState.terrain);
 }
 
 void Logic::run()
@@ -101,34 +103,57 @@ void Logic::updateDisplay(LevelScene &levelScene)
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
-  players.updateTarget();
   enemies.updateTarget();
   projectiles.updateTarget();
-  players.forEach([this](AnimatedEntity &animatedEntity, Player &player)
-		  {
-		    animatedEntity.getEntity().setDirection(player.getDir());
-		    animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
-		    if (player.isWalking())
-		      {
-			animatedEntity.addAnimation("Move", false, true);
-			animatedEntity.removeAnimation("Stand");
-		      }
-		    else
-		      {
-			animatedEntity.removeAnimation("Move");
-			animatedEntity.addAnimation("Stand", false, true);
-		      }
-		    animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
-		  });
   enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
-		 {
-		   animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
-		 });
+		  {
+		    animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
+		  });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
 			entity.setPosition(projectile.pos[0], 0, projectile.pos[1]);
 		      });
+  /*
+    gameState.players[0].setInput(p0 * 3.0);
+    gameState.players[1].setInput(p1 * 3.0);
+    gameState.players[2].setInput(p2 * 3.0);
+    std::cout << "p0 : " << gameState.players[0].getPos() << '\n'
+      << "p1 : " << gameState.players[1].getPos() << '\n'
+      << "p2 : " << gameState.players[2].getPos() << std::endl;
 
+    if (mmx.second - mmx.first > 1500 + levelScene.cameraNode->getPosition().y)
+      {
+	y += mmx.second - mmx.first - 1500 + levelScene.cameraNode->getPosition().y;
+      }
+
+    std::cout << "min : " << mmx.first << ", max : " << mmx.second << std::endl;
+
+      {
+	#include <OgreAxisAlignedBox.h>
+
+      }*/
+
+
+  for (unsigned int i(0); i != gameState.players.size(); ++i)
+    {
+      AnimatedEntity &animatedEntity(playerEntities[i]);
+      Player &player(gameState.players[i]);
+
+      animatedEntity.getEntity().setDirection(player.getDir());
+
+      animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
+      if (player.isWalking())
+	{
+	  animatedEntity.addAnimation("Move", false, true);
+	  animatedEntity.removeAnimation("Stand");
+	}
+      else
+	{
+	  animatedEntity.removeAnimation("Move");
+	  animatedEntity.addAnimation("Stand", false, true);
+	}
+      animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
+    }
   Vect<2u, double> p0{0.0, 0.0};
   Vect<2u, double> p1{0.0, 0.0};
   Vect<2u, double> p2{0.0, 0.0};
@@ -146,6 +171,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p0 += {1.0, 0.0};
   }
 
+  /*
   if (Keyboard::getKeys()[OIS::KC_I]) {
     p1 += {0.0, -1.0};
   }
@@ -159,57 +185,40 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p1 += {1.0, 0.0};
   }
 
-  if (Keyboard::getKeys()[OIS::KC_UP]) {
-    p2 += {0.0, -1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_LEFT]) {
-    p2 += {-1.0, 0.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_DOWN]) {
-    p2 += {0.0, 1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
-    p2 += {1.0, 0.0};
-  }
+     if (Keyboard::getKeys()[OIS::KC_UP]) {
+     p2 += {0.0, -1.0};
+     }
+     if (Keyboard::getKeys()[OIS::KC_LEFT]) {
+     p2 += {-1.0, 0.0};
+     }
+     if (Keyboard::getKeys()[OIS::KC_DOWN]) {
+     p2 += {0.0, 1.0};
+     }
+     if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
+     p2 += {1.0, 0.0};
+     }*/
 
-  gameState.players[0].setInput(p0 * 3.0);
-  gameState.players[1].setInput(p1 * 3.0);
-  gameState.players[2].setInput(p2 * 3.0);
-  std::cout << "p0 : " << gameState.players[0].getPos() << '\n'
-    << "p1 : " << gameState.players[1].getPos() << '\n'
-    << "p2 : " << gameState.players[2].getPos() << std::endl;
+  gameState.players[0].setInput(p0 * 0.03);
+  // gameState.players[1].setInput(p1 * 0.03);
+  std::cout << "after cho7" << std::endl;
+    Ogre::Real x(0.0);
+    Ogre::Real y(levelScene.cameraNode->getPosition().y);
 
-  Ogre::Real x(0.0);
-  Ogre::Real y(levelScene.cameraNode->getPosition().y);
+    auto minmax_x(std::minmax_element(gameState.players.cbegin(),
+				      gameState.players.cend(),
+				      [](auto &p1, auto &p2) {
+					return p1.getPos()[0] < p2.getPos()[0];
+				      }));
+    auto mmx = std::make_pair(minmax_x.first->getPos()[0], minmax_x.second->getPos()[0]);
+    Ogre::Real z(0.0);
+    std::for_each(gameState.players.cbegin(), gameState.players.cend(),
+		  [&x, &z](auto &p) {
+		    x += p.getPos()[0];
+		    z += p.getPos()[1];
+		  });
+    x /= (float)gameState.players.size();
+    z = z / (float)gameState.players.size() + 0.5 * levelScene.cameraNode->getPosition().y;
 
-  auto minmax_x(std::minmax_element(gameState.players.cbegin(),
-				    gameState.players.cend(),
-				    [](auto &p1, auto &p2) {
-				      return p1.getPos()[0] < p2.getPos()[0];
-				    }));
-  auto mmx = std::make_pair(minmax_x.first->getPos()[0], minmax_x.second->getPos()[0]);
-  if (mmx.second - mmx.first > 1500 + levelScene.cameraNode->getPosition().y)
-    {
-      y += mmx.second - mmx.first - 1500 + levelScene.cameraNode->getPosition().y;
-    }
-
-  std::cout << "min : " << mmx.first << ", max : " << mmx.second << std::endl;
-
-    {
-      #include <OgreAxisAlignedBox.h>
-
-    }
-
-  Ogre::Real z(0.0);
-  std::for_each(gameState.players.cbegin(), gameState.players.cend(),
-		[&x, &z](auto &p) {
-		  x += p.getPos()[0];
-		  z += p.getPos()[1];
-		});
-  x /= (float)gameState.players.size();
-  z = z / (float)gameState.players.size() + 0.5 * levelScene.cameraNode->getPosition().y;
-
-  levelScene.cameraNode->setPosition(x, y, z);
-
+    levelScene.cameraNode->setPosition(x, y, z);
   updatesSinceLastFrame = 0;
 }

@@ -3,10 +3,9 @@
 
 #include <vector>
 #include "Terrain.hpp"
-
-class Player;
-class Enemy;
-class Projectile;
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "Projectile.hpp"
 
 struct GameState
 {
