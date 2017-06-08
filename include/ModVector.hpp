@@ -85,7 +85,6 @@ public:
 	auto const rangeEnd(std::find_if(rangeBegin, modified.end(), p));
 
 	mods.back().removals.emplace_back(rangeBegin - read, rangeEnd - read);
-	std::cout << rangeBegin - write << std::endl;
 	write = std::move(rangeBegin, rangeEnd, write);
 	read = rangeEnd;
       }

@@ -12,7 +12,7 @@ namespace Physics
   constexpr bool circleTest(Vect<2u, float> posA, float radiusA,
 			    Vect<2u, float> posB, float radiusB)
   {
-    return (posB - posA).length2() < radiusA * radiusA + radiusB * radiusB;
+    return (posB - posA).length2() < (radiusA + radiusB) * (radiusA + radiusB);
   }
 
   template<class IT_A, class IT_B, class RESPONSE>

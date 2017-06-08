@@ -15,7 +15,7 @@
 class LevelScene;
 
 class Entity;
-
+class AnimatedEntity;
 class Renderer;
 
 class Logic
@@ -27,12 +27,13 @@ private:
 
   std::mutex lock;
   std::chrono::time_point<Clock> lastUpdate;
+  unsigned int updatesSinceLastFrame;
   bool stop;
 
   GameState gameState;
 
-  ModVector<decltype(GameState::players)::value_type, Entity> players;
-  ModVector<decltype(GameState::enemies)::value_type, Entity> enemies;
+  ModVector<decltype(GameState::players)::value_type, AnimatedEntity> players;
+  ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
 
   bool tick();
