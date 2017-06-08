@@ -80,25 +80,6 @@ constexpr void Terrain::correctFixture(Fixture &fixture)
 		fixture.pos = corner + diff.normalized() * (fixture.radius);
 	    }
 	}
-    // for (i[1] = roundedExtremes[0][1]; i[1] != roundedCenter[1]; ++i[1])
-    //   for (i[0] = roundedExtremes[0][0]; i[0] != roundedCenter[0]; ++i[0])
-    // 	{
-    // 	  Vect<2u, double> corner(i + Vect<2, double>{1, 1});
-    // 	  Vect<2u, double> diff(fixture.pos - corner);
-
-    // 	  if (diff.length2() < fixture.radius * fixture.radius && getTile(i).isSolid)
-    // 	    fixture.pos = corner + diff.normalized() * (fixture.radius);
-    // 	}
-
-    // for (i[1] = roundedExtremes[1][1]; i[1] != roundedCenter[1]; --i[1])
-    //   for (i[0] = roundedExtremes[0][0]; i[0] != roundedCenter[0]; ++i[0])
-    // 	{
-    // 	  Vect<2u, double> corner(i + Vect<2, double>{1, 0});
-    // 	  Vect<2u, double> diff(fixture.pos - corner);
-
-    // 	  if (diff.length2() < fixture.radius * fixture.radius && getTile(i).isSolid)
-    // 	    fixture.pos = corner + diff.normalized() * (fixture.radius);
-    // 	}
   }
 }
 #endif
