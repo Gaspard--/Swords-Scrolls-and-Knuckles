@@ -12,8 +12,10 @@ private:
 
 public:
   using Controllable::Controllable;
-  void hit(Player &player);
-  void update(Logic &logic);
+
+  constexpr void hit(Player &player)
+  {
+  }
 };
 
 #endif

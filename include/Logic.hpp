@@ -4,11 +4,10 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
+#include <vector>
 
 #include "GameState.hpp"
 #include "ModVector.hpp"
-#include "Player.hpp"
-#include "Enemy.hpp"
 #include "Projectile.hpp"
 #include "EntityFactory.hpp"
 
@@ -30,20 +29,20 @@ private:
   unsigned int updatesSinceLastFrame;
   bool stop;
 
-  GameState gameState;
 
-  ModVector<decltype(GameState::players)::value_type, AnimatedEntity> players;
+  std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
 
   bool tick();
 public:
+  GameState gameState;
   EntityFactory entityFactory;
 
   /**
    * Parameter isn't stored, only used for setup.
    */
-  Logic(LevelScene &levelScene, Renderer &renderer);
+  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
 
   void spawnOgreHead(Vect<2u, float> pos);
   void run();

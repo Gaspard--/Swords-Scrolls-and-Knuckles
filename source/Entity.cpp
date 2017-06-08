@@ -3,18 +3,34 @@
 
 Entity::Entity(Renderer &renderer,
 	       std::string const &mesh)
-  : Entity(renderer, mesh, renderer.getSceneManager().getRootSceneNode())
+  : Entity(mesh, renderer.getSceneManager().getRootSceneNode())
 {
 }
 
-Entity::Entity(Renderer &renderer,
-	       std::string const &mesh,
-	       Ogre::SceneNode *parent)
-  : ogreEntity(renderer.getSceneManager().createEntity(mesh))
+Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
+  : ogreEntity(parent->getCreator()->createEntity(mesh))
   , sceneNode(parent->createChildSceneNode())
 
 {
   sceneNode->attachObject(ogreEntity);
+}
+
+Entity &Entity::operator=(Entity &&e)
+{
+  std::swap(ogreEntity, e.ogreEntity);
+  std::swap(sceneNode, e.sceneNode);
+
+  return *this;
+}
+
+
+Entity::~Entity()
+{
+  if (sceneNode)
+    {
+      sceneNode->getCreator()->destroyEntity(ogreEntity);
+      sceneNode->getCreator()->destroySceneNode(sceneNode);
+    }
 }
 
 Ogre::Entity *Entity::getOgre(void)

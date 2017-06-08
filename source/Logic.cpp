@@ -1,28 +1,39 @@
 #include <iostream>
 #include "Logic.hpp"
+#include "Physics.hpp"
 #include "LevelScene.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
 
+// TODO: extract as mush as possible to gameState.
+// Logic could be passed as ref for spawning and & so on.
 bool Logic::tick()
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   ++updatesSinceLastFrame;
-  for (auto &player : gameState.players)
-    player.update(*this);
-  for (auto &enemy : gameState.enemies)
-    enemy.update(*this);
-  for (auto &projectile : gameState.projectiles)
-    projectile.update(*this);
 
-  if (!(rand() % 120))
+  auto const updateElements([this](auto &fixtures)
+			    {
+			      for (auto &fixture : fixtures)
+				{
+				  fixture.update(*this);
+				  gameState.terrain.correctFixture(fixture);
+				}
+			    });
+
+  updateElements(gameState.players);
+  updateElements(gameState.enemies);
+  updateElements(gameState.projectiles);
+  if (!(rand() % 10))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{0.0, 0.0}, Vect<2u, double>{(rand() % 10), (rand() % 10)} * 0.1);
+	}, Vect<2u, double>{5.0, 5.0}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 100;
+			 return projectile.pos[0] > 20.0 || projectile.pos[1] > 20.0;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -34,7 +45,7 @@ bool Logic::tick()
 			 [](auto &projectile, auto &enemy){
 			   projectile.hit(enemy);
 			 });
-  constexpr auto correctOverlap([](auto &a, auto &b){
+  constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
       auto const overlap((a.pos - b.pos).normalized() * (a.radius + b.radius));
 
@@ -46,21 +57,16 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities)
   : stop(false)
-  , players(gameState.players, levelScene.players)
+  , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  players.add([this]()
-  	      {
-  		return entityFactory.spawnIllidan();
-  	      }, 50.0, Vect<2u, double>{0.0, 0.0});
-  players.add([this]()
-	      {
-		return entityFactory.spawnIllidan();
-	      }, 50.0, Vect<2u, double>{50.0, 0.0});
+  for (unsigned int i(0); i != 1u; ++i) // TODO: obviously players should be passed as parameter or something.
+    gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 5.0});
+  levelScene.setTerrain(gameState.terrain);
 }
 
 void Logic::run()
@@ -97,47 +103,49 @@ void Logic::updateDisplay(LevelScene &levelScene)
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
-  players.updateTarget();
   enemies.updateTarget();
   projectiles.updateTarget();
-  players.forEach([this](AnimatedEntity &animatedEntity, Player &player)
-		  {
-		    animatedEntity.getEntity().setDirection(player.getDir());
-		    animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
-		    if (player.isWalking())
-		      {
-			animatedEntity.addAnimation("Move", false, true);
-			animatedEntity.removeAnimation("Stand");
-		      }
-		    else
-		      {
-			animatedEntity.removeAnimation("Move");
-			animatedEntity.addAnimation("Stand", false, true);
-		      }
-		    animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
-		  });
   enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
-		 {
-		   animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
-		 });
+		  {
+		    animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
+		  });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
 			entity.setPosition(projectile.pos[0], 0, projectile.pos[1]);
 		      });
-  Vect<2u, double> inputDir{0.0, 0.0};
+  for (unsigned int i(0); i != gameState.players.size(); ++i)
+    {
+      AnimatedEntity &animatedEntity(playerEntities[i]);
+      Player &player(gameState.players[i]);
 
-  if (Keyboard::getKeys()[OIS::KC_Z]) {
-    inputDir += {0.0, -1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_Q]) {
-    inputDir += {-1.0, 0.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_S]) {
-    inputDir += {0.0, 1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_D]) {
-    inputDir += {1.0, 0.0};
-  }
-  gameState.players[0].setInput(inputDir * 3.0);
+      animatedEntity.getEntity().setDirection(player.getDir());
+      animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
+      if (player.isWalking())
+	{
+	  animatedEntity.addAnimation("Move", false, true);
+	  animatedEntity.removeAnimation("Stand");
+	}
+      else
+	{
+	  animatedEntity.removeAnimation("Move");
+	  animatedEntity.addAnimation("Stand", false, true);
+	}
+      animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
+      Vect<2u, double> inputDir{0.0, 0.0};
+
+      if (Keyboard::getKeys()[OIS::KC_Z]) {
+	inputDir += {0.0, -1.0};
+      }
+      if (Keyboard::getKeys()[OIS::KC_Q]) {
+	inputDir += {-1.0, 0.0};
+      }
+      if (Keyboard::getKeys()[OIS::KC_S]) {
+	inputDir += {0.0, 1.0};
+      }
+      if (Keyboard::getKeys()[OIS::KC_D]) {
+	inputDir += {1.0, 0.0};
+      }
+      player.setInput(inputDir * 0.03);
+    }
   updatesSinceLastFrame = 0;
 }
