@@ -115,6 +115,7 @@ void Game::setupOIS(void) {
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
   Mouse::getMouse().init(OIS::OISMouse, inputManager);
+  //Joystick::getJoystick().init(OIS::OISJoyStick, inputManager);
 }
 
 // Protected functions
@@ -128,6 +129,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
   Mouse::getMouse()->capture();
+  //Joystick::getJoystick()->capture();
 
   // Update the current scene's logic
   if (renderer->getScene()) {
