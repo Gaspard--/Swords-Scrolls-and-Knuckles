@@ -23,23 +23,24 @@ public:
   Entity(Renderer &renderer,
 	 std::string const &mesh);
 
-  Entity(Renderer &renderer,
-	 std::string const &mesh,
+  Entity(std::string const &mesh,
 	 Ogre::SceneNode *parent);
 
-  constexpr Entity(Entity const &e)
-  : ogreEntity(e.ogreEntity)
-    , sceneNode(e.sceneNode)
-  {}
+  Entity(Entity const &) = delete;
 
   constexpr Entity(Entity &&e)
-  : ogreEntity(std::move(e.ogreEntity))
-    , sceneNode(std::move(e.sceneNode))
-  {}
+  : ogreEntity(nullptr)
+    , sceneNode(nullptr)
+  {
+    std::swap(ogreEntity, e.ogreEntity);
+    std::swap(sceneNode, e.sceneNode);
+  }
 
-  Entity &operator=(Entity const &e) = default;
-  Entity &operator=(Entity &&e) = default;
-  ~Entity(void) = default;
+
+  Entity &operator=(Entity const &e) = delete;
+  Entity &operator=(Entity &&e);
+
+  ~Entity(void);
 
   /// Get the ogre's version of this entity.
   Ogre::Entity *getOgre(void);

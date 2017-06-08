@@ -6,7 +6,8 @@
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
-#include "Physics.hpp"
+
+class Terrain;
 
 /**
  * Class representation of the ingame scene.
@@ -17,6 +18,7 @@
 class LevelScene : public Scene
 {
 private:
+  Ogre::SceneNode *terrainNode;
   Ogre::SceneNode *cameraNode;
   std::vector<Ogre::Light *> lights;
   Entity ground;
@@ -32,6 +34,8 @@ public:
   LevelScene(Renderer &);
   virtual ~LevelScene(void) = default;
 
+  static void createWallMesh();
+  void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
 };
 
