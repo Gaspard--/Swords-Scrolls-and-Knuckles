@@ -18,10 +18,10 @@ public:
     : entity(std::forward<P>(params)...)
   {}
 
-  constexpr AnimatedEntity(AnimatedEntity const &ae) = default;
+  constexpr AnimatedEntity(AnimatedEntity const &ae) = delete;
   constexpr AnimatedEntity(AnimatedEntity &&ae) = default;
 
-  AnimatedEntity &operator=(AnimatedEntity const &) = default;
+  AnimatedEntity &operator=(AnimatedEntity const &) = delete;
   AnimatedEntity &operator=(AnimatedEntity &&) = default;
   ~AnimatedEntity(void) = default;
 

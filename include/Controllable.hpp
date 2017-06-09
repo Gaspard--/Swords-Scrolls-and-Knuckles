@@ -21,17 +21,7 @@ public:
   {
   }
   
-  constexpr void update(Logic &)
-  {
-    if (!stun)
-      {
-	speed = input;
-	dir = input;
-      }
-    else
-      --stun;
-    pos += speed;
-  }
+  constexpr void update(Logic &logic);
 
   constexpr void knockBack(Vect<2u, double> speed, unsigned int stun)
   {
@@ -55,5 +45,20 @@ public:
     return dir;
   }
 };
+
+# include "Logic.hpp"
+
+constexpr void Controllable::update(Logic &logic)
+{
+  if (!stun)
+    {
+      speed = input;
+      dir = input;
+    }
+  else
+    --stun;
+  pos += speed;
+}
+
 
 #endif

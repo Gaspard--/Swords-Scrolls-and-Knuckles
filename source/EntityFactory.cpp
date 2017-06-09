@@ -7,6 +7,7 @@ Entity EntityFactory::spawnOgreHead()
   Entity ogre(renderer, "ogrehead.mesh");
 
   ogre.getOgre()->setCastShadows(true);
+  ogre.getNode()->setScale(1.0 / 150.0, 1.0 / 150.0, 1.0 / 150.0);
   return ogre;
 }
 
