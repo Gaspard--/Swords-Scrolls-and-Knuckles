@@ -179,6 +179,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
 
   static constexpr auto angle = 180 - 60 / 2;
+  static constexpr auto tanAngle = tan(angle);
+
   gameState.players[0].setInput(p0 * 0.03);
   gameState.players[1].setInput(p1 * 0.03);
   gameState.players[2].setInput(p2 * 0.03);
@@ -197,20 +199,24 @@ void Logic::updateDisplay(LevelScene &levelScene)
   auto minmax_z(std::minmax_element(gameState.players.cbegin(),
 				    gameState.players.cend(),
 				    [](auto &p1, auto &p2) {
-				      return p1.getPos()[2] < p2.getPos()[2];
+				      return p1.getPos()[1] < p2.getPos()[1];
 				    }));
-  auto leftVecZ = Ogre::Vector3{minmax_z.first->getPos()[2], 0,
+  auto leftVecZ = Ogre::Vector3{minmax_z.first->getPos()[1], 0,
     minmax_z.first->getPos()[1]} - levelScene.cameraNode->getPosition();
-  auto rightVecZ = Ogre::Vector3{minmax_z.second->getPos()[2], 0,
+  auto rightVecZ = Ogre::Vector3{minmax_z.second->getPos()[1], 0,
     minmax_z.first->getPos()[1]} - levelScene.cameraNode->getPosition();
   auto midVecZ = (rightVecZ - leftVecZ) / 2;
 
+  auto yxpos = (-tanAngle * (midVecX.length()) + 10) * 1.5;
+  auto yzpos = (-tanAngle * (midVecZ.length()) + 10) * 1.5 + 15;
 
-  Ogre::Real y(std::max((-std::tan(angle) * (midVecX.length()) + 10) * 1.5,
-	       (-std::tan(angle) * (midVecZ.length()) + 10) * 1.5));
-  Ogre::Real z(levelScene.cameraNode->getPosition().z);
+
+  Ogre::Real y(std::max(yxpos, yzpos));
   Ogre::Real x(minmax_x.first->getPos()[0]
 	       + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2);
+  Ogre::Real z((minmax_z.first->getPos()[1]
+		+ (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2)
+	       + y * 0.5);
 
   /*std::for_each(gameState.players.cbegin(), gameState.players.cend(),
 		[&x, &z](auto &p) {
