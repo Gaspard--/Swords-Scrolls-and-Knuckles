@@ -64,7 +64,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  for (unsigned int i(0); i != 1u; ++i) // TODO: obviously players should be passed as parameter or something.
+  for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 4.0 + i});
   levelScene.setTerrain(gameState.terrain);
 }
@@ -171,7 +171,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p0 += {1.0, 0.0};
   }
 
-  /*
   if (Keyboard::getKeys()[OIS::KC_I]) {
     p1 += {0.0, -1.0};
   }
@@ -196,11 +195,10 @@ void Logic::updateDisplay(LevelScene &levelScene)
      }
      if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
      p2 += {1.0, 0.0};
-     }*/
+     }
 
   gameState.players[0].setInput(p0 * 0.03);
-  // gameState.players[1].setInput(p1 * 0.03);
-  std::cout << "after cho7" << std::endl;
+  gameState.players[1].setInput(p1 * 0.03);
     Ogre::Real x(0.0);
     Ogre::Real y(levelScene.cameraNode->getPosition().y);
 
