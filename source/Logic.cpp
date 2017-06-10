@@ -65,7 +65,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , entityFactory(renderer)
 {
   for (unsigned int i(0); i != 3u; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 4.0 + i});
+    gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
 }
 
@@ -164,22 +164,24 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p1 += {1.0, 0.0};
   }
 
-     if (Keyboard::getKeys()[OIS::KC_UP]) {
-     p2 += {0.0, -1.0};
-     }
-     if (Keyboard::getKeys()[OIS::KC_LEFT]) {
-     p2 += {-1.0, 0.0};
-     }
-     if (Keyboard::getKeys()[OIS::KC_DOWN]) {
-     p2 += {0.0, 1.0};
-     }
-     if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
-     p2 += {1.0, 0.0};
-     }
+  if (Keyboard::getKeys()[OIS::KC_UP]) {
+    p2 += {0.0, -1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_LEFT]) {
+    p2 += {-1.0, 0.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_DOWN]) {
+    p2 += {0.0, 1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
+    p2 += {1.0, 0.0};
+  }
 
 
   static constexpr auto angle = 180 - 60 / 2;
   static constexpr auto tanAngle = tan(angle);
+  static constexpr auto angleUp = 180 - 80 / 2;
+  static constexpr auto tanAngleUp = tan(angleUp);
 
   gameState.players[0].setInput(p0 * 0.03);
   gameState.players[1].setInput(p1 * 0.03);
@@ -208,23 +210,14 @@ void Logic::updateDisplay(LevelScene &levelScene)
   auto midVecZ = (rightVecZ - leftVecZ) / 2;
 
   auto yxpos = (-tanAngle * (midVecX.length()) + 10) * 1.5;
-  auto yzpos = (-tanAngle * (midVecZ.length()) + 10) * 1.5 + 15;
+  auto yzpos = (-tanAngleUp * (midVecZ.length()) + 10) * 1.5;
 
-
-  Ogre::Real y(std::max(yxpos, yzpos));
   Ogre::Real x(minmax_x.first->getPos()[0]
 	       + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2);
+  Ogre::Real y(std::max(yxpos, yzpos / 2.3));
   Ogre::Real z((minmax_z.first->getPos()[1]
 		+ (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2)
-	       + y * 0.5);
-
-  /*std::for_each(gameState.players.cbegin(), gameState.players.cend(),
-		[&x, &z](auto &p) {
-		  x += p.getPos()[0];
-		  z += p.getPos()[1];
-		});
-  x /= (float)gameState.players.size();
-  z = z / (float)gameState.players.size() + 0.5 * levelScene.cameraNode->getPosition().y;*/
+		+ 0.5 * y);
 
   levelScene.cameraNode->setPosition(x, y, z);
   updatesSinceLastFrame = 0;
