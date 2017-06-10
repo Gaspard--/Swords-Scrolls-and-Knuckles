@@ -3,6 +3,8 @@
 
 # include <functional>
 # include <OISJoyStick.h>
+# include <vector>
+# include <memory>
 # include "Input.hpp"
 
 enum joystickState
@@ -31,16 +33,24 @@ enum joystickState
     JS_RT = 0x15,
 };
 
+enum joystickAxe
+{
+    LEFT_HRZ = 0x00,
+    LEFT_VRT = 0x01,
+    LEFT_TOP = 0x02,
+    RIGHT_HRZ = 0x03,
+    RIGHT_VRT = 0x04,
+    RIGHT_TOP = 0x05,
+};
+
 class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
 {
     std::map<joystickState, std::function<bool(bool)>> statesCallbacks;
     std::map<joystickState, bool> states;
+    std::map<joystickAxe, int> axes;
 
     /// Singleton instance
-    static Joystick joystickInstance;
-
-    /// Private constructor (Singleton)
-    Joystick(void);
+    static std::vector<std::unique_ptr<Joystick>> joystickInstances;
 
   protected:
     /// OIS::JoyStickListener
@@ -49,6 +59,7 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
     virtual bool axisMoved(OIS::JoyStickEvent const &arg, int axis) override;
 
   public:
+    Joystick(void);
     Joystick(Joystick const &) = delete;
     Joystick(Joystick &&) = delete;
     virtual ~Joystick(void) = default;
@@ -65,21 +76,14 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
     void clearCallbacks(void);
 
     /// Joystick singleton getter & instance
-    struct JoystickState;
-    static Joystick &getJoystick(void);
-
-    /// Let you access each button indivually (unbuffered input)
-    static JoystickState getStates(void);
+    static std::vector<std::unique_ptr<Joystick>> &getJoysticks(void);
 
     /// Equivalent to isKeyDown for JoyStick states.
     bool isStateUp(joystickState js);
 
-    struct JoystickState
-    {
-        constexpr JoystickState(void) = default;
-        ~JoystickState(void) = default;
-        bool operator[](joystickState &&);
-    };
+    std::map<joystickAxe, int> &getAxes(void);
+
+    bool operator[](joystickState);
 };
 
 #endif // !JOYSTICK_HPP_

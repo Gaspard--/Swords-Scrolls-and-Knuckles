@@ -119,7 +119,22 @@ void Game::setupOIS(void) {
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
   Mouse::getMouse().init(OIS::OISMouse, inputManager);
-  //Joystick::getJoystick().init(OIS::OISJoyStick, inputManager);
+  addJoystick();
+}
+
+bool Game::addJoystick(void)
+{
+  try
+  {
+    std::unique_ptr<Joystick> newJoystick(new Joystick);
+    newJoystick->init(OIS::OISJoyStick, inputManager);
+    Joystick::getJoysticks().push_back(std::move(newJoystick));
+    return (true);
+  }
+  catch (std::exception e)
+  {
+    return (false);
+  }
 }
 
 // Protected functions
@@ -133,7 +148,10 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
   Mouse::getMouse()->capture();
-  //Joystick::getJoystick()->capture();
+  for (auto it = Joystick::getJoysticks().begin(); it != Joystick::getJoysticks().end(); it++)
+  {
+    (**it)->capture();
+  }
 
   // Update the current scene's logic
   if (renderer->getScene()) {

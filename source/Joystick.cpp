@@ -2,16 +2,11 @@
 #include <iostream>
 
 /// Singleton
-Joystick Joystick::joystickInstance;
+std::vector<std::unique_ptr<Joystick>> Joystick::joystickInstances;
 
-Joystick &Joystick::getJoystick(void)
+std::vector<std::unique_ptr<Joystick>> &Joystick::getJoysticks(void)
 {
-  return (joystickInstance);
-}
-
-Joystick::JoystickState Joystick::getStates(void)
-{
-  return (JoystickState());
+  return (joystickInstances);
 }
 
 // Default constructor
@@ -48,8 +43,8 @@ bool Joystick::buttonReleased(OIS::JoyStickEvent const &arg, int button)
 
 bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int axis)
 {
-    if (arg.state.mAxes[axis].abs > 10000 || arg.state.mAxes[axis].abs < -10000)
-     {
+    if ((arg.state.mAxes[axis].abs > 10000 || arg.state.mAxes[axis].abs < -10000) && false)
+    {
         std::cout << "=========================" << std::endl;
         std::cout << "AXIS MOVED: " << axis << std::endl;
         std::cout << "mAxes:" << std::endl;
@@ -58,6 +53,12 @@ bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int axis)
             std::cout << (*it).abs << std::endl;
         }
     }
+    axes[LEFT_HRZ] = (arg.state.mAxes[0].abs * 100) / 32767;
+    axes[LEFT_VRT] = (arg.state.mAxes[1].abs * 100) / 32767;
+    axes[LEFT_TOP] = (arg.state.mAxes[2].abs * 100) / 32767;
+    axes[RIGHT_HRZ] = (arg.state.mAxes[3].abs * 100) / 32767;
+    axes[RIGHT_VRT] = (arg.state.mAxes[4].abs * 100) / 32767;
+    axes[RIGHT_TOP] = (arg.state.mAxes[5].abs * 100) / 32767;
     states[static_cast<joystickState>(12)] = arg.state.mAxes[0].abs < -10000;
     states[static_cast<joystickState>(13)] = arg.state.mAxes[0].abs > 10000;
     states[static_cast<joystickState>(14)] = arg.state.mAxes[1].abs < -10000;
@@ -86,7 +87,12 @@ bool Joystick::isStateUp(joystickState js)
   return (states[js]);
 }
 
-bool Joystick::JoystickState::operator[](joystickState &&js)
+std::map<joystickAxe, int> &Joystick::getAxes(void)
 {
-  return (Joystick::getJoystick().isStateUp(js));
+  return (axes);
+}
+
+bool Joystick::operator[](joystickState js)
+{
+  return (isStateUp(js));
 }
