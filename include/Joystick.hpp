@@ -83,6 +83,8 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
 
     std::map<joystickAxe, int> &getAxes(void);
 
+    std::map<joystickAxe, int> const &getAxes(void) const;
+
     bool operator[](joystickState) const;
 };
 
