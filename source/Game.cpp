@@ -131,10 +131,8 @@ bool Game::addJoystick(void)
     Joystick::getJoysticks().push_back(std::move(newJoystick));
     return (true);
   }
-  catch (std::exception e)
-  {
-    return (false);
-  }
+  catch (std::exception e) {}
+  return (false);
 }
 
 // Protected functions
