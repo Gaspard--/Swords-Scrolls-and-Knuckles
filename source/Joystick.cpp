@@ -67,9 +67,9 @@ void Joystick::clearCallbacks(void)
   states.clear();
 }
 
-bool Joystick::isStateUp(joystickState js)
+bool Joystick::isStateUp(joystickState js) const
 {
-  return (states[js]);
+  return (states.at(js));
 }
 
 std::map<joystickAxe, int> &Joystick::getAxes(void)

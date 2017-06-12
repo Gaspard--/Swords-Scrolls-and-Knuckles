@@ -79,7 +79,7 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
     static std::vector<std::unique_ptr<Joystick>> &getJoysticks(void);
 
     /// Equivalent to isKeyDown for JoyStick states.
-    bool isStateUp(joystickState js);
+    bool isStateUp(joystickState js) const;
 
     std::map<joystickAxe, int> &getAxes(void);
 
