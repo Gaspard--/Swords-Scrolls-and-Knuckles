@@ -24,16 +24,20 @@ bool Logic::tick()
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
-  updateElements(gameState.projectiles);
+  for (auto &fixture : gameState.projectiles)
+    {
+      fixture.update(*this);
+      gameState.terrain.correctFixture(fixture, Physics::BounceResponse{1.0});
+    }
   if (!(rand() % 10))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{5.0, 5.0}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
+	}, Vect<2u, double>{5.5, 5.5}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 20.0 || projectile.pos[1] > 20.0;
+			 return projectile.pos[0] > 15.0 || projectile.pos[1] > 15.0;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
