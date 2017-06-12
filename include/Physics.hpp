@@ -77,9 +77,19 @@ namespace Physics
     return makeProxyIterator(it, PosAndRadiusProxy<decltype(*IT{}), POS_EXTRACTOR, RADIUS_EXTRACTOR>::Builder(posExtractor, radiusExtractor));
   }
 
-  class BounceResponse
+  /**
+   * bounciness: 0.0 follow wall, 1.0, bounce back at same speed.
+   */
+  struct BounceResponse
   {
-  }
+    double bounciness;
+
+    constexpr void operator()(Fixture &fixture, Vect<2u, double> dir)
+    {
+      fixture.speed -= dir * fixture.speed.scalar(dir) * (2.0);
+      fixture.speed *= bounciness;
+    }
+  };
 };
 
 #endif

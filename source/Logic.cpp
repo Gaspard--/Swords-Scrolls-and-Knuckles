@@ -27,10 +27,7 @@ bool Logic::tick()
   for (auto &fixture : gameState.projectiles)
     {
       fixture.update(*this);
-      gameState.terrain.correctFixture(fixture, [](Fixture &fixture, Vect<2u, double> dir)
-				       {
-					 fixture.speed -= dir * fixture.speed.scalar(dir) * 2.0;
-				       });
+      gameState.terrain.correctFixture(fixture, Physics::BounceResponse{1.0});
     }
   if (!(rand() % 10))
     {
@@ -40,7 +37,7 @@ bool Logic::tick()
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 20.0 || projectile.pos[1] > 20.0;
+			 return projectile.pos[0] > 15.0 || projectile.pos[1] > 15.0;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),

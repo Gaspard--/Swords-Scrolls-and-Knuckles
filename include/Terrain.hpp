@@ -27,7 +27,7 @@ public:
   {
     for (Vect<2u, unsigned int> i(0, 0); i[1] != getSize()[1]; ++i[1])
       for (i[0]  = 0u; i[0] != getSize()[0]; ++i[0])
-	getTile(i) = {!(rand() & 1) || !i[0] || !i[1]};
+	getTile(i) = {!(rand() & 7) || !i[0] || !i[1]};
   }
 
   constexpr Vect<2u, unsigned int> getSize() const
@@ -88,13 +88,17 @@ constexpr void Terrain::correctFixture(Fixture &fixture, RESPONSE &&response)
 
 	  for (i[1] = roundedExtremes[k][1]; i[1] != roundedCenter[1]; i[1] += (1 - 2 * k))
 	    for (i[0] = roundedExtremes[j][0]; i[0] != roundedCenter[0]; i[0] += (1 - 2 * j))
-	    {
-	      Vect<2u, double> corner(i + Vect<2, double>{1 - j, 1 - k});
-	      Vect<2u, double> diff(fixture.pos - corner);
+	      {
+		Vect<2u, double> const corner(i + Vect<2, double>{1 - j, 1 - k});
+		Vect<2u, double> const diff(fixture.pos - corner);
+		Vect<2u, double> const normalizedDiff(diff.normalized());
 
-	      if (diff.length2() < fixture.radius * fixture.radius && getTile(i).isSolid)
-		fixture.pos = corner + diff.normalized() * (fixture.radius);
-	    }
+		if (diff.length2() < fixture.radius * fixture.radius && getTile(i).isSolid)
+		  {
+		    fixture.pos = corner + normalizedDiff * fixture.radius;
+		    response(fixture, -normalizedDiff);
+		  }
+	      }
 	}
   }
 }
