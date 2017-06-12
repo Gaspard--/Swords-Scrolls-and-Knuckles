@@ -9,10 +9,6 @@ PyBindInstance::PyBindInstance()
     // this->globals = this->main.attr("__dict__");
 }
 
-PyBindInstance::~PyBindInstance()
-{
-}
-
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
 {
     py::dict  lcl;

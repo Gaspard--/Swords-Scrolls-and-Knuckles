@@ -12,7 +12,7 @@ class	PyBindInstance
 {
 public:
     PyBindInstance();
-    ~PyBindInstance();
+    ~PyBindInstance() = default;
 
 public:
     // Import a .py file.
