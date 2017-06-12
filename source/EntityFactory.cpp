@@ -1,3 +1,4 @@
+#include <OgreSceneNode.h>
 #include "EntityFactory.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
@@ -15,6 +16,7 @@ AnimatedEntity EntityFactory::spawnSylvanas()
 {
   AnimatedEntity sylvanas(renderer, "sylvanas.mesh");
 
+  // TODO : Put the rotation here
   sylvanas.getEntity().getOgre()->setCastShadows(true);
   sylvanas.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
   return sylvanas;
