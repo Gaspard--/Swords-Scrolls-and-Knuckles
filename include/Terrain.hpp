@@ -3,7 +3,7 @@
 
 #include "Vect.hpp"
 
-class Fixture;
+struct Fixture;
 
 class Terrain
 {
@@ -23,7 +23,7 @@ private:
 public:
 
   constexpr Terrain()
-  : tiles()
+    : tiles{}
   {
     for (Vect<2u, unsigned int> i(0, 0); i[1] != getSize()[1]; ++i[1])
       for (i[0]  = 0u; i[0] != getSize()[0]; ++i[0])

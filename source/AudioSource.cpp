@@ -21,9 +21,9 @@ AudioSource::AudioSource(Sounds sound, Vect<3, float> const &pos)
   alSourcef(id, AL_PITCH, 1);
   alSourcef(id, AL_GAIN, 1);
   setPos(pos);
-  alSourcef(id, AL_ROLLOFF_FACTOR, 2.);
-  alSourcef(id, AL_MAX_DISTANCE, 3.);
-  alSourcef(id, AL_REFERENCE_DISTANCE, 0.2);
+  alSourcef(id, AL_ROLLOFF_FACTOR, 2.f);
+  alSourcef(id, AL_MAX_DISTANCE, 3.f);
+  alSourcef(id, AL_REFERENCE_DISTANCE, 0.2f);
   if (!Audio::checkError(false))
     {
       alDeleteSources(1, &id);

@@ -6,11 +6,12 @@
 
 namespace Physics
 {
+
   /**
    * Tests if 2 circles collide, given, their center and radius.
    */
-  constexpr bool circleTest(Vect<2u, float> posA, float radiusA,
-			    Vect<2u, float> posB, float radiusB)
+  constexpr bool circleTest(Vect<2u, double> posA, double radiusA,
+			    Vect<2u, double> posB, double radiusB)
   {
     return (posB - posA).length2() < (radiusA + radiusB) * (radiusA + radiusB);
   }

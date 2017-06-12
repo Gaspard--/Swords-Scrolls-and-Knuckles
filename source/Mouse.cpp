@@ -25,7 +25,7 @@ bool Mouse::mousePressed(OIS::MouseEvent const &event, OIS::MouseButtonID id) {
 		while (it.hasMoreElements()) {
 			auto ov = it.getNext();
 			if (ov->isVisible()) {
-				UIManager::getByName(ov->getName())->mousePressed(state.X.abs, state.Y.abs);
+				UIManager::getByName(ov->getName())->mousePressed(static_cast<Ogre::Real>(state.X.abs), static_cast<Ogre::Real>(state.Y.abs));
 			}
 		}
 	}

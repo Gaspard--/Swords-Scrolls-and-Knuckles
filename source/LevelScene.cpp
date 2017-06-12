@@ -38,13 +38,13 @@ LevelScene::LevelScene(Renderer &renderer)
 	   }())
   , logicThread(*this, renderer, players)
 {
-  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
   {
     AnimatedEntity illidan(renderer, "illidan.mesh");
 
     illidan.getEntity().getOgre()->setCastShadows(true);
-    illidan.getEntity().getNode()->setScale(1.0 / 150.0, 1.0 / 150.0, 1.0 / 150.0);
+    illidan.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
     players.push_back(std::move(illidan));
   }
 
@@ -52,9 +52,9 @@ LevelScene::LevelScene(Renderer &renderer)
   auto light(renderer.getSceneManager().createLight("MainLight"));
 
   light->setType(Ogre::Light::LT_DIRECTIONAL);
-  light->setDiffuseColour(1.0, 0.7, 0.4);
-  light->setSpecularColour(1.0, 0.5, 1.0);
-  light->setDirection(0.7, -0.8, -0.5);
+  light->setDiffuseColour(1.0f, 0.7f, 0.4f);
+  light->setSpecularColour(1.0f, 0.5f, 1.0f);
+  light->setDirection(0.7f, -0.8f, -0.5f);
   light->setPosition(50, 100, 50);
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
 
@@ -74,7 +74,7 @@ void LevelScene::setTerrain(Terrain const &terrain)
 
 	      wall->setCastShadows(true);
 	      wallNode->attachObject(wall);
-	      wallNode->setPosition(i, 0, j);
+	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
 	    }
 	}
     }
@@ -100,8 +100,15 @@ void LevelScene::createWallMesh()
 	  {
 	    Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
-	    obj.position(pos[0], pos[1], pos[2]);
-	    obj.textureCoord(coef[0], coef[1]);
+	    obj.position(
+	      static_cast<Ogre::Real>(pos[0]),
+	      static_cast<Ogre::Real>(pos[1]),
+	      static_cast<Ogre::Real>(pos[2])
+	    );
+	    obj.textureCoord(
+	      static_cast<Ogre::Real>(coef[0]),
+	      static_cast<Ogre::Real>(coef[1])
+	    );
 	  }
 	start = start + right;
 	right = {right[2], 0, -right[0]};
@@ -122,8 +129,15 @@ void LevelScene::createWallMesh()
       {
   	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
-  	obj.position(pos[0], pos[1], pos[2]);
-  	obj.textureCoord(coef[0], coef[1]);
+  	obj.position(
+	  static_cast<Ogre::Real>(pos[0]),
+	  static_cast<Ogre::Real>(pos[1]),
+	  static_cast<Ogre::Real>(pos[2])
+	);
+  	obj.textureCoord(
+	  static_cast<Ogre::Real>(coef[0]),
+	  static_cast<Ogre::Real>(coef[1])
+	);
       }
 
     obj.triangle(offset, offset + 3, offset + 1);

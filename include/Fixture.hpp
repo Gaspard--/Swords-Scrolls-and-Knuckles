@@ -9,7 +9,7 @@ struct Fixture
   Vect<2u, double> pos;
   Vect<2u, double> speed;
 
-  constexpr float getRadius() const
+  constexpr double getRadius() const
   {
     return radius;
   }

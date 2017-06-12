@@ -10,7 +10,6 @@ Entity::Entity(Renderer &renderer,
 Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
   : ogreEntity(parent->getCreator()->createEntity(mesh))
   , sceneNode(parent->createChildSceneNode())
-
 {
   sceneNode->attachObject(ogreEntity);
 }
@@ -22,7 +21,6 @@ Entity &Entity::operator=(Entity &&e)
 
   return *this;
 }
-
 
 Entity::~Entity()
 {
@@ -63,7 +61,7 @@ void Entity::setPosition(Vect<3, float> v)
   sceneNode->setPosition(v[0], v[1], v[2]);
 }
 
-void Entity::setDirection(Vect<2u, double> v)
+void Entity::setDirection(Vect<2u, Ogre::Real> v)
 {
   sceneNode->setDirection(v[0], 0, v[1], Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Z);
 }
