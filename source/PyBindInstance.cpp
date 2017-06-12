@@ -1,7 +1,7 @@
 #include "PyBindInstance.hpp"
 
 PyBindInstance::PyBindInstance()
-: _main(py::module::import("__main__"))
+: main(py::module::import("__main__"))
 {
     // Add an initialisation for every module/wrapper.
 
