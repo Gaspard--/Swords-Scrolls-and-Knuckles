@@ -6,16 +6,19 @@
 # include <string>
 # include <OgreAnimationState.h>
 # include "Entity.hpp"
+# include "Animations.hpp"
 
 class AnimatedEntity
 {
   Entity entity;
+  std::string mainAnimation;
 
 public:
 
   template<class... P>
   AnimatedEntity(P&&... params)
     : entity(std::forward<P>(params)...)
+    , mainAnimation(Animations::IDLE)
   {}
 
   AnimatedEntity(AnimatedEntity const &ae) = delete;
@@ -29,17 +32,17 @@ public:
   Entity &getEntity(void);
   Entity const &getEntity(void) const;
 
-  /// Stop all animations
-  void stopAnimation(void);
+  /// Set the main animation
+  void setMainAnimation(std::string const &s, bool reset = true, bool loop = true);
 
-  /// Set the animation for this entity
-  void setAnimation(std::string const &s, bool reset = true, bool loop = true);
+  /// Stop the main animation
+  void stopMainAnimation(void);
 
-  /// Add an animation to this entity
-  void addAnimation(std::string const &s,  bool reset = true, bool loop = true);
+  /// Add a sub animation to this entity
+  void addSubAnimation(std::string const &s,  bool reset = true, bool loop = true);
 
-  /// Remove an animation to this entity
-  void removeAnimation(std::string const &s);
+  /// Add a sub animation to this entity
+  void removeSubAnimation(std::string const &s);
 
   /// Update all animations
   void updateAnimations(Ogre::Real);

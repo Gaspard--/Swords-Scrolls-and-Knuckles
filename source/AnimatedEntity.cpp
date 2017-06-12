@@ -10,20 +10,24 @@ Entity const &AnimatedEntity::getEntity(void) const
   return (entity);
 }
 
-void AnimatedEntity::stopAnimation(void)
+void AnimatedEntity::setMainAnimation(std::string const &s, bool reset, bool loop)
 {
-  for (auto &anim : entity.getOgre()->getAllAnimationStates()->getAnimationStateIterator()) {
-    anim.second->setEnabled(false);
-  }
+  Ogre::AnimationState *as(entity.getOgre()->getAnimationState(s));
+
+  stopMainAnimation();
+  mainAnimation = s;
+  as->setEnabled(true);
+  as->setTimePosition(as->getTimePosition() * !reset);
 }
 
-void AnimatedEntity::setAnimation(std::string const &s, bool reset, bool loop)
+void AnimatedEntity::stopMainAnimation(void)
 {
-  stopAnimation();
-  addAnimation(s, reset, loop);
+  Ogre::AnimationState *as(entity.getOgre()->getAnimationState(mainAnimation));
+
+  as->setEnabled(false);
 }
 
-void AnimatedEntity::addAnimation(std::string const &s, bool reset, bool loop)
+void AnimatedEntity::addSubAnimation(std::string const &s, bool reset, bool loop)
 {
   Ogre::AnimationState *as(entity.getOgre()->getAnimationState(s));
 
@@ -32,7 +36,7 @@ void AnimatedEntity::addAnimation(std::string const &s, bool reset, bool loop)
   as->setTimePosition(as->getTimePosition() * !reset);
 }
 
-void AnimatedEntity::removeAnimation(std::string const &s)
+void AnimatedEntity::removeSubAnimation(std::string const &s)
 {
   entity.getOgre()->getAnimationState(s)->setEnabled(false);
 }
