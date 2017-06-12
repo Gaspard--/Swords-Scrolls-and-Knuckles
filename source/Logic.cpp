@@ -64,7 +64,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  for (unsigned int i(0); i != 3u; ++i) // TODO: obviously players should be passed as parameter or something.
+  for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
 }
@@ -177,15 +177,23 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p2 += {1.0, 0.0};
   }
 
-
-  static constexpr auto angle = 180 - 60 / 2;
-  static constexpr auto tanAngle = tan(angle);
-  static constexpr auto angleUp = 180 - 80 / 2;
-  static constexpr auto tanAngleUp = tan(angleUp);
-
   gameState.players[0].setInput(p0 * 0.03);
   gameState.players[1].setInput(p1 * 0.03);
-  gameState.players[2].setInput(p2 * 0.03);
+  // gameState.players[2].setInput(p2 * 0.03);
+
+
+
+  /*
+  ** Camera
+  ** TODO: Move to a function ? Another class ?
+  */
+  static constexpr Ogre::Real angle = 180 - 60 / 2;
+  static constexpr Ogre::Real tanAngle = tan(angle);
+  static constexpr Ogre::Real angleUp = 180 - 80 / 2;
+  static constexpr Ogre::Real tanAngleUp = tan(angleUp);
+  static constexpr Ogre::Real yMax = 40.0
+  Ogre::Vector3 cameraPos(levelScene.cameraNode->getPosition());
+  Ogre::Vector3 cameraDest;
 
   auto minmax_x(std::minmax_element(gameState.players.cbegin(),
 				    gameState.players.cend(),
@@ -193,9 +201,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
 				      return p1.getPos()[0] < p2.getPos()[0];
 				    }));
   auto leftVecX = Ogre::Vector3{minmax_x.first->getPos()[0], 0,
-    minmax_x.first->getPos()[1]} - levelScene.cameraNode->getPosition();
+    minmax_x.first->getPos()[1]} - cameraPos;
   auto rightVecX = Ogre::Vector3{minmax_x.second->getPos()[0], 0,
-    minmax_x.first->getPos()[1]} - levelScene.cameraNode->getPosition();
+    minmax_x.first->getPos()[1]} - cameraPos;
   auto midVecX = (rightVecX - leftVecX) / 2;
 
   auto minmax_z(std::minmax_element(gameState.players.cbegin(),
@@ -204,21 +212,25 @@ void Logic::updateDisplay(LevelScene &levelScene)
 				      return p1.getPos()[1] < p2.getPos()[1];
 				    }));
   auto leftVecZ = Ogre::Vector3{minmax_z.first->getPos()[1], 0,
-    minmax_z.first->getPos()[1]} - levelScene.cameraNode->getPosition();
+    minmax_z.first->getPos()[1]} - cameraPos;
   auto rightVecZ = Ogre::Vector3{minmax_z.second->getPos()[1], 0,
-    minmax_z.first->getPos()[1]} - levelScene.cameraNode->getPosition();
+    minmax_z.first->getPos()[1]} - cameraPos;
   auto midVecZ = (rightVecZ - leftVecZ) / 2;
 
   auto yxpos = (-tanAngle * (midVecX.length()) + 10) * 1.5;
   auto yzpos = (-tanAngleUp * (midVecZ.length()) + 10) * 1.5;
 
-  Ogre::Real x(minmax_x.first->getPos()[0]
-	       + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2);
-  Ogre::Real y(std::max(yxpos, yzpos / 2.3));
-  Ogre::Real z((minmax_z.first->getPos()[1]
-		+ (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2)
-		+ 0.5 * y);
+  cameraDest.x = minmax_x.first->getPos()[0]
+    + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2;
+  cameraDest.y = std::max(yxpos, yzpos / 2.3);
+  cameraDest.y = (cameraDest.y < yMax) * cameraDest.y + (cameraDest.y > yMax) * yMax;
+  cameraDest.z = (minmax_z.first->getPos()[1]
+		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2)
+    + 0.5 * cameraDest.y;
 
-  levelScene.cameraNode->setPosition(x, y, z);
+  levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
+				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
+				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
+
   updatesSinceLastFrame = 0;
 }

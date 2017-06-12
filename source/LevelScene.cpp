@@ -54,13 +54,13 @@ LevelScene::LevelScene(Renderer &renderer)
     illidan.getEntity().getNode()->setScale(1.0 / 150.0, 1.0 / 150.0, 1.0 / 150.0);
     players.push_back(std::move(illidan));
   }
-  {
+  /*{
     AnimatedEntity illidan(renderer, "illidan.mesh");
 
     illidan.getEntity().getOgre()->setCastShadows(true);
     illidan.getEntity().getNode()->setScale(1.0 / 150.0, 1.0 / 150.0, 1.0 / 150.0);
     players.push_back(std::move(illidan));
-  }
+  }*/
 
   // obviously horrible & will be replaced.
   auto light(renderer.getSceneManager().createLight("MainLight"));
