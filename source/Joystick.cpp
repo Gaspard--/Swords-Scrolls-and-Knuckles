@@ -77,7 +77,7 @@ std::map<joystickAxe, int> &Joystick::getAxes(void)
   return (axes);
 }
 
-bool Joystick::operator[](joystickState js)
+bool Joystick::operator[](joystickState js) const
 {
   return (isStateUp(js));
 }
