@@ -16,7 +16,7 @@ void UIButton::init(Ogre::OverlayManager *manager, Ogre::String const &materialN
 	button->setPosition(x, y);
 
 	button->setBorderMaterialName(borderName);
-	button->setBorderSize(0.0075);
+	button->setBorderSize(0.0075f);
 
 	Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({button->getWidth(), button->getHeight()}));
 
@@ -30,9 +30,9 @@ void UIButton::init(Ogre::OverlayManager *manager, Ogre::String const &materialN
 
 	text->setColour(Ogre::ColourValue::White);
 	text->setMetricsMode(Ogre::GMM_PIXELS);
-	text->setCharHeight(50);
-	text->setLeft(buttonSize.x / 2.0);
-	text->setTop(buttonSize.y / 2.0 - text->getCharHeight() / 2);
+	text->setCharHeight(50.f);
+	text->setLeft(buttonSize.x / 2.0f);
+	text->setTop(buttonSize.y / 2.0f - text->getCharHeight() / 2.f);
 	text->setAlignment(Ogre::TextAreaOverlayElement::Center);
 
 	button->addChild(text);
@@ -48,8 +48,8 @@ Ogre::BorderPanelOverlayElement *UIButton::getButton(void) const {
 void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 
 	std::clog << "Overlay Menu init." << std::endl;
-	width = 0.5;
-	height = 0.1;
+	width = 0.5f;
+	height = 0.1f;
 
 	Ogre::PanelOverlayElement *bg
 		= static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", "BG"));
@@ -62,19 +62,19 @@ void UIOverlayMenu::init(Ogre::OverlayManager *manager) {
 	title->setCaption(gameTitle);
 	title->setColour(Ogre::ColourValue::White);
 	title->setMetricsMode(Ogre::GMM_PIXELS);
-	title->setCharHeight(100);
-	title->setLeft(Game::WIDTH / 2- gameTitle.size() / 2);
-	title->setTop(40);
+	title->setCharHeight(100.f);
+	title->setLeft(Game::WIDTH / 2.f - gameTitle.size() / 2.f);
+	title->setTop(40.f);
 	title->setAlignment(Ogre::TextAreaOverlayElement::Center);
 
 	std::unique_ptr<UIButton> play(new UIButton(manager, "Play"));
-	play->init(manager, "HUD/Black", "HUD/Green", width, height, 0.5 - width / 2.0, 0.3);
+	play->init(manager, "HUD/Black", "HUD/Green", width, height, 0.5f - width / 2.0f, 0.3f);
 
 	std::unique_ptr<UIButton> credits(new UIButton(manager, "Credits"));
-	credits->init(manager, "HUD/Black", "HUD/Yellow", width, height, 0.5 - width / 2.0, 0.5);
+	credits->init(manager, "HUD/Black", "HUD/Yellow", width, height, 0.5f - width / 2.0f, 0.5f);
 
 	std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit"));
-	exit->init(manager, "HUD/Black", "HUD/Red", width, height, 0.5 - width / 2.0, 0.7);
+	exit->init(manager, "HUD/Black", "HUD/Red", width, height, 0.5f - width / 2.0f, 0.7f);
 
 	bg->addChild(title);
 	bg->addChild(play->getButton());

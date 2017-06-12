@@ -12,11 +12,11 @@ void UICharStat::init(Ogre::String const &materialName, Ogre::String const &bord
 		Ogre::Real width, Ogre::Real height, Ogre::Real x, Ogre::Real y) {
 
 	panel->setMaterialName(materialName);
-	panel->setDimensions(0.25 * width, height);
+	panel->setDimensions(0.25f * width, height);
 	panel->setPosition(x, y);
 
 	panel->setBorderMaterialName(borderName);
-	panel->setBorderSize(0.0075);
+	panel->setBorderSize(0.0075f);
 }
 
 void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &elementName,
@@ -45,9 +45,9 @@ void UICharStat::setText(Ogre::TextAreaOverlayElement *textArea, Ogre::DisplaySt
 	textArea->setCaption(str);
 	textArea->setColour(Ogre::ColourValue::White);
 	textArea->setMetricsMode(Ogre::GMM_PIXELS);
-	textArea->setLeft(panelSize.x / 2.0);
-	textArea->setTop(panelPos.y + panelSize.y / 5.0 * offsetTop);
-	textArea->setCharHeight(20);
+	textArea->setLeft(panelSize.x / 2.0f);
+	textArea->setTop(panelPos.y + panelSize.y / 5.0f * offsetTop);
+	textArea->setCharHeight(20.f);
 	textArea->setAlignment(Ogre::TextAreaOverlayElement::Center);
 
 	panel->addChild(textArea);
@@ -81,28 +81,28 @@ Ogre::BorderPanelOverlayElement *UICharStat::getPanel(void) const {
 void UIOverlayHUD::init(Ogre::OverlayManager *manager) {
 
 	std::clog << "Overlay HUD init." << std::endl;
-	width = 0.5;
-	height = 0.15;
+	width = 0.5f;
+	height = 0.15f;
 
 	Ogre::PanelOverlayElement *stats
 		= static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", "Stats"));
 	stats->setDimensions(width, height);
-	stats->setPosition(0.5 - width / 2, 1 - height);
+	stats->setPosition(0.5f - width / 2.f, 1.f - height);
 
 	std::unique_ptr<UICharStat> wizzard(new UICharStat(manager, "Wizzard"));
-	wizzard->init("HUD/Black", "HUD/Yellow", width, height, 0.0, 0.0);
+	wizzard->init("HUD/Black", "HUD/Yellow", width, height, 0.0f, 0.0f);
 	wizzard->initText(manager, "WizzardText", "Wizzard");
 
 	std::unique_ptr<UICharStat> warrior(new UICharStat(manager, "Warrior"));
-	warrior->init("HUD/Black", "HUD/Red", width, height, 0.25 * width, 0.0);
+	warrior->init("HUD/Black", "HUD/Red", width, height, 0.25f * width, 0.0f);
 	warrior->initText(manager, "WarriorText", "Warrior");
 
 	std::unique_ptr<UICharStat> archer(new UICharStat(manager, "Archer"));
-	archer->init("HUD/Black", "HUD/Green", width, height, 0.25 * width * 2.0, 0.0);
+	archer->init("HUD/Black", "HUD/Green", width, height, 0.25f * width * 2.0f, 0.0f);
 	archer->initText(manager, "ArcherText", "Archer");
 
 	std::unique_ptr<UICharStat> valkyrie(new UICharStat(manager, "Valkyrie"));
-	valkyrie->init("HUD/Black", "HUD/Blue", width, height, 0.25 * width * 3.0, 0.0);
+	valkyrie->init("HUD/Black", "HUD/Blue", width, height, 0.25f * width * 3.0f, 0.0f);
 	valkyrie->initText(manager, "ValkyrieText", "Valkyrie");
 
 	stats->addChild(wizzard->getPanel());

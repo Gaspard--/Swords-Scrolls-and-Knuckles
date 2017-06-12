@@ -107,11 +107,11 @@ void Logic::updateDisplay(LevelScene &levelScene)
   projectiles.updateTarget();
   enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
-		    animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
+		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(enemy.pos[0]), 0.f, static_cast<Ogre::Real>(enemy.pos[1]));
 		  });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
-			entity.setPosition(projectile.pos[0], 0, projectile.pos[1]);
+			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 		      });
   for (unsigned int i(0); i != gameState.players.size(); ++i)
     {
@@ -119,18 +119,18 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
 
       animatedEntity.getEntity().setDirection(player.getDir());
-      animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
+      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]), 0.f, static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
 	{
-	  animatedEntity.addAnimation("Move", false, true);
+	  animatedEntity.addAnimation("Walk", false, true);
 	  animatedEntity.removeAnimation("Stand");
 	}
       else
 	{
-	  animatedEntity.removeAnimation("Move");
+	  animatedEntity.removeAnimation("Walk");
 	  animatedEntity.addAnimation("Stand", false, true);
 	}
-      animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
+      animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
       Vect<2u, double> inputDir{0.0, 0.0};
 
       if (Keyboard::getKeys()[OIS::KC_Z]) {
