@@ -76,6 +76,10 @@ namespace Physics
   {
     return makeProxyIterator(it, PosAndRadiusProxy<decltype(*IT{}), POS_EXTRACTOR, RADIUS_EXTRACTOR>::Builder(posExtractor, radiusExtractor));
   }
+
+  class BounceResponse
+  {
+  }
 };
 
 #endif

@@ -27,7 +27,7 @@ public:
   {
     for (Vect<2u, unsigned int> i(0, 0); i[1] != getSize()[1]; ++i[1])
       for (i[0]  = 0u; i[0] != getSize()[0]; ++i[0])
-	getTile(i) = {!(rand() & 7) || !i[0] || !i[0]};
+	getTile(i) = {!(rand() & 1) || !i[0] || !i[1]};
   }
 
   constexpr Vect<2u, unsigned int> getSize() const
@@ -42,12 +42,16 @@ public:
     return tiles[pos[0]][pos[1]];
   }
 
+  template<class RESPONSE>
+  constexpr void correctFixture(Fixture &fixture, RESPONSE &&response);
+
   constexpr void correctFixture(Fixture &fixture);
 };
 
 #include "Fixture.hpp"
 
-constexpr void Terrain::correctFixture(Fixture &fixture)
+template<class RESPONSE>
+constexpr void Terrain::correctFixture(Fixture &fixture, RESPONSE &&response)
 {
   Vect<2u, Vect<2u, double>> const extremes{(fixture.pos - Vect<2u, double>{fixture.radius, fixture.radius}),
       (fixture.pos + Vect<2u, double>{fixture.radius, fixture.radius})};
@@ -56,20 +60,32 @@ constexpr void Terrain::correctFixture(Fixture &fixture)
 
   { // Test sides. TODO: find a way to avoid code duplication without loosing clarity.
     if (getTile({roundedExtremes[0][0], roundedCenter[1]}).isSolid)
-      fixture.pos[0] = (roundedExtremes[0][0] + 1) + fixture.radius;
+      {
+	fixture.pos[0] = (roundedExtremes[0][0] + 1) + fixture.radius;
+	response(fixture, Vect<2u, double>{1, 0});
+      }
     else if (getTile({roundedExtremes[1][0], roundedCenter[1]}).isSolid)
-      fixture.pos[0] = roundedExtremes[1][0] - fixture.radius;
+      {
+	fixture.pos[0] = roundedExtremes[1][0] - fixture.radius;
+	response(fixture, Vect<2u, double>{-1, 0});
+      }
     if (getTile({roundedCenter[0], roundedExtremes[0][1]}).isSolid)
-      fixture.pos[1] = (roundedExtremes[0][1] + 1) + fixture.radius;
+      {
+	fixture.pos[1] = (roundedExtremes[0][1] + 1) + fixture.radius;
+	response(fixture, Vect<2u, double>{0, 1});
+      }
     else if (getTile({roundedCenter[0], roundedExtremes[1][1]}).isSolid)
-      fixture.pos[1] = roundedExtremes[1][1] - fixture.radius;
+      {
+	fixture.pos[1] = roundedExtremes[1][1] - fixture.radius;
+	response(fixture, Vect<2u, double>{0, -1});
+      }
   }
   {
-    Vect<2u, unsigned> i{};
-
     for (unsigned int k : {0, 1})
       for (unsigned int j : {0, 1})
 	{
+	  Vect<2u, unsigned> i{};
+
 	  for (i[1] = roundedExtremes[k][1]; i[1] != roundedCenter[1]; i[1] += (1 - 2 * k))
 	    for (i[0] = roundedExtremes[j][0]; i[0] != roundedCenter[0]; i[0] += (1 - 2 * j))
 	    {
@@ -82,4 +98,17 @@ constexpr void Terrain::correctFixture(Fixture &fixture)
 	}
   }
 }
+
+struct NOOP
+{
+  template<class... PARAMS>
+  constexpr void operator()(PARAMS &&... ) const
+  {};
+};
+
+constexpr void Terrain::correctFixture(Fixture &fixture)
+{
+  return correctFixture(fixture, NOOP{});
+}
+
 #endif

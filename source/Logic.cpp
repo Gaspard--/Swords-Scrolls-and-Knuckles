@@ -24,12 +24,19 @@ bool Logic::tick()
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
-  updateElements(gameState.projectiles);
+  for (auto &fixture : gameState.projectiles)
+    {
+      fixture.update(*this);
+      gameState.terrain.correctFixture(fixture, [](Fixture &fixture, Vect<2u, double> dir)
+				       {
+					 fixture.speed -= dir * fixture.speed.scalar(dir) * 2.0;
+				       });
+    }
   if (!(rand() % 10))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{5.0, 5.0}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
+	}, Vect<2u, double>{5.5, 5.5}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
