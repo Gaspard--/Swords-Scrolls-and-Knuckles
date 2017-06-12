@@ -149,9 +149,9 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
   Mouse::getMouse()->capture();
-  for (auto it = Joystick::getJoysticks().begin(); it != Joystick::getJoysticks().end(); it++)
+  for (auto &it : Joystick::getJoysticks())
   {
-    (**it)->capture();
+    (*it)->capture();
   }
 
   // Update the current scene's logic
