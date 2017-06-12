@@ -15,7 +15,7 @@ public:
   {}
 
   Entity spawnOgreHead();
-  AnimatedEntity spawnIllidan();
+  AnimatedEntity spawnSylvanas();
 };
 
 #endif

@@ -72,7 +72,7 @@ elseif(WIN32)
   set(OGRE_PLUGIN ${OGRE_HOME}\\bin\\release\\)
   file(WRITE resources/cfg/plugins.cfg "PluginFolder=${OGRE_PLUGIN}\nPlugin=RenderSystem_GL.dll\n")
 else()
-  message(FATAL_ERROR "Could not find RenderSysteam :(")
+  message(FATAL_ERROR "Could not find RenderSystem :(")
 endif()
 
 include_directories(
