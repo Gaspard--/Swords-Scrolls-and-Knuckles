@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include "UIManager.hpp"
 #include "LevelScene.hpp"
+#include "Joystick.hpp"
 
 // Constructor
 
