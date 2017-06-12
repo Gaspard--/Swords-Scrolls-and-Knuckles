@@ -11,10 +11,11 @@ Entity EntityFactory::spawnOgreHead()
   return ogre;
 }
 
-AnimatedEntity EntityFactory::spawnIllidan()
+AnimatedEntity EntityFactory::spawnSylvanas()
 {
-  AnimatedEntity illidan(renderer, "illidan.mesh");
+  AnimatedEntity sylvanas(renderer, "sylvanas.mesh");
 
-  illidan.getEntity().getOgre()->setCastShadows(true);
-  return illidan;
+  sylvanas.getEntity().getOgre()->setCastShadows(true);
+  sylvanas.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
+  return sylvanas;
 }

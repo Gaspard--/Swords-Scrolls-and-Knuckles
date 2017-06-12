@@ -4,6 +4,7 @@
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
+#include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
 
@@ -41,11 +42,9 @@ LevelScene::LevelScene(Renderer &renderer)
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
   {
-    AnimatedEntity illidan(renderer, "illidan.mesh");
+    EntityFactory ef(renderer);
 
-    illidan.getEntity().getOgre()->setCastShadows(true);
-    illidan.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
-    players.push_back(std::move(illidan));
+    players.push_back(std::move(ef.spawnSylvanas()));
   }
 
   // obviously horrible & will be replaced.
