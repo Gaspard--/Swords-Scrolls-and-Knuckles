@@ -3,9 +3,9 @@
 
 namespace Animations
 {
-  static constexpr char IDLE[] = "idle";
-  static constexpr char WALK[] = "Walk";
-  static constexpr char STAND[] = "Stand";
+  constexpr char const IDLE[] = "idle";
+  constexpr char const WALK[] = "Walk";
+  constexpr char const STAND[] = "Stand";
 };
 
 #endif // !ANIMATIONS_HPP
