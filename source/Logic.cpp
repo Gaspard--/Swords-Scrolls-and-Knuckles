@@ -121,15 +121,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
       animatedEntity.getEntity().setDirection(player.getDir());
       animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]), 0.f, static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
-	{
-	  animatedEntity.addAnimation("Walk", false, true);
-	  animatedEntity.removeAnimation("Stand");
-	}
+	animatedEntity.setMainAnimation(Animations::WALK, false, true);
       else
-	{
-	  animatedEntity.removeAnimation("Walk");
-	  animatedEntity.addAnimation("Stand", false, true);
-	}
+	animatedEntity.setMainAnimation(Animations::STAND, false, true);
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
       Vect<2u, double> inputDir{0.0, 0.0};
 

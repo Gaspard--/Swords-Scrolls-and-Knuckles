@@ -12,12 +12,12 @@ Entity EntityFactory::spawnOgreHead()
   return ogre;
 }
 
-AnimatedEntity EntityFactory::spawnSylvanas()
+AnimatedEntity EntityFactory::spawnArcher()
 {
-  AnimatedEntity sylvanas(renderer, "sylvanas.mesh");
+  AnimatedEntity archer(renderer, "sylvanas.mesh");
 
   // TODO : Put the rotation here
-  sylvanas.getEntity().getOgre()->setCastShadows(true);
-  sylvanas.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
-  return sylvanas;
+  archer.getEntity().getOgre()->setCastShadows(true);
+  archer.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
+  return archer;
 }

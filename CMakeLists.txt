@@ -46,7 +46,7 @@ if (WIN32)
   set(OGRE_HOME $ENV{OGRE_HOME})
   set(OPENALDIR $ENV{OPENALDIR})
 else()
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wconversion -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -Wno-unused-but-set-parameter -g -O3")
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wfloat-conversion -Wno-unused-parameter --std=c++14 -Wno-deprecated-declarations -Wno-unused-but-set-parameter -g -O3")
 endif(WIN32)
 
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")

@@ -44,7 +44,7 @@ LevelScene::LevelScene(Renderer &renderer)
   {
     EntityFactory ef(renderer);
 
-    players.push_back(std::move(ef.spawnSylvanas()));
+    players.push_back(std::move(ef.spawnArcher()));
   }
 
   // obviously horrible & will be replaced.
