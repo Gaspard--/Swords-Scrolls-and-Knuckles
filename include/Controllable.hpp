@@ -23,7 +23,7 @@ public:
   
   constexpr void update(Logic &logic);
 
-  constexpr void knockBack(Vect<2u, double> speed, unsigned int stun)
+  constexpr void knockback(Vect<2u, double> speed, unsigned int stun)
   {
     this->speed = speed;
     this->stun = stun;
@@ -32,6 +32,11 @@ public:
   constexpr bool isWalking() const
   {
     return !stun && !input.equals({0.0, 0.0});
+  }
+
+  constexpr bool isStun() const
+  {
+    return stun;
   }
 
   // setter only.
@@ -52,7 +57,7 @@ constexpr void Controllable::update(Logic &logic)
 {
   if (!stun)
     {
-      speed = input;
+      speed = speed * 0.9 + input * 0.1;
       dir = input;
     }
   else

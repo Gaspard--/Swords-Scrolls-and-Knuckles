@@ -17,10 +17,6 @@ public:
   {
   }
   
-  constexpr void hit(Enemy &)
-  {
-  }
-
   constexpr void update(Logic &logic)
   {
     pos += speed;

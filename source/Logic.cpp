@@ -24,12 +24,12 @@ bool Logic::tick()
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
-  for (auto &fixture : gameState.projectiles)
+  for (auto &projectile : gameState.projectiles)
     {
-      fixture.update(*this);
-      gameState.terrain.correctFixture(fixture, Physics::BounceResponse{1.0});
+      projectile.update(*this);
+      gameState.terrain.correctFixture(projectile, Physics::BounceResponse{0.9});
     }
-  if (!(rand() % 10))
+  if (!(rand() % 15))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
@@ -42,12 +42,15 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   enemy.hit(player);
+			   // enemy.hit(player);
+			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 10);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &projectile, auto &enemy){
-			   projectile.hit(enemy);
+			   enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.1, 10);
+			   std::cout << "hit!" << std::endl;
+			   // projectile.hit(enemy);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -71,6 +74,9 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   for (unsigned int i(0); i != 1u; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 5.0});
   levelScene.setTerrain(gameState.terrain);
+  enemies.add([this](){
+      return entityFactory.spawnEnemy();
+    }, 0.5, Vect<2u, double>{10.5, 10.5});
 }
 
 void Logic::run()
@@ -126,6 +132,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
       animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]), 0.f, static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
 	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+      else if (player.isStun())
+	animatedEntity.setMainAnimation(Animations::Controllable::STUN);
       else
 	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
