@@ -34,6 +34,7 @@ private:
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
 
+  void calculateCamera(LevelScene &);
   bool tick();
 public:
   GameState gameState;
