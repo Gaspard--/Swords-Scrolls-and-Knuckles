@@ -12,9 +12,9 @@ Entity EntityFactory::spawnOgreHead()
   return ogre;
 }
 
-AnimatedEntity EntityFactory::spawnArcher()
+AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
 {
-  AnimatedEntity archer(renderer, "sylvanas.mesh");
+  AnimatedEntity archer(renderer, skin);
 
   // TODO : Put the rotation here
   archer.getEntity().getOgre()->setCastShadows(true);

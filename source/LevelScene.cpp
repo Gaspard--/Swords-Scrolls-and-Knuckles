@@ -44,7 +44,7 @@ LevelScene::LevelScene(Renderer &renderer)
   {
     EntityFactory ef(renderer);
 
-    players.push_back(std::move(ef.spawnArcher()));
+    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 
   // obviously horrible & will be replaced.
@@ -58,6 +58,17 @@ LevelScene::LevelScene(Renderer &renderer)
   light->setAttenuation(500, 1.0f, 0.007f, 0.0f);
 
   terrainNode->scale(1.0, 1.0, 1.0);
+
+  // For demonstration / test purpose. Remove it if needed.
+  Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
+    if (b)
+    {
+      for (auto &p : players) {
+	p.addSubAnimation(Animations::Controllable::ATTACK);
+      }
+    }
+    return (false);
+  });
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)
