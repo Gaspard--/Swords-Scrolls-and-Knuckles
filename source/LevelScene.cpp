@@ -44,7 +44,7 @@ LevelScene::LevelScene(Renderer &renderer)
   {
     EntityFactory ef(renderer);
 
-    players.push_back(std::move(ef.spawnArcher()));
+    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 
   // obviously horrible & will be replaced.
@@ -64,7 +64,7 @@ LevelScene::LevelScene(Renderer &renderer)
     if (b)
     {
       for (auto &p : players) {
-	p.addSubAnimation(Animations::ATTACK);
+	p.addSubAnimation(Animations::Controllable::ATTACK);
       }
     }
     return (false);

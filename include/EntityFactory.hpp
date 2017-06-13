@@ -1,6 +1,8 @@
 #ifndef ENTITY_FACTORY_HPP
 # define ENTITY_FACTORY_HPP
 
+# include "Skins.hpp"
+
 class Renderer;
 class Entity;
 class AnimatedEntity;
@@ -15,7 +17,7 @@ public:
   {}
 
   Entity spawnOgreHead();
-  AnimatedEntity spawnArcher();
+  AnimatedEntity spawnArcher(Skins::Skin);
 };
 
 #endif
