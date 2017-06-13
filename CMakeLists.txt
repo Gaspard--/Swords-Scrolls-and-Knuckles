@@ -78,10 +78,10 @@ endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
-	SYSTEM ${PYTHON_INCLUDE_DIR}
 	SYSTEM ${OGRE_INCLUDE_DIRS}
 	SYSTEM ${OIS_INCLUDE_DIR}
 	SYSTEM ${OPENAL_INCLUDE_DIR}
+	SYSTEM ${PYTHON_INCLUDE_DIR}
 )
 
 add_executable(
@@ -98,18 +98,18 @@ target_link_libraries(
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
 	${PYTHON_LIBRARY}
-	dl
-	util
 )
+
 if (UNIX)
   target_link_libraries(
 	${PROJECT_NAME}
         alut
         vorbisfile
         ogg
+	dl
+	util
   )
 elseif (WIN32)
-
   set(VORBIS_LIB "optimized;C:/OpenAL/libs/libvorbis_static.lib;debug;C:/OpenAL/libs/libvorbis_static.lib")
   set(VORBISFILE_LIB "optimized;C:/OpenAL/libs/libvorbisfile_static.lib;debug;C:/OpenAL/libs/libvorbisfile_static.lib")
   set(ALUT_LIB "optimized;C:/OpenAL/libs/alut.lib;debug;C:/OpenAL/libs/alut.lib")
