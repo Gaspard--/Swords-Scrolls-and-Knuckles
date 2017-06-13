@@ -42,15 +42,12 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   // enemy.hit(player);
 			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 10);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &projectile, auto &enemy){
 			   enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.1, 10);
-			   std::cout << "hit!" << std::endl;
-			   // projectile.hit(enemy);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
