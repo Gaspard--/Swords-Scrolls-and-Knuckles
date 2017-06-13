@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include "Logic.hpp"
 #include "Physics.hpp"
@@ -68,8 +69,8 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  for (unsigned int i(0); i != 1u; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.emplace_back(0.5, Vect<2u, double>{5.0, 5.0});
+  for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
+    gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
   enemies.add([this](){
       return entityFactory.spawnEnemy();
@@ -120,13 +121,16 @@ void Logic::updateDisplay(LevelScene &levelScene)
 		      {
 			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 		      });
+
   for (unsigned int i(0); i != gameState.players.size(); ++i)
     {
       AnimatedEntity &animatedEntity(playerEntities[i]);
       Player &player(gameState.players[i]);
 
       animatedEntity.getEntity().setDirection(player.getDir());
-      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]), 0.f, static_cast<Ogre::Real>(player.pos[1]));
+      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]),
+					     0.f,
+					     static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
 	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
       else if (player.isStun())
@@ -134,21 +138,102 @@ void Logic::updateDisplay(LevelScene &levelScene)
       else
 	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
-      Vect<2u, double> inputDir{0.0, 0.0};
-
-      if (Keyboard::getKeys()[OIS::KC_Z]) {
-	inputDir += {0.0, -1.0};
-      }
-      if (Keyboard::getKeys()[OIS::KC_Q]) {
-	inputDir += {-1.0, 0.0};
-      }
-      if (Keyboard::getKeys()[OIS::KC_S]) {
-	inputDir += {0.0, 1.0};
-      }
-      if (Keyboard::getKeys()[OIS::KC_D]) {
-	inputDir += {1.0, 0.0};
-      }
-      player.setInput(inputDir * 0.03);
     }
+  Vect<2u, double> p0{0.0, 0.0};
+  Vect<2u, double> p1{0.0, 0.0};
+  Vect<2u, double> p2{0.0, 0.0};
+
+  if (Keyboard::getKeys()[OIS::KC_Z]) {
+    p0 += {0.0, -1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_Q]) {
+    p0 += {-1.0, 0.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_S]) {
+    p0 += {0.0, 1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_D]) {
+    p0 += {1.0, 0.0};
+  }
+
+  if (Keyboard::getKeys()[OIS::KC_I]) {
+    p1 += {0.0, -1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_J]) {
+    p1 += {-1.0, 0.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_K]) {
+    p1 += {0.0, 1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_L]) {
+    p1 += {1.0, 0.0};
+  }
+
+  if (Keyboard::getKeys()[OIS::KC_UP]) {
+    p2 += {0.0, -1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_LEFT]) {
+    p2 += {-1.0, 0.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_DOWN]) {
+    p2 += {0.0, 1.0};
+  }
+  if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
+    p2 += {1.0, 0.0};
+  }
+
+  gameState.players[0].setInput(p0 * 0.03);
+  gameState.players[1].setInput(p1 * 0.03);
+  // gameState.players[2].setInput(p2 * 0.03);
+
+  calculateCamera(levelScene);
+
   updatesSinceLastFrame = 0;
+}
+
+void Logic::calculateCamera(LevelScene &levelScene)
+{
+  constexpr Ogre::Real const angle(180 - 60 / 2);
+  constexpr Ogre::Real const tanAngle(tan(angle));
+  constexpr Ogre::Real const angleUp(180 - 80 / 2);
+  constexpr Ogre::Real const tanAngleUp(tan(angleUp));
+  constexpr Ogre::Real const yMax(23.0);
+  Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
+  Ogre::Vector3 cameraDest;
+
+  auto const minmax_x(std::minmax_element(gameState.players.cbegin(),
+				    gameState.players.cend(),
+				    [](auto const &p1, auto const&p2) {
+				      return p1.getPos()[0] < p2.getPos()[0];
+				    }));
+  auto const leftVecX(Ogre::Vector3{minmax_x.first->getPos()[0], 0,
+    minmax_x.first->getPos()[1]} - cameraPos);
+  auto const rightVecX(Ogre::Vector3{minmax_x.second->getPos()[0], 0,
+    minmax_x.first->getPos()[1]} - cameraPos);
+  auto const midVecX((rightVecX - leftVecX) / 2);
+
+  auto const minmax_z(std::minmax_element(gameState.players.cbegin(),
+					  gameState.players.cend(),
+					  [](auto const &p1, auto const &p2) {
+					    return p1.getPos()[1] < p2.getPos()[1];
+					  }));
+  auto const leftVecZ(Ogre::Vector3{minmax_z.first->getPos()[1], 0,
+    minmax_z.first->getPos()[1]} - cameraPos);
+  auto const rightVecZ(Ogre::Vector3{minmax_z.second->getPos()[1], 0,
+    minmax_z.first->getPos()[1]} - cameraPos);
+  auto const midVecZ((rightVecZ - leftVecZ) / 2);
+
+  Ogre::Real const yxpos((-tanAngle * (midVecX.length()) + 10) * 1.5f);
+  Ogre::Real const yzpos((-tanAngleUp * (midVecZ.length()) + 10) * 0.8f);
+
+  cameraDest.x = minmax_x.first->getPos()[0]
+    + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
+  cameraDest.y = std::clamped(std::max(yxpos, yzpos), 0.0f, 40.0f);
+  cameraDest.z = (minmax_z.first->getPos()[1]
+		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
+    + 0.5f * cameraDest.y;
+
+  levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
+				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
+				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
 }
