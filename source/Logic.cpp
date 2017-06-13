@@ -191,7 +191,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
   static constexpr Ogre::Real tanAngle(tan(angle));
   static constexpr Ogre::Real angleUp(180 - 80 / 2);
   static constexpr Ogre::Real tanAngleUp(tan(angleUp));
-  static constexpr Ogre::Real yMax(40.0);
+  static constexpr Ogre::Real yMax(23.0);
   Ogre::Vector3 cameraPos(levelScene.cameraNode->getPosition());
   Ogre::Vector3 cameraDest;
 
@@ -218,7 +218,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
   auto midVecZ((rightVecZ - leftVecZ) / 2);
 
   Ogre::Real yxpos((-tanAngle * (midVecX.length()) + 10) * 1.5);
-  Ogre::Real yzpos((-tanAngleUp * (midVecZ.length())));
+  Ogre::Real yzpos((-tanAngleUp * (midVecZ.length()) + 10) * 0.8);
 
   cameraDest.x = minmax_x.first->getPos()[0]
     + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2;
