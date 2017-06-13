@@ -24,16 +24,20 @@ bool Logic::tick()
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
-  updateElements(gameState.projectiles);
+  for (auto &fixture : gameState.projectiles)
+    {
+      fixture.update(*this);
+      gameState.terrain.correctFixture(fixture, Physics::BounceResponse{1.0});
+    }
   if (!(rand() % 10))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{5.0, 5.0}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
+	}, Vect<2u, double>{5.5, 5.5}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 20.0 || projectile.pos[1] > 20.0;
+			 return projectile.pos[0] > 15.0 || projectile.pos[1] > 15.0;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -107,11 +111,11 @@ void Logic::updateDisplay(LevelScene &levelScene)
   projectiles.updateTarget();
   enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
-		    animatedEntity.getEntity().setPosition(enemy.pos[0], 0, enemy.pos[1]);
+		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(enemy.pos[0]), 0.f, static_cast<Ogre::Real>(enemy.pos[1]));
 		  });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
-			entity.setPosition(projectile.pos[0], 0, projectile.pos[1]);
+			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 		      });
 
   for (unsigned int i(0); i != gameState.players.size(); ++i)
@@ -120,19 +124,14 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
 
       animatedEntity.getEntity().setDirection(player.getDir());
-
-      animatedEntity.getEntity().setPosition(player.pos[0], 0, player.pos[1]);
+      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]),
+					     0.f,
+					     static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
-	{
-	  animatedEntity.addAnimation("Move", false, true);
-	  animatedEntity.removeAnimation("Stand");
-	}
+	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
       else
-	{
-	  animatedEntity.removeAnimation("Move");
-	  animatedEntity.addAnimation("Stand", false, true);
-	}
-      animatedEntity.updateAnimations(updatesSinceLastFrame * (1.0 / 120.0));
+	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+      animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
   Vect<2u, double> p0{0.0, 0.0};
   Vect<2u, double> p1{0.0, 0.0};

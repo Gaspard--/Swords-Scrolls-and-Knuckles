@@ -1,15 +1,15 @@
-// storm_illidan_diff genrated by blender2ogre 0.6.0
+// Storm_Hero_Sylvanas_Base_Diff genrated by blender2ogre 0.6.0
 
-material storm_illidan_diff 
+material Storm_Hero_Sylvanas_Base_Diff 
 {
     receive_shadows on 
 
     technique
     {
-        pass storm_illidan_diff
+        pass Storm_Hero_Sylvanas_Base_Diff
         {
-            ambient 0.8709753155708313 0.836959719657898 0.6786990165710449 1.0
-            diffuse 0.6967802628394999 0.6695677857036557 0.5429592213475587 1.0
+            //ambient 0.8129056096076965 0.9358897805213928 0.4535757899284363 1.0
+            //diffuse 0.6503244973767472 0.7487118355737898 0.3628606373497938 1.0
             specular 0.5 0.5 0.5 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
@@ -32,7 +32,7 @@ material storm_illidan_diff
 
             texture_unit 
             {
-                texture storm_illidan_diff.png
+                texture storm_hero_sylvanas_base_diff.png
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

@@ -28,8 +28,9 @@ public:
 
   Entity(Entity const &) = delete;
 
-  constexpr Entity(Entity &&e)
-  : ogreEntity(nullptr)
+  // TODO Constexpr
+  Entity(Entity &&e)
+    : ogreEntity(nullptr)
     , sceneNode(nullptr)
   {
     std::swap(ogreEntity, e.ogreEntity);
@@ -56,7 +57,7 @@ public:
   void setPosition(Ogre::Vector3 pos);
 
 
-  void setDirection(Vect<2u, double> v);
+  void setDirection(Vect<2u, Ogre::Real> v);
 };
 
 #endif // !ENTITY_HPP

@@ -6,11 +6,12 @@
 
 namespace Physics
 {
+
   /**
    * Tests if 2 circles collide, given, their center and radius.
    */
-  constexpr bool circleTest(Vect<2u, float> posA, float radiusA,
-			    Vect<2u, float> posB, float radiusB)
+  constexpr bool circleTest(Vect<2u, double> posA, double radiusA,
+			    Vect<2u, double> posB, double radiusB)
   {
     return (posB - posA).length2() < (radiusA + radiusB) * (radiusA + radiusB);
   }
@@ -75,6 +76,20 @@ namespace Physics
   {
     return makeProxyIterator(it, PosAndRadiusProxy<decltype(*IT{}), POS_EXTRACTOR, RADIUS_EXTRACTOR>::Builder(posExtractor, radiusExtractor));
   }
+
+  /**
+   * bounciness: 0.0 follow wall, 1.0, bounce back at same speed.
+   */
+  struct BounceResponse
+  {
+    double bounciness;
+
+    constexpr void operator()(Fixture &fixture, Vect<2u, double> dir)
+    {
+      fixture.speed -= dir * fixture.speed.scalar(dir) * (2.0);
+      fixture.speed *= bounciness;
+    }
+  };
 };
 
 #endif
