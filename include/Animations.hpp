@@ -19,9 +19,15 @@ namespace Animations
     namespace Archer
     {
       constexpr char const SPELL_A[] = "Spell_A";
-    }
-
+    };
   }
+
+  namespace Mount
+  {
+    constexpr char const WALK[] = "Walk";
+    constexpr char const STAND[] = "Stand";
+  };
+
   namespace Ennemy
   {
     constexpr char const STAND[] = "Stand";

@@ -3,7 +3,7 @@
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
 
-Entity EntityFactory::spawnOgreHead()
+Entity EntityFactory::spawnOgreHead(void)
 {
   Entity ogre(renderer, "ogrehead.mesh");
 
@@ -16,8 +16,13 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
 {
   AnimatedEntity archer(renderer, skin);
 
-  // TODO : Put the rotation here
   archer.getEntity().getOgre()->setCastShadows(true);
   archer.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
-  return archer;
+
+  // Mount
+  AnimatedEntity *mount(new AnimatedEntity("wolf.mesh", archer.getEntity().getNode()));
+  mount->getEntity().getOgre()->setCastShadows(true);
+  mount->getEntity().getNode()->translate(0.f, -150.f, 0.f); // Put the mount under the player
+  archer.setMount(mount);
+  return (archer);
 }

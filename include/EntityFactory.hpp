@@ -16,7 +16,7 @@ public:
   : renderer(renderer)
   {}
 
-  Entity spawnOgreHead();
+  Entity spawnOgreHead(void);
   AnimatedEntity spawnArcher(Skins::Skin);
 };
 

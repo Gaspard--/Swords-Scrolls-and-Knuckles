@@ -61,4 +61,4 @@ constexpr void Controllable::update(Logic &logic)
 }
 
 
-#endif
+#endif // !CONTROLLABLE_HPP

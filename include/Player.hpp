@@ -14,4 +14,4 @@ public:
   using Controllable::update;
 };
 
-#endif
+#endif // !PLAYER_HPP

@@ -44,6 +44,8 @@ void AnimatedEntity::addSubAnimation(std::string const &s, bool reset, bool loop
 
 void AnimatedEntity::updateAnimations(Ogre::Real r)
 {
+  if (entityMount)
+    entityMount->updateAnimations(r);
   if (blendTimer > 0)
   {
     blendTimer -= r;
@@ -73,4 +75,35 @@ void AnimatedEntity::updateAnimations(Ogre::Real r)
       anim.second->setEnabled(anim.second->getEnabled() * (anim.second->getWeight() > 0.01));
     }
   }
+}
+
+void AnimatedEntity::setMount(AnimatedEntity *m)
+{
+  if (entityMount)
+    dismount();
+  entityMount.reset(m);
+  if (entityMount)
+    dismount();
+}
+
+void AnimatedEntity::mount(void)
+{
+  if (entityMount && isMounted() == false)
+    entityMount->getEntity().getOgre()->setVisible(true);
+}
+
+void AnimatedEntity::dismount(void)
+{
+  if (entityMount && isMounted() == true)
+    entityMount->getEntity().getOgre()->setVisible(false);
+}
+
+AnimatedEntity *AnimatedEntity::getMount(void)
+{
+  return (entityMount.get());
+}
+
+bool AnimatedEntity::isMounted(void)
+{
+  return (entityMount->getEntity().getOgre()->isVisible());
 }

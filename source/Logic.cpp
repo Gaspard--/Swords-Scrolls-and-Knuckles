@@ -123,11 +123,31 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
 
       animatedEntity.getEntity().setDirection(player.getDir());
-      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]), 0.f, static_cast<Ogre::Real>(player.pos[1]));
+      animatedEntity.getEntity().setPosition(
+	static_cast<Ogre::Real>(player.pos[0]),
+	animatedEntity.isMounted(), // Put the player a bit higher when he's on his mount.
+	static_cast<Ogre::Real>(player.pos[1])
+      );
       if (player.isWalking())
-	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+      {
+	if (animatedEntity.isMounted())
+	{
+	  animatedEntity.setMainAnimation(Animations::Controllable::WALK_RIDE);
+	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	}
+	else
+	  animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+      }
       else
-	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+      {
+	if (animatedEntity.isMounted())
+	{
+	  animatedEntity.setMainAnimation(Animations::Controllable::STAND_RIDE);
+	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	}
+	else
+	  animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+      }
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
       Vect<2u, double> inputDir{0.0, 0.0};
 
@@ -143,6 +163,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
       if (Keyboard::getKeys()[OIS::KC_D]) {
 	inputDir += {1.0, 0.0};
       }
+      inputDir *= 1 + (animatedEntity.isMounted());
       player.setInput(inputDir * 0.03);
     }
   updatesSinceLastFrame = 0;
