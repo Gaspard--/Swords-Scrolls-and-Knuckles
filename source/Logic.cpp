@@ -216,16 +216,16 @@ void Logic::updateDisplay(LevelScene &levelScene)
     minmax_z.first->getPos()[1]} - cameraPos);
   auto midVecZ((rightVecZ - leftVecZ) / 2);
 
-  Ogre::Real yxpos((-tanAngle * (midVecX.length()) + 10) * 1.5);
-  Ogre::Real yzpos((-tanAngleUp * (midVecZ.length()) + 10) * 0.8);
+  Ogre::Real yxpos((-tanAngle * (midVecX.length()) + 10) * 1.5f);
+  Ogre::Real yzpos((-tanAngleUp * (midVecZ.length()) + 10) * 0.8f);
 
   cameraDest.x = minmax_x.first->getPos()[0]
-    + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2;
+    + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
   cameraDest.y = std::max(yxpos, yzpos);
   cameraDest.y = (cameraDest.y < yMax) * cameraDest.y + (cameraDest.y > yMax) * yMax;
   cameraDest.z = (minmax_z.first->getPos()[1]
-		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2)
-    + 0.5 * cameraDest.y;
+		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
+    + 0.5f * cameraDest.y;
 
   levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
 				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
