@@ -46,7 +46,7 @@ if (WIN32)
   set(OGRE_HOME $ENV{OGRE_HOME})
   set(OPENALDIR $ENV{OPENALDIR})
 else()
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wfloat-conversion -g -O3")
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wfloat-conversion -g -O3 -std=c++14")
 endif(WIN32)
 
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")
@@ -78,10 +78,10 @@ endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
-	SYSTEM ${PYTHON_INCLUDE_DIR}
 	SYSTEM ${OGRE_INCLUDE_DIRS}
 	SYSTEM ${OIS_INCLUDE_DIR}
 	SYSTEM ${OPENAL_INCLUDE_DIR}
+	SYSTEM ${PYTHON_INCLUDE_DIR}
 )
 
 add_executable(
@@ -98,18 +98,18 @@ target_link_libraries(
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
 	${PYTHON_LIBRARY}
-	dl
-	util
 )
+
 if (UNIX)
   target_link_libraries(
 	${PROJECT_NAME}
         alut
         vorbisfile
         ogg
+	dl
+	util
   )
 elseif (WIN32)
-
   set(VORBIS_LIB "optimized;C:/OpenAL/libs/libvorbis_static.lib;debug;C:/OpenAL/libs/libvorbis_static.lib")
   set(VORBISFILE_LIB "optimized;C:/OpenAL/libs/libvorbisfile_static.lib;debug;C:/OpenAL/libs/libvorbisfile_static.lib")
   set(ALUT_LIB "optimized;C:/OpenAL/libs/alut.lib;debug;C:/OpenAL/libs/alut.lib")

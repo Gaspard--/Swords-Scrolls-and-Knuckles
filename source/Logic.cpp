@@ -25,12 +25,12 @@ bool Logic::tick()
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
-  for (auto &fixture : gameState.projectiles)
+  for (auto &projectile : gameState.projectiles)
     {
-      fixture.update(*this);
-      gameState.terrain.correctFixture(fixture, Physics::BounceResponse{1.0});
+      projectile.update(*this);
+      gameState.terrain.correctFixture(projectile, Physics::BounceResponse{0.9});
     }
-  if (!(rand() % 10))
+  if (!(rand() % 15))
     {
       projectiles.add([this](){
 	  return entityFactory.spawnOgreHead();
@@ -43,12 +43,12 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   enemy.hit(player);
+			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 10);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &projectile, auto &enemy){
-			   projectile.hit(enemy);
+			   enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.1, 10);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -72,6 +72,9 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
+  enemies.add([this](){
+      return entityFactory.spawnEnemy();
+    }, 0.5, Vect<2u, double>{7.5, 7.5});
 }
 
 void Logic::run()
@@ -130,6 +133,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
 					     static_cast<Ogre::Real>(player.pos[1]));
       if (player.isWalking())
 	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+      else if (player.isStun())
+	animatedEntity.setMainAnimation(Animations::Controllable::STUN);
       else
 	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
@@ -192,7 +197,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
   constexpr Ogre::Real const tanAngle(tan(angle));
   constexpr Ogre::Real const angleUp(180 - 80 / 2);
   constexpr Ogre::Real const tanAngleUp(tan(angleUp));
-  constexpr Ogre::Real const yMax(23.0);
+  constexpr Ogre::Real const yMax(20.f);
   Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
   Ogre::Vector3 cameraDest;
 
@@ -223,7 +228,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 
   cameraDest.x = minmax_x.first->getPos()[0]
     + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
-  cameraDest.y = std::clamped(std::max(yxpos, yzpos), 0.0f, yMax);
+  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, yMax);
   cameraDest.z = (minmax_z.first->getPos()[1]
 		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
     + 0.5f * cameraDest.y;
@@ -231,4 +236,5 @@ void Logic::calculateCamera(LevelScene &levelScene)
   levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
 				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
 				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
+
 }
