@@ -68,3 +68,9 @@ void AudioSource::stop(void) const
   alSourceStop(id);
   Audio::checkError();
 }
+
+void AudioSource::setGlobal(bool b) const
+{
+  alSourcef(id, AL_SOURCE_RELATIVE, b);
+  Audio::checkError();
+}

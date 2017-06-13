@@ -1,10 +1,8 @@
 #ifndef AUDIOSOURCE_HPP
 # define AUDIOSOURCE_HPP
 
+# include "Vect.hpp"
 # include "Audio.hpp"
-
-template <unsigned int N, class T>
-class Vect;
 
 class AudioSource
 {
@@ -13,7 +11,7 @@ private:
   ALuint buffer;
 
 public:
-  AudioSource(Sounds, Vect<3, float> const &pos);
+  AudioSource(Sounds, Vect<3, float> const &pos={0, 0, 0});
   ~AudioSource();
 
   AudioSource(AudioSource const &) = delete;
@@ -24,6 +22,7 @@ public:
   void setPos(Vect<3, float> const &) const;
   void setLooping(bool) const;
   void setVolume(float) const;
+  void setGlobal(bool) const;
 };
 
 #endif /* !AUDIOSOURCE_HPP */

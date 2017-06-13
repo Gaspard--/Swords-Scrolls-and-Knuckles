@@ -223,7 +223,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 
   cameraDest.x = minmax_x.first->getPos()[0]
     + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
-  cameraDest.y = std::clamped(std::max(yxpos, yzpos), 0.0f, 40.0f);
+  cameraDest.y = std::clamped(std::max(yxpos, yzpos), 0.0f, yMax);
   cameraDest.z = (minmax_z.first->getPos()[1]
 		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
     + 0.5f * cameraDest.y;
