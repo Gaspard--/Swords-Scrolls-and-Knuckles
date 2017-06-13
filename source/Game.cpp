@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include "UIManager.hpp"
 #include "LevelScene.hpp"
+#include "Joystick.hpp"
 
 // Constructor
 
@@ -22,13 +23,13 @@ Game::Game()
 
   // Set up the renderer
   renderer.reset(new Renderer(*this));
-  
+
   // Load resources
   Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
   Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-  
+
   root.addFrameListener(this);
-   
+
   // Init UIManager
   UIManager::init();
   UIManager::showOverlayByName("menu");
@@ -37,11 +38,11 @@ Game::Game()
 			     [this]() { std::clog << "Exit game." << std::endl; });
   UIManager::getByName("menu")
     ->registerCallbackByName("Play",
-			     [this](){ 
+			     [this](){
 			       // Init scene
 			       renderer->switchScene([this](){
 				   LevelScene::createWallMesh();
-				   
+
 				   return new LevelScene(*renderer);
 				 });
 			       UIManager::hideOverlayByName("menu");
@@ -100,7 +101,7 @@ void Game::setupOIS(void) {
   window->getCustomAttribute("WINDOW", &windowHnd);
   stream << windowHnd;
   pl.insert(std::make_pair(std::string("WINDOW"), stream.str()));
-  
+
 #if defined OIS_WIN32_PLATFORM
   pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
   pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
@@ -118,10 +119,23 @@ void Game::setupOIS(void) {
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
   Mouse::getMouse().init(OIS::OISMouse, inputManager);
-
+  addJoystick();
   OIS::MouseState const &ms = Mouse::getMouse()->getMouseState();
   ms.width = Game::WIDTH;
   ms.height = Game::HEIGHT;
+}
+
+bool Game::addJoystick(void)
+{
+  try
+  {
+    std::unique_ptr<Joystick> newJoystick(new Joystick);
+    newJoystick->init(OIS::OISJoyStick, inputManager);
+    Joystick::getJoysticks().push_back(std::move(newJoystick));
+    return (true);
+  }
+  catch (std::exception e) {}
+  return (false);
 }
 
 // Protected functions
@@ -135,6 +149,10 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   // Need to capture / update each device
   Keyboard::getKeyboard()->capture();
   Mouse::getMouse()->capture();
+  for (auto &it : Joystick::getJoysticks())
+  {
+    (*it)->capture();
+  }
 
   // Update the current scene's logic
   if (renderer->getScene()) {

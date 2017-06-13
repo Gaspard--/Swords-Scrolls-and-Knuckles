@@ -56,6 +56,7 @@ find_package(Threads REQUIRED)
 find_package(OGRE REQUIRED)
 find_package(OIS REQUIRED)
 find_package(OpenAL REQUIRED)
+find_package(PythonLibs REQUIRED)
 
 if (UNIX AND OGRE_RenderSystem_GL_FOUND)
   if (OGRE_PLUGIN_DIR)
@@ -77,6 +78,7 @@ endif()
 
 include_directories(
 	${HEADER_DIRECTORY}
+	SYSTEM ${PYTHON_INCLUDE_DIR}
 	SYSTEM ${OGRE_INCLUDE_DIRS}
 	SYSTEM ${OIS_INCLUDE_DIR}
 	SYSTEM ${OPENAL_INCLUDE_DIR}
@@ -95,6 +97,9 @@ target_link_libraries(
 	${OIS_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
         ${OPENAL_LIBRARY}
+	${PYTHON_LIBRARY}
+	dl
+	util
 )
 if (UNIX)
   target_link_libraries(
