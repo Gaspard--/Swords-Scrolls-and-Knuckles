@@ -26,3 +26,13 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
   archer.setMount(mount);
   return (archer);
 }
+
+AnimatedEntity EntityFactory::spawnEnemy()
+{
+  AnimatedEntity enemy(renderer, "ennemy1.mesh");
+
+  // TODO : Put the rotation here
+  enemy.getEntity().getOgre()->setCastShadows(true);
+  enemy.getEntity().getNode()->setScale(1.0f / 300.0f, 1.0f / 300.0f, 1.0f / 300.0f);
+  return enemy;
+}

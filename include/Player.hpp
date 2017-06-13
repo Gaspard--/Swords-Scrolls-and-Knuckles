@@ -11,7 +11,6 @@ private:
 
 public:
   using Controllable::Controllable;
-  using Controllable::update;
 };
 
 #endif // !PLAYER_HPP

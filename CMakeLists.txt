@@ -46,7 +46,7 @@ if (WIN32)
   set(OGRE_HOME $ENV{OGRE_HOME})
   set(OPENALDIR $ENV{OPENALDIR})
 else()
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wfloat-conversion -g -O3")
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W -Wall -Wextra -Wfloat-conversion -g -O3 -std=c++14")
 endif(WIN32)
 
 file(GLOB_RECURSE SOURCES_FILE "${SOURCE_DIRECTORY}/*.cpp")

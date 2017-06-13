@@ -12,10 +12,6 @@ private:
 
 public:
   using Controllable::Controllable;
-
-  constexpr void hit(Player &player)
-  {
-  }
 };
 
 #endif

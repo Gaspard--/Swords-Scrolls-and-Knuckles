@@ -25,7 +25,7 @@ private:
     unsigned int removalStart;
     std::vector<std::pair<unsigned int, unsigned int>> removals;
   };
-    
+
   std::vector<Mod> mods;
 
 public:

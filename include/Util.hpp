@@ -56,5 +56,10 @@ auto makeNot(T t)
   return (Not<T>{t});
 }
 
+template<class T>
+auto const &clamp(T const &a, T const &min, T const &max)
+{
+  return a < min ? min : a > max ? max : a;
+}
 
 #endif // !UTIL_HPP_

@@ -13,7 +13,7 @@ LevelScene::LevelScene(Renderer &renderer)
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
-      
+
 		 cameraNode->attachObject(&renderer.getCamera());
 		 cameraNode->setPosition(Ogre::Vector3(8, 13, 5 + 8));
 		 cameraNode->lookAt(Ogre::Vector3(8, 0, 8), Ogre::Node::TS_WORLD);
@@ -41,6 +41,11 @@ LevelScene::LevelScene(Renderer &renderer)
 {
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
+  {
+    EntityFactory ef(renderer);
+
+    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
+  }
   {
     EntityFactory ef(renderer);
 
@@ -163,7 +168,7 @@ void LevelScene::createWallMesh()
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
+  std::cout << "\ncamera : " << cameraNode->getPosition() << std::endl;
   logicThread->updateDisplay(*this);
   return true;
 }
-

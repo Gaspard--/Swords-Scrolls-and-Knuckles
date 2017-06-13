@@ -18,6 +18,7 @@ public:
 
   Entity spawnOgreHead(void);
   AnimatedEntity spawnArcher(Skins::Skin);
+  AnimatedEntity spawnEnemy();
 };
 
 #endif
