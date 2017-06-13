@@ -9,7 +9,6 @@ namespace Skins
     constexpr Skin BASE = "sylvanas.mesh";
     constexpr Skin HIGH_ELF = "sylvanas_highelf.mesh";
   };
-
 };
 
-#endif SKINS_HPP
+#endif // !SKINS_HPP
