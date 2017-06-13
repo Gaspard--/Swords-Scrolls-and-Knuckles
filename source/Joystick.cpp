@@ -14,7 +14,7 @@ Joystick::Joystick(void)
   : Input<OIS::JoyStick, OIS::JoyStickListener>()
 {}
 
-bool Joystick::buttonPressed(OIS::JoyStickEvent const &arg, int button)
+bool Joystick::buttonPressed(OIS::JoyStickEvent const &, int button)
 {
   states[static_cast<joystickState>(button + 1)] = true;
   try
@@ -25,7 +25,7 @@ bool Joystick::buttonPressed(OIS::JoyStickEvent const &arg, int button)
   return (true);
 }
 
-bool Joystick::buttonReleased(OIS::JoyStickEvent const &arg, int button)
+bool Joystick::buttonReleased(OIS::JoyStickEvent const &, int button)
 {
   states[static_cast<joystickState>(button + 1)] = false;
   try
@@ -36,14 +36,18 @@ bool Joystick::buttonReleased(OIS::JoyStickEvent const &arg, int button)
   return (true);
 }
 
-bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int axis)
+bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int)
 {
-  axes[LEFT_HRZ] = (arg.state.mAxes[0].abs * 100) / 32767;
-  axes[LEFT_VRT] = (arg.state.mAxes[1].abs * 100) / 32767;
-  axes[LEFT_TOP] = (arg.state.mAxes[2].abs * 100) / 32767;
-  axes[RIGHT_HRZ] = (arg.state.mAxes[3].abs * 100) / 32767;
-  axes[RIGHT_VRT] = (arg.state.mAxes[4].abs * 100) / 32767;
-  axes[RIGHT_TOP] = (arg.state.mAxes[5].abs * 100) / 32767;
+  auto const calcAxes([&arg](int i)
+  {
+    return ((arg.state.mAxes[i].abs * 100) / 32767);
+  });
+  axes[LEFT_HRZ] = calcAxes(0);
+  axes[LEFT_VRT] = calcAxes(1);
+  axes[LEFT_TOP] = calcAxes(2);
+  axes[RIGHT_HRZ] = calcAxes(3);
+  axes[RIGHT_VRT] = calcAxes(4);
+  axes[RIGHT_TOP] = calcAxes(5);
   states[JS_LLEFT] = arg.state.mAxes[0].abs < -10000;
   states[JS_LRIGHT] = arg.state.mAxes[0].abs > 10000;
   states[JS_LUP] = arg.state.mAxes[1].abs < -10000;
