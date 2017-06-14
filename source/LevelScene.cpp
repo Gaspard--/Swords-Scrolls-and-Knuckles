@@ -39,9 +39,9 @@ LevelScene::LevelScene(Renderer &renderer)
 	     return ground;
 	   }())
   , logicThread(*this, renderer, players)
-  , music(Musics::SMALL_WORLD)
+  // , music(Musics::SMALL_WORLD)
 {
-  music.setVolume(0.2f);
+  // music.setVolume(0.2f);
   // music.play();
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 

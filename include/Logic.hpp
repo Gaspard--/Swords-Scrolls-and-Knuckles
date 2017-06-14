@@ -30,6 +30,8 @@ private:
   unsigned int updatesSinceLastFrame;
   bool stop;
 
+  AudioSource boyaux;
+  AudioSource euuh;
 
 
   std::vector<AnimatedEntity> &playerEntities;
@@ -38,9 +40,6 @@ private:
 
   void calculateCamera(LevelScene &);
   bool tick();
-
-  AudioSource boyaux;
-  AudioSource euuh;
 public:
   GameState gameState;
   EntityFactory entityFactory;
