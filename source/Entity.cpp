@@ -63,7 +63,11 @@ void Entity::setPosition(Vect<3, float> v)
 
 void Entity::setDirection(Vect<2u, Ogre::Real> v)
 {
-  sceneNode->setDirection(v[0], 0, v[1], Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Z);
+  if (v.length2() > 0)
+    {
+      v = v.unsafeNormalized();
+      sceneNode->setDirection(v[0], 0, v[1], Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Z);
+    }
 }
 
 void Entity::setPosition(Ogre::Vector3 pos)

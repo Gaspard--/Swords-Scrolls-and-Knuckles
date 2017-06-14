@@ -10,6 +10,7 @@
 #include "ModVector.hpp"
 #include "Projectile.hpp"
 #include "EntityFactory.hpp"
+#include "AudioSource.hpp"
 
 class LevelScene;
 
@@ -28,6 +29,9 @@ private:
   std::chrono::time_point<Clock> lastUpdate;
   unsigned int updatesSinceLastFrame;
   bool stop;
+
+  AudioSource boyaux;
+  AudioSource euuh;
 
 
   std::vector<AnimatedEntity> &playerEntities;

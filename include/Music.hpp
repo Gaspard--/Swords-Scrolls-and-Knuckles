@@ -43,6 +43,7 @@ public:
 
   bool isPlaying(void) const;
   void setLoopTime(float);
+  void setVolume(float) const;
 };
 
 #endif /* !MUSIC_HPP */
