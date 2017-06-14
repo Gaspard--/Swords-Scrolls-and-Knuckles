@@ -22,10 +22,10 @@ namespace Physics
 			       RESPONSE &&response)
   {
     for (;beginA != endA; ++beginA)
-      for (;beginB != endB; ++beginB)
+      for (auto itB(beginB); itB != endB; ++itB)
 	if (circleTest(beginA->getPos(), beginA->getRadius(),
-		       beginB->getPos(), beginB->getRadius()))
-	  response(*beginA, *beginB);
+		       itB->getPos(), itB->getRadius()))
+	  response(*beginA, *itB);
   }
 
   template<class IT_A, class RESPONSE>
