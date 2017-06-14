@@ -1,12 +1,14 @@
 #ifndef AUDIOLISTENER_HPP
 # define AUDIOLISTENER_HPP
 
+namespace Ogre { class Vector3; };
+
 template <unsigned int N, class T>
 class Vect;
 
 namespace AudioListener
 {
-  void setPos(Vect<3, float> const &);
+  void setPos(Ogre::Vector3 const &);
   void setVolume(float f);
 };
 

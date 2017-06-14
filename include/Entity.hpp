@@ -4,7 +4,9 @@
 # include <string>
 # include <OgreSceneNode.h>
 # include <OgreEntity.h>
+# include <unordered_map>
 
+# include "AudioSource.hpp"
 # include "Vect.hpp"
 # include "Game.hpp"
 
@@ -14,10 +16,15 @@ protected:
   Ogre::Entity *ogreEntity;
   Ogre::SceneNode *sceneNode;
 
+  void updateSoundsPos(void);
+
 public:
+  std::unique_ptr<std::unordered_map<Sounds, AudioSource>> soundMap;
+
   constexpr Entity(void)
   : ogreEntity(nullptr)
     , sceneNode(nullptr)
+    , soundMap(nullptr)
   {}
 
   Entity(Renderer &renderer,
@@ -35,6 +42,7 @@ public:
   {
     std::swap(ogreEntity, e.ogreEntity);
     std::swap(sceneNode, e.sceneNode);
+    std::swap(soundMap, e.soundMap);
   }
 
 
