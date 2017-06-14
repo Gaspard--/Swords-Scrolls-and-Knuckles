@@ -262,6 +262,18 @@ public:
       for (index[1] = begin[1]; index[1] < end[1]; ++index[1])
 	l(index);
   }
+
+  template<unsigned int n = dim, typename std::enable_if<(n >= 1)>::type * = nullptr>
+  constexpr T const &x() const
+  {
+    return data[0];
+  }
+
+  template<unsigned int n = dim, typename std::enable_if<(n >= 2)>::type * = nullptr>
+  constexpr T const &y() const
+  {
+    return data[1];
+  }
 };
 
 #include <ostream>
