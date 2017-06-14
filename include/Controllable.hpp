@@ -17,6 +17,7 @@ public:
   constexpr Controllable(PARAMS &&... params)
   : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0, 0}}
     , input(0.0, 0.0)
+    , dir{0.0, 1.0}
     , stun(0)
   {
   }

@@ -55,7 +55,7 @@ public:
   void setMount(AnimatedEntity *mount);
 
   /// Activate / deactivate the mount.
-  void setMounting(bool);
+  void setMounted(bool);
 
   /// Returns a pointer to the mount, or nullptr if there is no mount for this AnimatedEntity.
   AnimatedEntity *getMount(void);

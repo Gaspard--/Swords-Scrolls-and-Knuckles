@@ -69,7 +69,7 @@ LevelScene::LevelScene(Renderer &renderer)
     if (b)
     {
       for (auto &p : players) {
-	p.setMounting(!p.isMounted());
+	p.setMounted(!p.isMounted());
       }
     }
     return (false);

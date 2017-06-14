@@ -119,11 +119,15 @@ void Logic::updateDisplay(LevelScene &levelScene)
 		      });
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
+      animatedEntity.getEntity().setPosition(
+	static_cast<Ogre::Real>(controllable.pos[0]),
+	animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
+	static_cast<Ogre::Real>(controllable.pos[1])
+      );
     });
   enemies.forEach([updateControllableEntity](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
-		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]), 0.f, static_cast<Ogre::Real>(controllable.pos[1]));      
-      updateControllableEntity(animatedEntity, enemy);
+		    updateControllableEntity(animatedEntity, enemy);
 		  });
 
   for (unsigned int i(0); i != gameState.players.size(); ++i)
@@ -131,12 +135,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
       AnimatedEntity &animatedEntity(playerEntities[i]);
       Player &player(gameState.players[i]);
 
-      animatedEntity.getEntity().setDirection(player.getDir());
-      animatedEntity.getEntity().setPosition(
-	static_cast<Ogre::Real>(player.pos[0]),
-	animatedEntity.isMounted(), // Put the player a bit higher when he's on his mount.
-	static_cast<Ogre::Real>(player.pos[1])
-      );
       updateControllableEntity(animatedEntity, player);
       if (player.isWalking())
       {
