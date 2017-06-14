@@ -10,6 +10,7 @@
 #include "ModVector.hpp"
 #include "Projectile.hpp"
 #include "EntityFactory.hpp"
+#include "AudioSource.hpp"
 
 class LevelScene;
 
@@ -30,12 +31,16 @@ private:
   bool stop;
 
 
+
   std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
 
   void calculateCamera(LevelScene &);
   bool tick();
+
+  AudioSource boyaux;
+  AudioSource euuh;
 public:
   GameState gameState;
   EntityFactory entityFactory;

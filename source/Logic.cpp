@@ -5,6 +5,7 @@
 #include "LevelScene.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "AudioListener.hpp"
 
 // TODO: extract as mush as possible to gameState.
 // Logic could be passed as ref for spawning and & so on.
@@ -68,7 +69,10 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
+  , boyaux(Sounds::BOYAUX1)
+  , euuh(Sounds::EUUUH1)
 {
+  euuh.setGlobal(true);
   for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
@@ -169,17 +173,27 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p1 += {1.0, 0.0};
   }
 
+  if (Keyboard::getKeys()[OIS::KC_P]) {
+    boyaux.play();
+  }
+  if (Keyboard::getKeys()[OIS::KC_M]) {
+    euuh.play();
+  }
+
+  if (Keyboard::getKeys()[OIS::KC_O]) {
+    AudioListener::setPos({0.f, 0.f, 0.f});
+  }
   if (Keyboard::getKeys()[OIS::KC_UP]) {
-    p2 += {0.0, -1.0};
+    AudioListener::setPos({0.f, 1.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_LEFT]) {
-    p2 += {-1.0, 0.0};
+    AudioListener::setPos({1.f, 0.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_DOWN]) {
-    p2 += {0.0, 1.0};
+    AudioListener::setPos({0.f, -1.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
-    p2 += {1.0, 0.0};
+    AudioListener::setPos({-1.f, 0.f, 0.f});
   }
 
   gameState.players[0].setInput(p0 * 0.03);
