@@ -73,7 +73,7 @@ LevelScene::LevelScene(Renderer &renderer)
     if (b)
     {
       for (auto &p : players) {
-	p.addSubAnimation(Animations::Controllable::ATTACK);
+	p.setMounted(!p.isMounted());
       }
     }
     return (false);

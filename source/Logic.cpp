@@ -122,8 +122,12 @@ void Logic::updateDisplay(LevelScene &levelScene)
 			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 		      });
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
-      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]), 0.f, static_cast<Ogre::Real>(controllable.pos[1]));
       animatedEntity.getEntity().setDirection(controllable.getDir());
+      animatedEntity.getEntity().setPosition(
+	static_cast<Ogre::Real>(controllable.pos[0]),
+	animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
+	static_cast<Ogre::Real>(controllable.pos[1])
+      );
     });
   enemies.forEach([updateControllableEntity](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
@@ -137,11 +141,25 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
       updateControllableEntity(animatedEntity, player);
       if (player.isWalking())
-	animatedEntity.setMainAnimation(Animations::Controllable::WALK);
-      else if (player.isStun())
-	animatedEntity.setMainAnimation(Animations::Controllable::STUN);
+      {
+	if (animatedEntity.isMounted())
+	{
+	  animatedEntity.setMainAnimation(Animations::Controllable::WALK_RIDE);
+	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	}
+	else
+	  animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+      }
       else
-	animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+      {
+	if (animatedEntity.isMounted())
+	{
+	  animatedEntity.setMainAnimation(Animations::Controllable::STAND_RIDE);
+	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	}
+	else
+	  animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+      }
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
   Vect<2u, double> p0{0.0, 0.0};
@@ -209,9 +227,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
 void Logic::calculateCamera(LevelScene &levelScene)
 {
   constexpr Ogre::Real const angle(180 - 60 / 2);
-  constexpr Ogre::Real const tanAngle(tan(angle));
+  Ogre::Real const tanAngle(tan(angle));
   constexpr Ogre::Real const angleUp(180 - 80 / 2);
-  constexpr Ogre::Real const tanAngleUp(tan(angleUp));
+  Ogre::Real const tanAngleUp(tan(angleUp));
   constexpr Ogre::Real const yMax(20.f);
   Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
   Ogre::Vector3 cameraDest;
