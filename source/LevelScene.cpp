@@ -49,10 +49,6 @@ LevelScene::LevelScene(Renderer &renderer)
     EntityFactory ef(renderer);
 
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-  }
-  {
-    EntityFactory ef(renderer);
-
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 

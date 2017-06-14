@@ -30,10 +30,6 @@ private:
   unsigned int updatesSinceLastFrame;
   bool stop;
 
-  AudioSource boyaux;
-  AudioSource euuh;
-
-
   std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;

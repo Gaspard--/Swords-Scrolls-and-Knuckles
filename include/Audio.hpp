@@ -22,6 +22,7 @@ enum class Sounds
   NONE,
   BOYAUX1,
   EUUUH1,
+  FOOTSTEPS,
   SIZE
 };
 
@@ -45,12 +46,13 @@ private:
 {{
   nullptr,
   "resources/sounds/boyaux1.wav",
-  "resources/sounds/euuuh1.wav"
+  "resources/sounds/euuuh1.wav",
+  "resources/sounds/footsteps.wav",
 }};
   static constexpr std::array<char const *, static_cast<size_t>(Musics::SIZE)> const musicFilenames
 {{
   nullptr,
-  "resources/musics/small_world.ogg"
+  "resources/musics/small_world.ogg",
 }};
 
 public:
