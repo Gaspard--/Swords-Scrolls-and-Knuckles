@@ -14,12 +14,12 @@ bool Logic::tick()
 
   ++updatesSinceLastFrame;
 
-  auto const updateElements([this](auto &fixtures)
+  auto const updateElements([this](auto &elements)
 			    {
-			      for (auto &fixture : fixtures)
+			      for (auto &element : elements)
 				{
-				  fixture.update(*this);
-				  gameState.terrain.correctFixture(fixture);
+				  element.update(*this);
+				  gameState.terrain.correctFixture(element);
 				}
 			    });
 
@@ -43,12 +43,12 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 10);
+			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 5);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &projectile, auto &enemy){
-			   enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.1, 10);
+			   enemy.knockback(projectile.speed.normalized() * 0.1, 5);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -69,7 +69,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
 {
-  for (unsigned int i(0); i != 2u; ++i) // TODO: obviously players should be passed as parameter or something.
+  for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
   levelScene.setTerrain(gameState.terrain);
   enemies.add([this](){
@@ -113,14 +113,18 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
   enemies.updateTarget();
   projectiles.updateTarget();
-  enemies.forEach([](AnimatedEntity &animatedEntity, Enemy &enemy)
-		  {
-		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(enemy.pos[0]), 0.f, static_cast<Ogre::Real>(enemy.pos[1]));
-		  });
   projectiles.forEach([](Entity &entity, Projectile &projectile)
 		      {
 			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 		      });
+  auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
+      animatedEntity.getEntity().setDirection(controllable.getDir());
+    });
+  enemies.forEach([updateControllableEntity](AnimatedEntity &animatedEntity, Enemy &enemy)
+		  {
+		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]), 0.f, static_cast<Ogre::Real>(controllable.pos[1]));      
+      updateControllableEntity(animatedEntity, enemy);
+		  });
 
   for (unsigned int i(0); i != gameState.players.size(); ++i)
     {
@@ -133,6 +137,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	animatedEntity.isMounted(), // Put the player a bit higher when he's on his mount.
 	static_cast<Ogre::Real>(player.pos[1])
       );
+      updateControllableEntity(animatedEntity, player);
       if (player.isWalking())
       {
 	if (animatedEntity.isMounted())
@@ -213,7 +218,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
   Ogre::Real const tanAngle(tan(angle));
   constexpr Ogre::Real const angleUp(180 - 80 / 2);
   Ogre::Real const tanAngleUp(tan(angleUp));
-  constexpr Ogre::Real const yMax(23.0);
+  constexpr Ogre::Real const yMax(20.f);
   Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
   Ogre::Vector3 cameraDest;
 
@@ -244,7 +249,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 
   cameraDest.x = minmax_x.first->getPos()[0]
     + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
-  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, 40.0f);
+  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, yMax);
   cameraDest.z = (minmax_z.first->getPos()[1]
 		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
     + 0.5f * cameraDest.y;
@@ -252,4 +257,5 @@ void Logic::calculateCamera(LevelScene &levelScene)
   levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
 				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
 				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
+
 }

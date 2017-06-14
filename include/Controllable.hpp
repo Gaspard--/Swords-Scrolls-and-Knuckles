@@ -58,10 +58,13 @@ constexpr void Controllable::update(Logic &logic)
   if (!stun)
     {
       speed = speed * 0.9 + input * 0.1;
-      dir = input;
+      dir = dir * 0.9 + input * 0.1;
     }
   else
-    --stun;
+    {
+      dir = dir * 0.9 - speed * 0.1;
+      --stun;
+    }
   pos += speed;
 }
 

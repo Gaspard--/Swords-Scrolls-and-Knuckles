@@ -165,7 +165,6 @@ void LevelScene::createWallMesh()
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
-  std::cout << "\ncamera : " << cameraNode->getPosition() << std::endl;
   logicThread->updateDisplay(*this);
   return true;
 }
