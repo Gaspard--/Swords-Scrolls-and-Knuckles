@@ -79,21 +79,15 @@ void AnimatedEntity::updateAnimations(Ogre::Real r)
 
 void AnimatedEntity::setMount(AnimatedEntity *m)
 {
-  dismount();
+  setMounting(false);
   entityMount.reset(m);
-  dismount();
+  setMounting(false);
 }
 
-void AnimatedEntity::mount(void)
+void AnimatedEntity::setMounting(bool b)
 {
   if (entityMount)
-    entityMount->getEntity().getOgre()->setVisible(true);
-}
-
-void AnimatedEntity::dismount(void)
-{
-  if (entityMount)
-    entityMount->getEntity().getOgre()->setVisible(false);
+    entityMount->getEntity().getOgre()->setVisible(b);
 }
 
 AnimatedEntity *AnimatedEntity::getMount(void)

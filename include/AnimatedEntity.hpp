@@ -54,11 +54,8 @@ public:
   /// Takes the ownership of the given pointer
   void setMount(AnimatedEntity *mount);
 
-  /// Activate the mount.
-  void mount(void);
-
-  /// Disactiate the mount.
-  void dismount(void);
+  /// Activate / deactivate the mount.
+  void setMounting(bool);
 
   /// Returns a pointer to the mount, or nullptr if there is no mount for this AnimatedEntity.
   AnimatedEntity *getMount(void);
