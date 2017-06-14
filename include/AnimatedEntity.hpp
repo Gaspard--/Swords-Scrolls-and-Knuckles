@@ -2,6 +2,7 @@
 # define ANIMATED_ENTITY_HPP
 
 # include <map>
+# include <memory>
 # include <vector>
 # include <string>
 # include <OgreAnimationState.h>
@@ -15,6 +16,7 @@ class AnimatedEntity
   Ogre::AnimationState *targetMainAnimation;
   Ogre::Real blendDuration;
   Ogre::Real blendTimer;
+  std::unique_ptr<AnimatedEntity> entityMount;
 
 public:
 
@@ -25,6 +27,7 @@ public:
     , targetMainAnimation(nullptr)
     , blendDuration(0.f)
     , blendTimer(0.f)
+    , entityMount(nullptr)
   {}
 
   AnimatedEntity(AnimatedEntity const &ae) = delete;
@@ -46,6 +49,19 @@ public:
 
   /// Update all animations
   void updateAnimations(Ogre::Real);
+
+  /// Add an entity as a mount.
+  /// Takes the ownership of the given pointer
+  void setMount(AnimatedEntity *mount);
+
+  /// Activate / deactivate the mount.
+  void setMounting(bool);
+
+  /// Returns a pointer to the mount, or nullptr if there is no mount for this AnimatedEntity.
+  AnimatedEntity *getMount(void);
+
+  /// Is this entity on a mount ?
+  bool isMounted(void);
 };
 
 #endif // !ANIMATED_ENTITY_HPP
