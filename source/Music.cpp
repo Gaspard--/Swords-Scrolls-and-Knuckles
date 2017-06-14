@@ -70,6 +70,7 @@ bool Music::isPlaying(void) const
   alGetSourcei(source, AL_SOURCE_STATE, &state);
   return state == AL_PLAYING;
 }
+
 void Music::update(void)
 {
   ALuint buffer[1];

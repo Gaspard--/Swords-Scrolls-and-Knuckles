@@ -2,7 +2,8 @@
 # define AUDIOSOURCE_HPP
 
 # include "Audio.hpp"
-# include "Vect.hpp"
+
+namespace Ogre { class Vector3; };
 
 class AudioSource
 {
@@ -10,8 +11,10 @@ private:
   ALuint id;
   ALuint buffer;
 
+  void init();
+
 public:
-  AudioSource(Sounds, Vect<3, float> const &pos={0, 0, 0});
+  AudioSource();
   ~AudioSource();
 
   AudioSource(AudioSource const &) = delete;
@@ -19,10 +22,12 @@ public:
 
   void play(void) const;
   void stop(void) const;
-  void setPos(Vect<3, float> const &) const;
+  void setPos(Ogre::Vector3 const &) const;
   void setLooping(bool) const;
+  void setSound(Sounds);
   void setVolume(float) const;
   void setGlobal(bool) const;
+  bool isPlaying(void) const;
 };
 
 #endif /* !AUDIOSOURCE_HPP */

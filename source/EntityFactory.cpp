@@ -18,6 +18,9 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
 
   archer.getEntity().getOgre()->setCastShadows(true);
   archer.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
+  (*(archer.getEntity().soundMap))[Sounds::BOYAUX1].setSound(Sounds::BOYAUX1);
+  (*(archer.getEntity().soundMap))[Sounds::BOYAUX1].setLooping(true);
+
 
   // Mount
   AnimatedEntity *mount(new AnimatedEntity("wolf.mesh", archer.getEntity().getNode()));

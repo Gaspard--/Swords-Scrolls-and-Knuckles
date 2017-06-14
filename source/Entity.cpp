@@ -10,6 +10,7 @@ Entity::Entity(Renderer &renderer,
 Entity::Entity(std::string const &mesh, Ogre::SceneNode *parent)
   : ogreEntity(parent->getCreator()->createEntity(mesh))
   , sceneNode(parent->createChildSceneNode())
+  , soundMap(new std::unordered_map<Sounds, AudioSource>)
 {
   sceneNode->attachObject(ogreEntity);
 }
@@ -18,6 +19,7 @@ Entity &Entity::operator=(Entity &&e)
 {
   std::swap(ogreEntity, e.ogreEntity);
   std::swap(sceneNode, e.sceneNode);
+  std::swap(soundMap, e.soundMap);
 
   return *this;
 }
@@ -54,11 +56,13 @@ Ogre::SceneNode const *Entity::getNode(void) const
 void Entity::setPosition(float x, float y, float z)
 {
   sceneNode->setPosition(x, y, z);
+  updateSoundsPos();
 }
 
 void Entity::setPosition(Vect<3, float> v)
 {
   sceneNode->setPosition(v[0], v[1], v[2]);
+  updateSoundsPos();
 }
 
 void Entity::setDirection(Vect<2u, Ogre::Real> v)
@@ -73,4 +77,13 @@ void Entity::setDirection(Vect<2u, Ogre::Real> v)
 void Entity::setPosition(Ogre::Vector3 pos)
 {
   sceneNode->setPosition(pos);
+  updateSoundsPos();
+}
+
+void Entity::updateSoundsPos(void)
+{
+  for (auto &sound : *soundMap)
+    {
+      sound.second.setPos(sceneNode->getPosition());
+    }
 }
