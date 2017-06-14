@@ -198,7 +198,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
   constexpr Ogre::Real const tanAngle(tan(angle));
   constexpr Ogre::Real const angleUp(180 - 80 / 2);
   constexpr Ogre::Real const tanAngleUp(tan(angleUp));
-  constexpr Ogre::Real const yMax(23.0);
+  constexpr Ogre::Real const yMax(20.f);
   Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
   Ogre::Vector3 cameraDest;
 
@@ -229,7 +229,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 
   cameraDest.x = minmax_x.first->getPos()[0]
     + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
-  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, 40.0f);
+  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, yMax);
   cameraDest.z = (minmax_z.first->getPos()[1]
 		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
     + 0.5f * cameraDest.y;
@@ -237,4 +237,5 @@ void Logic::calculateCamera(LevelScene &levelScene)
   levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
 				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
 				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
+
 }
