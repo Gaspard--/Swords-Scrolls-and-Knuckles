@@ -19,8 +19,8 @@ void UIButton::init(
   panel->setPosition(x, y);
   panel->setMaterialName(materialName);
   
-  hoverPanel->setDimensions(UIButton::WIDTH, UIButton::HEIGHT);
-  hoverPanel->setPosition(0, 0);
+  hoverPanel->setDimensions(UIButton::WIDTH - 0.012f * 2.f, UIButton::HEIGHT);
+  hoverPanel->setPosition(0.012f, 0);
   hoverPanel->setMaterialName("HUD/ButtonHovered");
   hoverPanel->hide();
   panel->addChild(hoverPanel.get());

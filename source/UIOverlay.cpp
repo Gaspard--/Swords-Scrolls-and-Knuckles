@@ -22,32 +22,37 @@ Ogre::Vector2 UIOverlay::relativeToPixels(Ogre::Vector2 relative) {
 
 void UIOverlay::mousePressed(Ogre::Real x, Ogre::Real y)
 {
-  for (auto &&button : buttons) {
-    Ogre::PanelOverlayElement *menuButton(button.second->getPanel());
-    Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({ menuButton->getWidth(),
-			    menuButton->getHeight() }));
-    Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({ menuButton->getLeft(),
-			    menuButton->getTop() }));
-    if (x >= buttonPos.x && x <= buttonPos.x + buttonSize.x
-      && y >= buttonPos.y && y <= buttonPos.y + buttonSize.y) {
-      button.second->getCallback()();
+  if (overlay->isVisible())
+  {
+    for (auto &&button : buttons) {
+      Ogre::PanelOverlayElement *menuButton(button.second->getPanel());
+      Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({ menuButton->getWidth(),
+			      menuButton->getHeight() }));
+      Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({ menuButton->getLeft(),
+			      menuButton->getTop() }));
+      if (x >= buttonPos.x && x <= buttonPos.x + buttonSize.x
+	&& y >= buttonPos.y && y <= buttonPos.y + buttonSize.y) {
+	button.second->getCallback()();
+      }
     }
   }
 }
 
 void UIOverlay::mouseMoved(Ogre::Real x, Ogre::Real y) {
-  for (auto &&button : buttons) {
-    Ogre::PanelOverlayElement *menuButton(button.second->getPanel());
-    Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({ menuButton->getWidth(),
-			    menuButton->getHeight() }));
-    Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({ menuButton->getLeft(),
-			    menuButton->getTop() }));
-    buttons[menuButton->getName()]->setHovered(
-      x >= buttonPos.x
-      && x <= buttonPos.x + buttonSize.x
-      && y >= buttonPos.y
-      && y <= buttonPos.y + buttonSize.y
-    );
-
+  if (overlay->isVisible())
+  {
+    for (auto &&button : buttons) {
+      Ogre::PanelOverlayElement *menuButton(button.second->getPanel());
+      Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({ menuButton->getWidth(),
+			      menuButton->getHeight() }));
+      Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({ menuButton->getLeft(),
+			      menuButton->getTop() }));
+      buttons[menuButton->getName()]->setHovered(
+	x >= buttonPos.x
+	&& x <= buttonPos.x + buttonSize.x
+	&& y >= buttonPos.y
+	&& y <= buttonPos.y + buttonSize.y
+      );
+    }
   }
 }

@@ -1,0 +1,84 @@
+material HUD/PauseMenuBG
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture MenuPauseBG.png
+			}
+		}
+	}
+}
+
+material HUD/ButtonPauseResume
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ButtonPauseResume.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonPauseOptions
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ButtonPauseOptions.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonPauseSave
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ButtonPauseSave.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonPauseExit
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ButtonPauseExit.png
+			}
+		}
+	}
+	
+}
+

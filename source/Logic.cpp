@@ -266,3 +266,11 @@ void Logic::calculateCamera(LevelScene &levelScene)
 
   AudioListener::setPos(levelScene.cameraNode->getPosition());
 }
+
+void Logic::pause(void) {
+  lock.lock();
+}
+
+void Logic::unpause(void) {
+  lock.unlock();
+}
