@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "UIOverlayHUD.hpp"
+#include "UIOverlayPause.hpp"
 #include "Scene.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
@@ -21,7 +22,9 @@ class LevelScene : public Scene
 {
 private:
   UIOverlayHUD uiHUD;
+  UIOverlayPause uiPause;
   Ogre::SceneNode *terrainNode;
+  bool inPause;
 
 public:
   Ogre::SceneNode *cameraNode;
@@ -43,6 +46,8 @@ public:
   static void createWallMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
+
+  bool isInPause(void) const;
 };
 
 #endif

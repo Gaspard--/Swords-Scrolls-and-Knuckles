@@ -4,7 +4,6 @@
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
-#include "SceneMainMenu.hpp"
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
@@ -12,7 +11,9 @@
 
 LevelScene::LevelScene(Renderer &renderer)
   : uiHUD(renderer)
+  , uiPause(renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  , inPause(false)
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -70,7 +71,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // For demonstration / test purpose. Remove it if needed.
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-    if (b)
+    if (b && isInPause() == false)
     {
       for (auto &p : players) {
 	p.setMounted(!p.isMounted());
@@ -79,19 +80,38 @@ LevelScene::LevelScene(Renderer &renderer)
   });
 
   // Go back to menu
-  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [&renderer](bool) {
-    renderer.switchScene([&renderer]() {
-      return new SceneMainMenu(renderer);
-    });
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [this](bool b) {
+    if (!b)
+    {
+      if (uiPause.getOverlay()->isVisible()) {
+	inPause = false;
+	uiPause.getOverlay()->hide();
+      }
+      else {
+	inPause = true;
+	uiPause.getOverlay()->show();
+      }
+    }
   });
 
   // UI Mouse stuff
+  Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
+    uiHUD.mouseMoved(x, y);
+    uiPause.mouseMoved(x, y);
+  });
   Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
     uiHUD.mousePressed(
       static_cast<Ogre::Real>(e.state.X.abs),
       static_cast<Ogre::Real>(e.state.Y.abs)
     );
+    uiPause.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
   });
+
+  // Hide pause
+  uiPause.getOverlay()->hide();
 
   std::clog << "End loading level scene" << std::endl;
 }
@@ -188,4 +208,8 @@ bool LevelScene::update(Game &, Ogre::FrameEvent const &)
   logicThread->updateDisplay(*this);
   // music.update();
   return true;
+}
+
+bool LevelScene::isInPause(void) const {
+  return (inPause);
 }
