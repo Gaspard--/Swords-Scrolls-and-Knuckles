@@ -71,7 +71,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // For demonstration / test purpose. Remove it if needed.
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-    if (b && isInPause() == false)
+    if (b && !isInPause())
     {
       for (auto &p : players) {
 	p.setMounted(!p.isMounted());
