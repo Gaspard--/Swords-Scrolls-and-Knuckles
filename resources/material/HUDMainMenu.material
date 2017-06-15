@@ -1,0 +1,91 @@
+material HUD/MainMenuBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture MainMenuBG.png
+			}
+		}
+	}
+
+}
+
+material HUD/ButtonPlay
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ButtonPlay.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonOptions
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ButtonOptions.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonLoad
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ButtonLoad.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonPlay
+{
+	technique
+	{
+
+		pass
+		{
+			texture_unit
+			{
+				texture ButtonPlay.png
+			}
+		}
+	}
+	
+}
+
+material HUD/ButtonExit
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ButtonExit.png
+			}
+		}
+	}
+	
+}
+

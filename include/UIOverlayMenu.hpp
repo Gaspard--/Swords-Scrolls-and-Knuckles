@@ -10,8 +10,6 @@
 
 class UIOverlayMenu : public UIOverlay {
 private:
-  Ogre::Real width;
-  Ogre::Real height;
   Ogre::PanelOverlayElement *bg;
 
 public:

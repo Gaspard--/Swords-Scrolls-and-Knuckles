@@ -1,18 +1,3 @@
-material HUD/MainMenuBG
-{
-	technique
-	{
-		pass
-		{
-			texture_unit
-			{
-				texture MainMenuBG.png
-			}
-		}
-	}
-	
-}
-
 material HUD/Black
 {
 	technique

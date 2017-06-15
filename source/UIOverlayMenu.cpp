@@ -9,8 +9,10 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::clog << "Init Overlay Menu" << std::endl;
 
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
-  width = 0.5f;
-  height = 0.1f;
+  int i(0);
+  Ogre::Real posX(0.075f);
+  Ogre::Real offset(0.35f);
+  Ogre::Real mult(1.6f);
 
   // Background
   bg->setMaterialName("HUD/MainMenuBG");
@@ -23,29 +25,35 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
       return static_cast<Scene *>(new LevelScene(renderer));
     });
   }));
-  play->init(manager, "HUD/Black", "HUD/Green", width, height, 0.5f - width / 2.0f, 0.3f);
+  play->init(manager, "HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(play->getPanel());
+  buttons["Play"] = std::move(play);
 
-  // Credit button
-  std::unique_ptr<UIButton> credits(new UIButton(manager, "Credits", []() {
-    std::clog << "In Credits button" << std::endl;
+  // Exit button
+  std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
+    throw Game::GameQuitException();
   }));
-  credits->init(manager, "HUD/Black", "HUD/Yellow", width, height, 0.5f - width / 2.0f, 0.5f);
+  load->init(manager, "HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(load->getPanel());
+  buttons["Load"] = std::move(load);
+
+  // Exit button
+  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
+    throw Game::GameQuitException();
+  }));
+  options->init(manager, "HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(options->getPanel());
+  buttons["Options"] = std::move(options);
 
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", []() {
     throw Game::GameQuitException();
   }));
-  exit->init(manager, "HUD/Black", "HUD/Red", width, height, 0.5f - width / 2.0f, 0.7f);
-
-  // Linking everything together
-  bg->addChild(play->getPanel());
-  bg->addChild(credits->getPanel());
+  exit->init(manager, "HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
-  overlay->add2D(bg);
-
-  buttons["Play"] = std::move(play);
-  buttons["Credits"] = std::move(credits);
   buttons["Exit"] = std::move(exit);
+
+  overlay->add2D(bg);
 }
 
 UIOverlayMenu::~UIOverlayMenu()

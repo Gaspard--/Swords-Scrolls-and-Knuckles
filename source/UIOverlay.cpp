@@ -29,7 +29,7 @@ Ogre::Vector2 UIOverlay::relativeToPixels(Ogre::Vector2 relative) {
 bool UIOverlay::mousePressed(Ogre::Real x, Ogre::Real y)
 {
   for (auto &&button : buttons) {
-    Ogre::BorderPanelOverlayElement *menuButton(button.second->getPanel());
+    Ogre::PanelOverlayElement *menuButton(button.second->getPanel());
     Ogre::Vector2 buttonSize(UIOverlay::relativeToPixels({ menuButton->getWidth(),
 			    menuButton->getHeight() }));
     Ogre::Vector2 buttonPos(UIOverlay::relativeToPixels({ menuButton->getLeft(),
