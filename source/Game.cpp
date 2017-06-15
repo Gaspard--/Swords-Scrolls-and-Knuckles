@@ -1,8 +1,8 @@
+#include <functional>
 #include <memory>
 #include <stdexcept>
 #include "Game.hpp"
-#include "UIManager.hpp"
-#include "LevelScene.hpp"
+#include "SceneMainMenu.hpp"
 #include "Joystick.hpp"
 
 // Constructor
@@ -30,24 +30,10 @@ Game::Game()
 
   root.addFrameListener(this);
 
-  // Init UIManager
-  UIManager::init();
-  UIManager::showOverlayByName("menu");
-  UIManager::getByName("menu")
-    ->registerCallbackByName("Exit",
-			     [this]() { std::clog << "Exit game." << std::endl; });
-  UIManager::getByName("menu")
-    ->registerCallbackByName("Play",
-			     [this](){
-			       // Init scene
-			       renderer->switchScene([this](){
-				   LevelScene::createWallMesh();
-
-				   return new LevelScene(*renderer);
-				 });
-			       UIManager::hideOverlayByName("menu");
-			       UIManager::showOverlayByName("hud");
-			     });
+  // Go to main menu
+  renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
+    return (static_cast<Scene *>(new SceneMainMenu(*renderer)));
+  }));
 }
 
 Game::~Game(void)
@@ -70,11 +56,11 @@ void Game::setupResources(void) {
   Ogre::ConfigFile::SectionIterator secIt = cf.getSectionIterator();
   while (secIt.hasMoreElements())
     for (auto &&pair : *secIt.getNext())
-      {
-	locType = pair.first;
-	name = pair.second;
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
-      }
+    {
+      locType = pair.first;
+      name = pair.second;
+      Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
+    }
 }
 
 void Game::setupRenderSystem(void) {
@@ -84,9 +70,9 @@ void Game::setupRenderSystem(void) {
       root.setRenderSystem(rs);
       rs->setConfigOption("Full Screen", "Yes");
       rs->setConfigOption("Video Mode",
-			  std::to_string(Game::WIDTH) + " x " + std::to_string(Game::HEIGHT)
-			  + " @ 32-bit colour");
-      return ;
+	std::to_string(Game::WIDTH) + " x " + std::to_string(Game::HEIGHT)
+	+ " @ 32-bit colour");
+      return;
     }
   }
   throw SetupException("Can't find an available Renderer");
@@ -103,7 +89,7 @@ void Game::setupOIS(void) {
   pl.insert(std::make_pair(std::string("WINDOW"), stream.str()));
 
 #if defined OIS_WIN32_PLATFORM
-  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
+  pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
   pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
   pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
   pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
@@ -146,21 +132,26 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
   if (window->isClosed())
     return (false);
 
-  // Need to capture / update each device
-  Keyboard::getKeyboard()->capture();
-  Mouse::getMouse()->capture();
-  for (auto &it : Joystick::getJoysticks())
+  try
   {
-    (*it)->capture();
-  }
+    // Need to capture / update each device
+    Keyboard::getKeyboard()->capture();
+    Mouse::getMouse()->capture();
+    for (auto &it : Joystick::getJoysticks())
+    {
+      (*it)->capture();
+    }
 
-  // Update the current scene's logic
-  if (renderer->getScene()) {
-    go_on &= renderer->getScene()->update(*this, fe);
+    // Update the current scene's logic
+    if (renderer->getScene()) {
+      go_on &= renderer->getScene()->update(*this, fe);
+    }
   }
-
-  if (Keyboard::getKeys()[OIS::KC_ESCAPE])
-    go_on = false;
+  catch (Renderer::SceneSwitcherException const &sse) {
+    std::clog << "GONA SWITCH SCENE !" << std::endl;
+    renderer->doSwitchScene(sse);
+    std::clog << "SURVIVED !" << std::endl;
+  }
   return (go_on);
 }
 

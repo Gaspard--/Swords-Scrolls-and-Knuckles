@@ -4,13 +4,15 @@
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
+#include "SceneMainMenu.hpp"
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
 LevelScene::LevelScene(Renderer &renderer)
-  : terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  : uiHUD(renderer)
+  , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -45,6 +47,8 @@ LevelScene::LevelScene(Renderer &renderer)
   // music.play();
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
+  std::clog << "Loading level scene" << std::endl;
+
   {
     EntityFactory ef(renderer);
 
@@ -72,8 +76,24 @@ LevelScene::LevelScene(Renderer &renderer)
 	p.setMounted(!p.isMounted());
       }
     }
-    return (false);
   });
+
+  // Go back to menu
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [&renderer](bool) {
+    renderer.switchScene([&renderer]() {
+      return new SceneMainMenu(renderer);
+    });
+  });
+
+  // UI Mouse stuff
+  Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
+    uiHUD.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
+  });
+
+  std::clog << "End loading level scene" << std::endl;
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)

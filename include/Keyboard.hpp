@@ -7,7 +7,7 @@
 
 class Keyboard : public Input<OIS::Keyboard, OIS::KeyListener>
 {
-    std::map<OIS::KeyCode, std::function<bool(bool)>> keys;
+    std::map<OIS::KeyCode, std::function<void(bool)>> keys;
 
     /// Singleton instance
     static Keyboard keyboardInstance;
@@ -31,7 +31,7 @@ class Keyboard : public Input<OIS::Keyboard, OIS::KeyListener>
     /// This callback takes in parameter a boolean, true if the key is pressed,
     /// false if it's released.
     /// It should return false if the game should exit, true otherwise.
-    void registerCallback(OIS::KeyCode, std::function<bool(bool)> const &);
+    void registerCallback(OIS::KeyCode, std::function<void(bool)> const &);
 
     /// Clear all key callback
     void clearCallbacks(void);
