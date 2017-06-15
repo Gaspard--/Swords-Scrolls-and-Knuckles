@@ -11,7 +11,8 @@
 #include "AudioSource.hpp"
 
 LevelScene::LevelScene(Renderer &renderer)
-  : terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  : uiHUD(renderer)
+  , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -82,6 +83,14 @@ LevelScene::LevelScene(Renderer &renderer)
     renderer.switchScene([&renderer]() {
       return new SceneMainMenu(renderer);
     });
+  });
+
+  // UI Mouse stuff
+  Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
+    uiHUD.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
   });
 
   std::clog << "End loading level scene" << std::endl;
