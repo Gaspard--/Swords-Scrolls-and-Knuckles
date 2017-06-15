@@ -41,13 +41,16 @@ private:
 public:
   LevelScene(void) = delete;
   LevelScene(Renderer &);
-  virtual ~LevelScene(void) = default;
+  virtual ~LevelScene(void);
 
   static void createWallMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
 
   bool isInPause(void) const;
+
+  void pauseScene(void);
+  void unpauseScene(void);
 };
 
 #endif

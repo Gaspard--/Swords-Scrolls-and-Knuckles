@@ -8,13 +8,15 @@
 # include "UIButton.hpp"
 # include "UIOverlay.hpp"
 
+class LevelScene;
+
 class UIOverlayPause : public UIOverlay {
 private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
 
 public:
   UIOverlayPause(void) = delete;
-  UIOverlayPause(Renderer &);
+  UIOverlayPause(LevelScene &, Renderer &);
   UIOverlayPause(UIOverlayPause const &) = delete;
   UIOverlayPause(UIOverlayPause &&) = delete;
   UIOverlayPause &operator=(UIOverlayPause const &) = delete;

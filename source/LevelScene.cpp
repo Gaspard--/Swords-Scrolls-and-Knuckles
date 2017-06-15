@@ -11,7 +11,7 @@
 
 LevelScene::LevelScene(Renderer &renderer)
   : uiHUD(renderer)
-  , uiPause(renderer)
+  , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
   , inPause(false)
   , cameraNode([&renderer]()
@@ -84,12 +84,10 @@ LevelScene::LevelScene(Renderer &renderer)
     if (!b)
     {
       if (uiPause.getOverlay()->isVisible()) {
-	inPause = false;
-	uiPause.getOverlay()->hide();
+	unpauseScene();
       }
       else {
-	inPause = true;
-	uiPause.getOverlay()->show();
+	pauseScene();
       }
     }
   });
@@ -114,6 +112,12 @@ LevelScene::LevelScene(Renderer &renderer)
   uiPause.getOverlay()->hide();
 
   std::clog << "End loading level scene" << std::endl;
+}
+
+LevelScene::~LevelScene() {
+  if (isInPause()) {
+    unpauseScene();
+  }
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)
@@ -205,11 +209,25 @@ void LevelScene::createWallMesh()
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
-  logicThread->updateDisplay(*this);
+  if (!isInPause()) {
+    logicThread->updateDisplay(*this);
+  }
   // music.update();
   return true;
 }
 
 bool LevelScene::isInPause(void) const {
   return (inPause);
+}
+
+void LevelScene::pauseScene(void) {
+  logicThread->pause();
+  inPause = true;
+  uiPause.getOverlay()->show();
+}
+
+void LevelScene::unpauseScene(void) {
+  logicThread->unpause();
+  inPause = false;
+  uiPause.getOverlay()->hide();
 }
