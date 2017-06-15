@@ -75,5 +75,7 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 	using std::runtime_error::runtime_error;
 	using std::runtime_error::what;
     };
+
+    struct GameQuitException {};
 };
 #endif // !GAME_HPP
