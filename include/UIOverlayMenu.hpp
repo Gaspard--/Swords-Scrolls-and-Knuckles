@@ -13,7 +13,6 @@ private:
   Ogre::Real width;
   Ogre::Real height;
   Ogre::PanelOverlayElement *bg;
-  Ogre::TextAreaOverlayElement *title;
 
 public:
   UIOverlayMenu(void) = delete;

@@ -5,7 +5,6 @@
 UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   : UIOverlay("mainmenu")
   , bg(static_cast<Ogre::PanelOverlayElement *>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "BG")))
-  , title(static_cast<Ogre::TextAreaOverlayElement *>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "Title")))
 {
   std::clog << "Init Overlay Menu" << std::endl;
 
@@ -14,18 +13,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   height = 0.1f;
 
   // Background
-  bg->setMaterialName("HUD/Black");
-
-  // Title
-  std::string gameTitle("SWORDS SCROLLS AND KNUCKLES");
-  title->setFontName("HUD/Font");
-  title->setCaption(gameTitle);
-  title->setColour(Ogre::ColourValue::White);
-  title->setMetricsMode(Ogre::GMM_PIXELS);
-  title->setCharHeight(100.f);
-  title->setLeft(Game::WIDTH / 2.f - gameTitle.size() / 2.f);
-  title->setTop(40.f);
-  title->setAlignment(Ogre::TextAreaOverlayElement::Center);
+  bg->setMaterialName("HUD/MainMenuBG");
 
   // Play button
   std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [&renderer]() {
@@ -50,7 +38,6 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   exit->init(manager, "HUD/Black", "HUD/Red", width, height, 0.5f - width / 2.0f, 0.7f);
 
   // Linking everything together
-  bg->addChild(title);
   bg->addChild(play->getPanel());
   bg->addChild(credits->getPanel());
   bg->addChild(exit->getPanel());
@@ -64,5 +51,4 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
 UIOverlayMenu::~UIOverlayMenu()
 {
   Ogre::OverlayManager::getSingleton().destroyOverlayElement(bg);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(title);
 }
