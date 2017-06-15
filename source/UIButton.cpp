@@ -4,12 +4,12 @@
 // UIButton
 
 UIButton::UIButton(Ogre::OverlayManager *manager, Ogre::String const &name, std::function<void(void)> const &cb)
-  : panel(static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", name)))
-  , hoverPanel(static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", name + "Hover")))
+  : panel(manager->createOverlayElement("Panel", name))
+  , hoverPanel(manager->createOverlayElement("Panel", panel->getName() + "Hover"))
   , callback(cb)
 {}
 
-void UIButton::init(Ogre::OverlayManager *manager,
+void UIButton::init(
   Ogre::String const &materialName,
   Ogre::Real x,
   Ogre::Real y
@@ -23,18 +23,12 @@ void UIButton::init(Ogre::OverlayManager *manager,
   hoverPanel->setPosition(0, 0);
   hoverPanel->setMaterialName("HUD/ButtonHovered");
   hoverPanel->hide();
-  panel->addChild(hoverPanel);
+  panel->addChild(hoverPanel.get());
 }
 
-UIButton::~UIButton(void)
-{
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(panel);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(hoverPanel);
-}
+Ogre::BorderPanelOverlayElement *UIButton::getPanel(void) const {
 
-Ogre::PanelOverlayElement *UIButton::getPanel(void) const {
-
-  return panel;
+  return panel.get();
 }
 
 std::function<void(void)> const &UIButton::getCallback(void) const

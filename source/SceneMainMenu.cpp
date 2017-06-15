@@ -7,7 +7,7 @@ SceneMainMenu::SceneMainMenu(Renderer &r)
 {
   Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [](bool b) {
     if (!b) {
-      throw Game::GameQuitException("Leaving game");
+      throw Game::GameQuitException();
     }
   });
   Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
@@ -21,6 +21,6 @@ SceneMainMenu::SceneMainMenu(Renderer &r)
   });
 }
 
-bool SceneMainMenu::update(Game &g, Ogre::FrameEvent const &fe) {
+bool SceneMainMenu::update(Game &, Ogre::FrameEvent const &) {
   return (true);
 }

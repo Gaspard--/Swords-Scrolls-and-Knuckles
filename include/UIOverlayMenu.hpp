@@ -10,7 +10,7 @@
 
 class UIOverlayMenu : public UIOverlay {
 private:
-  Ogre::PanelOverlayElement *bg;
+  UIOVerlayResource<Ogre::PanelOverlayElement> bg;
 
 public:
   UIOverlayMenu(void) = delete;
@@ -19,7 +19,8 @@ public:
   UIOverlayMenu(UIOverlayMenu &&) = delete;
   UIOverlayMenu &operator=(UIOverlayMenu const &) = delete;
   UIOverlayMenu &operator=(UIOverlayMenu &&) = delete;
-  virtual ~UIOverlayMenu(void);
+  virtual ~UIOverlayMenu(void) = default;
+
 };
 
 #endif // !UIOVERLAYMENU_HPP

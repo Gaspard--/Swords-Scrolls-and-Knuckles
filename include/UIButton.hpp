@@ -2,13 +2,13 @@
 # define UIBUTTON_HPP
 
 # include <Overlay/OgreOverlaySystem.h>
-# include "Game.hpp"
+# include "UIOverlayResource.hpp"
 
 class UIButton
 {
 private:
-  Ogre::PanelOverlayElement *panel;
-  Ogre::PanelOverlayElement *hoverPanel;
+  UIOverlayResource<Ogre::BorderPanelOverlayElement> panel;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> text;
   std::function<void(void)> callback;
 
 public:
@@ -20,10 +20,9 @@ public:
   UIButton(UIButton &&) = delete;
   UIButton &operator=(UIButton const &) = delete;
   UIButton &operator=(UIButton &&) = delete;
-  ~UIButton(void);
+  ~UIButton(void) = default;
 
   void init(
-    Ogre::OverlayManager *,
     Ogre::String const &,
     Ogre::Real,
     Ogre::Real

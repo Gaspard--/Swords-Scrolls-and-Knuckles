@@ -4,7 +4,7 @@
 
 UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   : UIOverlay("mainmenu")
-  , bg(static_cast<Ogre::PanelOverlayElement *>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "BG")))
+  , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "BG"))
 {
   std::clog << "Init Overlay Menu" << std::endl;
 
@@ -25,7 +25,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
       return static_cast<Scene *>(new LevelScene(renderer));
     });
   }));
-  play->init(manager, "HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
+  play->init("HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(play->getPanel());
   buttons["Play"] = std::move(play);
 
@@ -33,7 +33,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
     throw Game::GameQuitException();
   }));
-  load->init(manager, "HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
+  load->init("HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(load->getPanel());
   buttons["Load"] = std::move(load);
 
@@ -41,7 +41,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
     throw Game::GameQuitException();
   }));
-  options->init(manager, "HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
+  options->init("HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
   buttons["Options"] = std::move(options);
 
@@ -49,14 +49,9 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", []() {
     throw Game::GameQuitException();
   }));
-  exit->init(manager, "HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
+  exit->init("HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
   buttons["Exit"] = std::move(exit);
 
-  overlay->add2D(bg);
-}
-
-UIOverlayMenu::~UIOverlayMenu()
-{
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(bg);
+  overlay->add2D(bg.get());
 }

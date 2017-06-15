@@ -8,14 +8,8 @@ UIOverlay::UIOverlay(std::string const &name)
   overlay->show();
 }
 
-UIOverlay::~UIOverlay()
-{
-  overlay->hide();
-  Ogre::OverlayManager::getSingleton().destroy(overlay);
-}
-
 Ogre::Overlay *UIOverlay::getOverlay(void) const {
-  return overlay;
+  return overlay.get();
 }
 
 Ogre::Vector2 UIOverlay::pixelsToRelative(Ogre::Vector2 pixels) {
@@ -36,7 +30,7 @@ void UIOverlay::mousePressed(Ogre::Real x, Ogre::Real y)
 			    menuButton->getTop() }));
     if (x >= buttonPos.x && x <= buttonPos.x + buttonSize.x
       && y >= buttonPos.y && y <= buttonPos.y + buttonSize.y) {
-      buttons[menuButton->getName()]->getCallback()();
+      button.second->getCallback()();
     }
   }
 }
