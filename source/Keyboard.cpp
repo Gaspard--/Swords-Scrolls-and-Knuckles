@@ -24,7 +24,7 @@ Keyboard::Keyboard(void)
 
 bool Keyboard::keyPressed(OIS::KeyEvent const &ke) {
   try {
-    return (keys.at(ke.key)(false));
+    keys.at(ke.key)(false);
   }
   catch (std::out_of_range const &) {}
   return (true);
@@ -32,7 +32,7 @@ bool Keyboard::keyPressed(OIS::KeyEvent const &ke) {
 
 bool Keyboard::keyReleased(OIS::KeyEvent const &ke) {
   try {
-    return (keys.at(ke.key)(true));
+    keys.at(ke.key)(true);
   }
   catch (std::out_of_range const &) {}
   return (true);
@@ -40,7 +40,7 @@ bool Keyboard::keyReleased(OIS::KeyEvent const &ke) {
 
 // Public functions
 
-void Keyboard::registerCallback(OIS::KeyCode ke, std::function<bool(bool)> const &fn) {
+void Keyboard::registerCallback(OIS::KeyCode ke, std::function<void(bool)> const &fn) {
   keys[ke] = fn;
 }
 

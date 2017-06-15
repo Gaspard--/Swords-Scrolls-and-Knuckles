@@ -4,6 +4,7 @@
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
+#include "SceneMainMenu.hpp"
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
@@ -41,6 +42,8 @@ LevelScene::LevelScene(Renderer &renderer)
 {
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
+  std::clog << "Loading level scene" << std::endl;
+
   {
     EntityFactory ef(renderer);
 
@@ -72,8 +75,16 @@ LevelScene::LevelScene(Renderer &renderer)
 	p.setMounted(!p.isMounted());
       }
     }
-    return (false);
   });
+
+  // Go back to menu
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [&renderer](bool) {
+    renderer.switchScene([&renderer]() {
+      return new SceneMainMenu(renderer);
+    });
+  });
+
+  std::clog << "End loading level scene" << std::endl;
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)
