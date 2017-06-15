@@ -2,17 +2,9 @@
 
 // UICharStat
 
-UICharStat::UICharStat(Ogre::OverlayManager *manager, Ogre::String const &name) {
-  panel
-    = static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", name));
-}
-
-UICharStat::~UICharStat() {
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(text);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(scoreTxt);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(healthTxt);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(panel);
-}
+UICharStat::UICharStat(Ogre::OverlayManager *manager, Ogre::String const &name)
+  : panel(manager->createOverlayElement("BorderPanel", name))
+{}
 
 void UICharStat::init(Ogre::String const &materialName, Ogre::String const &borderName,
   Ogre::Real width, Ogre::Real height, Ogre::Real x, Ogre::Real y) {
@@ -29,14 +21,14 @@ void UICharStat::initText(Ogre::OverlayManager *manager, Ogre::String const &ele
   Ogre::Vector2 panelSize(UIOverlay::relativeToPixels({ panel->getWidth(), panel->getHeight() }));
   Ogre::Vector2 panelPos(UIOverlay::relativeToPixels({ panel->getLeft(), panel->getTop() }));
 
-  text = static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", elementName));
-  setText(text, txt, panelSize, panelPos, 1.0);
+  text.reset(manager->createOverlayElement("TextArea", elementName));
+  setText(text.get(), txt, panelSize, panelPos, 1.0);
 
-  scoreTxt = static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", elementName + "Score"));
-  setText(scoreTxt, "Score", panelSize, panelPos, 3.0);
+  scoreTxt.reset(manager->createOverlayElement("TextArea", elementName + "Score"));
+  setText(scoreTxt.get(), "Score", panelSize, panelPos, 3.0);
 
-  healthTxt = static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", elementName + "Health"));
-  setText(healthTxt, "Health", panelSize, panelPos, 4.0);
+  healthTxt.reset(manager->createOverlayElement("TextArea", elementName + "Health"));
+  setText(healthTxt.get(), "Health", panelSize, panelPos, 4.0);
 }
 
 void UICharStat::setText(Ogre::TextAreaOverlayElement *textArea, Ogre::DisplayString const &str,
@@ -70,7 +62,7 @@ void UICharStat::updateHealth(Ogre::String const &name, int health) {
 }
 
 Ogre::BorderPanelOverlayElement *UICharStat::getPanel(void) const {
-  return panel;
+  return panel.get();
 }
 
 // UIOverlayHUD
@@ -85,7 +77,7 @@ UIOverlayHUD::UIOverlayHUD(Renderer &)
   width = 0.5f;
   height = 0.15f;
 
-  stats = static_cast<Ogre::PanelOverlayElement *>(manager->createOverlayElement("Panel", "Stats"));
+  stats.reset(manager->createOverlayElement("Panel", "Stats"));
   stats->setDimensions(width, height);
   stats->setPosition(0.5f - width / 2.f, 1.f - height);
 
@@ -109,16 +101,12 @@ UIOverlayHUD::UIOverlayHUD(Renderer &)
   stats->addChild(warrior->getPanel());
   stats->addChild(archer->getPanel());
   stats->addChild(valkyrie->getPanel());
-  overlay->add2D(stats);
+  overlay->add2D(stats.get());
 
   chars["Wizzard"] = std::move(wizzard);
   chars["Warrior"] = std::move(warrior);
   chars["Archer"] = std::move(archer);
   chars["Valkyrie"] = std::move(valkyrie);
-}
-
-UIOverlayHUD::~UIOverlayHUD() {
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(stats);
 }
 
 void UIOverlayHUD::updateScoreByName(Ogre::String const &name, int score) {

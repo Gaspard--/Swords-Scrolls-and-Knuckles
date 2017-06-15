@@ -12,8 +12,8 @@ class UIOverlayMenu : public UIOverlay {
 private:
   Ogre::Real width;
   Ogre::Real height;
-  Ogre::PanelOverlayElement *bg;
-  Ogre::TextAreaOverlayElement *title;
+  UIOverlayResource<Ogre::PanelOverlayElement> bg;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> title;
 
 public:
   UIOverlayMenu(void) = delete;
@@ -22,7 +22,7 @@ public:
   UIOverlayMenu(UIOverlayMenu &&) = delete;
   UIOverlayMenu &operator=(UIOverlayMenu const &) = delete;
   UIOverlayMenu &operator=(UIOverlayMenu &&) = delete;
-  virtual ~UIOverlayMenu(void);
+  virtual ~UIOverlayMenu(void) = default;
 
 };
 

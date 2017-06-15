@@ -4,12 +4,12 @@
 // UIButton
 
 UIButton::UIButton(Ogre::OverlayManager *manager, Ogre::String const &name, std::function<void(void)> const &cb)
-  : panel(static_cast<Ogre::BorderPanelOverlayElement *>(manager->createOverlayElement("BorderPanel", name)))
-  , text(static_cast<Ogre::TextAreaOverlayElement *>(manager->createOverlayElement("TextArea", panel->getName() + "Text")))
+  : panel(manager->createOverlayElement("BorderPanel", name))
+  , text(manager->createOverlayElement("TextArea", panel->getName() + "Text"))
   , callback(cb)
 {}
 
-void UIButton::init(Ogre::OverlayManager *manager,
+void UIButton::init(
   Ogre::String const &materialName,
   Ogre::String const &borderName,
   Ogre::Real width,
@@ -41,18 +41,12 @@ void UIButton::init(Ogre::OverlayManager *manager,
   text->setTop(buttonSize.y / 2.0f - text->getCharHeight() / 2.f);
   text->setAlignment(Ogre::TextAreaOverlayElement::Center);
 
-  panel->addChild(text);
-}
-
-UIButton::~UIButton(void)
-{
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(text);
-  Ogre::OverlayManager::getSingleton().destroyOverlayElement(panel);
+  panel->addChild(text.get());
 }
 
 Ogre::BorderPanelOverlayElement *UIButton::getPanel(void) const {
 
-  return panel;
+  return panel.get();
 }
 
 std::function<void(void)> const &UIButton::getCallback(void) const

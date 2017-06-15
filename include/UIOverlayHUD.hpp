@@ -12,10 +12,10 @@
 
 class UICharStat {
 private:
-  Ogre::BorderPanelOverlayElement *panel;
-  Ogre::TextAreaOverlayElement *text;
-  Ogre::TextAreaOverlayElement *scoreTxt;
-  Ogre::TextAreaOverlayElement *healthTxt;
+  UIOverlayResource<Ogre::BorderPanelOverlayElement> panel;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> text;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> scoreTxt;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> healthTxt;
 
   void setText(
     Ogre::TextAreaOverlayElement *,
@@ -29,7 +29,7 @@ public:
   UICharStat(UICharStat &&) = delete;
   UICharStat &operator=(UICharStat const &) = delete;
   UICharStat &operator=(UICharStat &&) = delete;
-  virtual ~UICharStat(void);
+  virtual ~UICharStat(void) = default;
 
   void init(Ogre::String const &, Ogre::String const &,
     Ogre::Real, Ogre::Real, Ogre::Real, Ogre::Real);
@@ -50,7 +50,7 @@ public:
   UIOverlayHUD(UIOverlayHUD &&) = delete;
   UIOverlayHUD &operator=(UIOverlayHUD const &) = delete;
   UIOverlayHUD &operator=(UIOverlayHUD &&) = delete;
-  virtual ~UIOverlayHUD(void);
+  virtual ~UIOverlayHUD(void) = default;
 
   void updateScoreByName(Ogre::String const &, int);
   void updateHealthByName(Ogre::String const &, int);
@@ -59,7 +59,7 @@ private:
   Ogre::Real width;
   Ogre::Real height;
   std::unordered_map<Ogre::String, std::unique_ptr<UICharStat>> chars;
-  Ogre::PanelOverlayElement *stats;
+  UIOverlayResource<Ogre::PanelOverlayElement> stats;
 };
 
 #endif // !UIOVERLAYHUD_HPP
