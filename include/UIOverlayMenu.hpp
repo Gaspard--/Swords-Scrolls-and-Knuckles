@@ -20,7 +20,6 @@ public:
   UIOverlayMenu &operator=(UIOverlayMenu const &) = delete;
   UIOverlayMenu &operator=(UIOverlayMenu &&) = delete;
   virtual ~UIOverlayMenu(void);
-
 };
 
 #endif // !UIOVERLAYMENU_HPP

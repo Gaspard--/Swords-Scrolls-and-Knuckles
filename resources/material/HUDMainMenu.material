@@ -19,6 +19,8 @@ material HUD/ButtonPlay
 	{
 		pass
 		{
+			scene_blend alpha_blend
+
 			texture_unit
 			{
 				texture ButtonPlay.png
@@ -34,6 +36,8 @@ material HUD/ButtonOptions
 	{
 		pass
 		{
+			scene_blend alpha_blend
+
 			texture_unit
 			{
 				texture ButtonOptions.png
@@ -49,6 +53,8 @@ material HUD/ButtonLoad
 	{
 		pass
 		{
+			scene_blend alpha_blend
+
 			texture_unit
 			{
 				texture ButtonLoad.png
@@ -65,6 +71,8 @@ material HUD/ButtonPlay
 
 		pass
 		{
+			scene_blend alpha_blend
+
 			texture_unit
 			{
 				texture ButtonPlay.png
@@ -80,6 +88,8 @@ material HUD/ButtonExit
 	{
 		pass
 		{
+			scene_blend alpha_blend
+
 			texture_unit
 			{
 				texture ButtonExit.png

@@ -8,6 +8,7 @@ class UIButton
 {
 private:
   Ogre::PanelOverlayElement *panel;
+  Ogre::PanelOverlayElement *hoverPanel;
   std::function<void(void)> callback;
 
 public:
@@ -30,6 +31,7 @@ public:
 
   Ogre::PanelOverlayElement *getPanel(void) const;
   std::function<void(void)> const &getCallback(void) const;
+  void setHovered(bool);
 };
 
 #endif // !UIBUTTON_HPP

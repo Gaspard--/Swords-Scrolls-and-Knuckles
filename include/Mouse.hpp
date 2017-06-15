@@ -10,7 +10,8 @@
 
 class Mouse : public Input<OIS::Mouse, OIS::MouseListener> {
 private:
-  std::map<OIS::MouseButtonID, std::function<void(OIS::MouseEvent const &)>> keys;
+  std::map<OIS::MouseButtonID, std::function<void(OIS::MouseEvent const &)>> keysCallbacks;
+  std::vector<std::function<void(Ogre::Real, Ogre::Real)>> moveCallbacks;
 
   static Mouse mouseInstance;
 
@@ -31,7 +32,10 @@ public:
   /// Register a mouse button callback
   void registerCallback(OIS::MouseButtonID, std::function<void(OIS::MouseEvent const &)> const &);
 
-  /// Clear all key callback
+  /// Register a mouse-move event callback
+  void registerMouseMoveCallback(std::function<void(Ogre::Real x, Ogre::Real)> const &);
+
+  /// Clear all mouse callback
   void clearCallbacks(void);
 
   static Mouse &getMouse(void);
