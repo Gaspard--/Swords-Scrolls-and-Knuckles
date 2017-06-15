@@ -2,6 +2,7 @@
 # define LEVEL_SCENE_HPP
 
 #include <vector>
+#include "UIOverlayHUD.hpp"
 #include "Scene.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
@@ -19,6 +20,7 @@ class Terrain;
 class LevelScene : public Scene
 {
 private:
+  UIOverlayHUD uiHUD;
   Ogre::SceneNode *terrainNode;
 
 public:
@@ -34,6 +36,7 @@ private:
   // Music music;
 
 public:
+  LevelScene(void) = delete;
   LevelScene(Renderer &);
   virtual ~LevelScene(void) = default;
 
