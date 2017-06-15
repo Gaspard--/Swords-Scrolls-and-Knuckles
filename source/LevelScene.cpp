@@ -4,7 +4,6 @@
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
-#include "SceneMainMenu.hpp"
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
@@ -12,7 +11,9 @@
 
 LevelScene::LevelScene(Renderer &renderer)
   : uiHUD(renderer)
+  , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  , inPause(false)
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -70,7 +71,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // For demonstration / test purpose. Remove it if needed.
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-    if (b)
+    if (b && !isInPause())
     {
       for (auto &p : players) {
 	p.setMounted(!p.isMounted());
@@ -79,21 +80,44 @@ LevelScene::LevelScene(Renderer &renderer)
   });
 
   // Go back to menu
-  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [&renderer](bool) {
-    renderer.switchScene([&renderer]() {
-      return new SceneMainMenu(renderer);
-    });
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [this](bool b) {
+    if (!b)
+    {
+      if (uiPause.getOverlay()->isVisible()) {
+	unpauseScene();
+      }
+      else {
+	pauseScene();
+      }
+    }
   });
 
   // UI Mouse stuff
+  Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
+    uiHUD.mouseMoved(x, y);
+    uiPause.mouseMoved(x, y);
+  });
   Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
     uiHUD.mousePressed(
       static_cast<Ogre::Real>(e.state.X.abs),
       static_cast<Ogre::Real>(e.state.Y.abs)
     );
+    uiPause.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
   });
 
+  // Hide pause
+  uiPause.getOverlay()->hide();
+
   std::clog << "End loading level scene" << std::endl;
+}
+
+LevelScene::~LevelScene() {
+  if (isInPause()) {
+    unpauseScene();
+  }
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)
@@ -185,7 +209,25 @@ void LevelScene::createWallMesh()
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
-  logicThread->updateDisplay(*this);
+  if (!isInPause()) {
+    logicThread->updateDisplay(*this);
+  }
   // music.update();
   return true;
+}
+
+bool LevelScene::isInPause(void) const {
+  return (inPause);
+}
+
+void LevelScene::pauseScene(void) {
+  logicThread->pause();
+  inPause = true;
+  uiPause.getOverlay()->show();
+}
+
+void LevelScene::unpauseScene(void) {
+  logicThread->unpause();
+  inPause = false;
+  uiPause.getOverlay()->hide();
 }

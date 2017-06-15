@@ -49,6 +49,9 @@ public:
   void run();
   void exit();
   void updateDisplay(LevelScene &);
+
+  void pause(void);
+  void unpause(void);
 };
 
 #endif
