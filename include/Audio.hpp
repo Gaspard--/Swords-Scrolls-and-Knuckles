@@ -22,6 +22,7 @@ enum class Sounds
   NONE,
   BOYAUX1,
   EUUUH1,
+  FOOTSTEPS,
   SIZE
 };
 
@@ -42,16 +43,17 @@ private:
   ALCdevice *device;
   std::unordered_map<Sounds, ALuint> sounds;
   static constexpr std::array<char const *, static_cast<size_t>(Sounds::SIZE)> const soundFilenames
-  { {
-    nullptr,
-    "resources/sounds/boyaux1.wav",
-    "resources/sounds/euuuh1.wav"
-  } };
+{{
+  nullptr,
+  "resources/sounds/boyaux1.wav",
+  "resources/sounds/euuuh1.wav",
+  "resources/sounds/footsteps.wav",
+}};
   static constexpr std::array<char const *, static_cast<size_t>(Musics::SIZE)> const musicFilenames
-  { {
-    nullptr,
-    "resources/musics/small_world.ogg"
-  } };
+{{
+  nullptr,
+  "resources/musics/small_world.ogg",
+}};
 
 public:
   ~Audio();
@@ -60,7 +62,7 @@ public:
   Audio &operator=(Audio const &) = delete;
 
   static Audio &getInstance(void);
-  static bool checkError(bool throws = true);
+  static bool checkError(bool throws=true);
   static void clearError();
   static char const *getMusicFileName(Musics);
   ALuint bufferFromSound(Sounds);

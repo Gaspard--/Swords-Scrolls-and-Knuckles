@@ -57,6 +57,12 @@ void Music::setLoopTime(float f)
   loopTime = f;
 }
 
+void Music::setVolume(float f) const
+{
+  alSourcef(source, AL_GAIN, f);
+  Audio::checkError();
+}
+
 bool Music::isPlaying(void) const
 {
   ALenum state;
@@ -64,6 +70,7 @@ bool Music::isPlaying(void) const
   alGetSourcei(source, AL_SOURCE_STATE, &state);
   return state == AL_PLAYING;
 }
+
 void Music::update(void)
 {
   ALuint buffer[1];

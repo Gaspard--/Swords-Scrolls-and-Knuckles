@@ -5,6 +5,7 @@
 #include "LevelScene.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "AudioListener.hpp"
 
 // TODO: extract as mush as possible to gameState.
 // Logic could be passed as ref for spawning and & so on.
@@ -137,25 +138,29 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
       updateControllableEntity(animatedEntity, player);
       if (player.isWalking())
-      {
-	if (animatedEntity.isMounted())
 	{
-	  animatedEntity.setMainAnimation(Animations::Controllable::WALK_RIDE);
-	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	  if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
+	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).play();
+	  if (animatedEntity.isMounted())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::WALK_RIDE);
+	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	    }
+	  else
+	    animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 	}
-	else
-	  animatedEntity.setMainAnimation(Animations::Controllable::WALK);
-      }
       else
-      {
-	if (animatedEntity.isMounted())
 	{
-	  animatedEntity.setMainAnimation(Animations::Controllable::STAND_RIDE);
-	  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	  if (animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
+	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).stop();
+	  if (animatedEntity.isMounted())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::STAND_RIDE);
+	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	    }
+	  else
+	    animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 	}
-	else
-	  animatedEntity.setMainAnimation(Animations::Controllable::STAND);
-      }
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
   Vect<2u, double> p0{0.0, 0.0};
@@ -188,17 +193,20 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p1 += {1.0, 0.0};
   }
 
+  if (Keyboard::getKeys()[OIS::KC_O]) {
+    AudioListener::setPos({0.f, 0.f, 0.f});
+  }
   if (Keyboard::getKeys()[OIS::KC_UP]) {
-    p2 += {0.0, -1.0};
+    AudioListener::setPos({0.f, 1.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_LEFT]) {
-    p2 += {-1.0, 0.0};
+    AudioListener::setPos({1.f, 0.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_DOWN]) {
-    p2 += {0.0, 1.0};
+    AudioListener::setPos({0.f, -1.f, 0.f});
   }
   if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
-    p2 += {1.0, 0.0};
+    AudioListener::setPos({-1.f, 0.f, 0.f});
   }
 
   gameState.players[0].setInput(p0 * 0.03);
@@ -256,4 +264,5 @@ void Logic::calculateCamera(LevelScene &levelScene)
 				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
 				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
 
+  AudioListener::setPos(levelScene.cameraNode->getPosition());
 }

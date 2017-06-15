@@ -8,6 +8,7 @@
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
+#include "AudioSource.hpp"
 
 LevelScene::LevelScene(Renderer &renderer)
   : terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
@@ -39,7 +40,10 @@ LevelScene::LevelScene(Renderer &renderer)
 	     return ground;
 	   }())
   , logicThread(*this, renderer, players)
+  // , music(Musics::SMALL_WORLD)
 {
+  // music.setVolume(0.2f);
+  // music.play();
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
   std::clog << "Loading level scene" << std::endl;
@@ -48,10 +52,6 @@ LevelScene::LevelScene(Renderer &renderer)
     EntityFactory ef(renderer);
 
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-  }
-  {
-    EntityFactory ef(renderer);
-
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 
@@ -177,5 +177,6 @@ void LevelScene::createWallMesh()
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
   logicThread->updateDisplay(*this);
+  // music.update();
   return true;
 }
