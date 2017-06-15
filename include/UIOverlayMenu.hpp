@@ -10,10 +10,7 @@
 
 class UIOverlayMenu : public UIOverlay {
 private:
-  Ogre::Real width;
-  Ogre::Real height;
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
-  UIOverlayResource<Ogre::TextAreaOverlayElement> title;
 
 public:
   UIOverlayMenu(void) = delete;

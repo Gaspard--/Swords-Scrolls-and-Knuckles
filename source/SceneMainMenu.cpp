@@ -10,6 +10,9 @@ SceneMainMenu::SceneMainMenu(Renderer &r)
       throw Game::GameQuitException();
     }
   });
+  Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
+    uiMenu.mouseMoved(x, y);
+  });
   Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
     uiMenu.mousePressed(
       static_cast<Ogre::Real>(e.state.X.abs),

@@ -26,7 +26,8 @@ public:
 
   Ogre::Overlay *getOverlay(void) const;
 
-  bool mousePressed(Ogre::Real, Ogre::Real);
+  void mousePressed(Ogre::Real, Ogre::Real);
+  void mouseMoved(Ogre::Real, Ogre::Real);
 };
 
 #endif // !UIOVERLAY_HPP

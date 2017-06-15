@@ -5,27 +5,17 @@
 UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   : UIOverlay("mainmenu")
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "BG"))
-  , title(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "Title"))
 {
   std::clog << "Init Overlay Menu" << std::endl;
 
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
-  width = 0.5f;
-  height = 0.1f;
+  int i(0);
+  Ogre::Real posX(0.075f);
+  Ogre::Real offset(0.35f);
+  Ogre::Real mult(1.6f);
 
   // Background
-  bg->setMaterialName("HUD/Black");
-
-  // Title
-  std::string gameTitle("SWORDS SCROLLS AND KNUCKLES");
-  title->setFontName("HUD/Font");
-  title->setCaption(gameTitle);
-  title->setColour(Ogre::ColourValue::White);
-  title->setMetricsMode(Ogre::GMM_PIXELS);
-  title->setCharHeight(100.f);
-  title->setLeft(Game::WIDTH / 2.f - gameTitle.size() / 2.f);
-  title->setTop(40.f);
-  title->setAlignment(Ogre::TextAreaOverlayElement::Center);
+  bg->setMaterialName("HUD/MainMenuBG");
 
   // Play button
   std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [&renderer]() {
@@ -35,28 +25,33 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
       return static_cast<Scene *>(new LevelScene(renderer));
     });
   }));
-  play->init( "HUD/Black", "HUD/Green", width, height, 0.5f - width / 2.0f, 0.3f);
+  play->init("HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(play->getPanel());
+  buttons["Play"] = std::move(play);
 
-  // Credit button
-  std::unique_ptr<UIButton> credits(new UIButton(manager, "Credits", []() {
-    std::clog << "In Credits button" << std::endl;
+  // Exit button
+  std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
+    throw Game::GameQuitException();
   }));
-  credits->init( "HUD/Black", "HUD/Yellow", width, height, 0.5f - width / 2.0f, 0.5f);
+  load->init("HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(load->getPanel());
+  buttons["Load"] = std::move(load);
+
+  // Exit button
+  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
+    throw Game::GameQuitException();
+  }));
+  options->init("HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
+  bg->addChild(options->getPanel());
+  buttons["Options"] = std::move(options);
 
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", []() {
     throw Game::GameQuitException();
   }));
-  exit->init("HUD/Black", "HUD/Red", width, height, 0.5f - width / 2.0f, 0.7f);
-
-  // Linking everything together
-  bg->addChild(title.get());
-  bg->addChild(play->getPanel());
-  bg->addChild(credits->getPanel());
+  exit->init("HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
-  overlay->add2D(bg.get());
-
-  buttons["Play"] = std::move(play);
-  buttons["Credits"] = std::move(credits);
   buttons["Exit"] = std::move(exit);
+
+  overlay->add2D(bg.get());
 }
