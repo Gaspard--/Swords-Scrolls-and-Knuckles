@@ -32,7 +32,7 @@ public:
   constexpr Function(Op op)
     : op(op)
   {}
-  
+
   constexpr Y apply(X const &x) {
     return op(x);
   }

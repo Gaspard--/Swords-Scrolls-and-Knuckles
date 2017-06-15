@@ -16,7 +16,7 @@ public:
   : Fixture{0.2, pos, speed}
   {
   }
-  
+
   constexpr void update(Logic &logic)
   {
     pos += speed;
