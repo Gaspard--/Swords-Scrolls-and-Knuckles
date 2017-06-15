@@ -2,13 +2,14 @@
 # define UIBUTTON_HPP
 
 # include <Overlay/OgreOverlaySystem.h>
+# include "Game.hpp"
 # include "UIOverlayResource.hpp"
 
 class UIButton
 {
 private:
-  UIOverlayResource<Ogre::BorderPanelOverlayElement> panel;
-  UIOverlayResource<Ogre::TextAreaOverlayElement> text;
+  UIOverlayResource<Ogre::PanelOverlayElement> panel;
+  UIOverlayResource<Ogre::PanelOverlayElement> hoverPanel;
   std::function<void(void)> callback;
 
 public:

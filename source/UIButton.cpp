@@ -26,8 +26,7 @@ void UIButton::init(
   panel->addChild(hoverPanel.get());
 }
 
-Ogre::BorderPanelOverlayElement *UIButton::getPanel(void) const {
-
+Ogre::PanelOverlayElement *UIButton::getPanel(void) const {
   return panel.get();
 }
 

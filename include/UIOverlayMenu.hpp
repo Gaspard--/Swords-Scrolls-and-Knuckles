@@ -10,7 +10,7 @@
 
 class UIOverlayMenu : public UIOverlay {
 private:
-  UIOVerlayResource<Ogre::PanelOverlayElement> bg;
+  UIOverlayResource<Ogre::PanelOverlayElement> bg;
 
 public:
   UIOverlayMenu(void) = delete;
