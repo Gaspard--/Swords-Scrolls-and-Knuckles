@@ -1,4 +1,7 @@
 #include "PyBindInstance.hpp"
+#include "Enemy.hpp"
+#include "Vect.hpp"
+
 namespace PyPlugin
 {
   PYBIND11_PLUGIN(PyPlugin)
@@ -37,12 +40,24 @@ namespace PyPlugin
 }
 
 PyBindInstance::PyBindInstance()
-: main(py::module::import("__main__"))
 {
-    // Add an initialisation for every module/wrapper.
+  try
+  {
+    Py_Initialize();
+    PyPlugin::pybind11_init();
 
-    // Put this on every mob :
-    // this->globals = this->main.attr("__dict__");
+    main = py::module::import("__main__");
+    globals = main.attr("__dict__");
+    py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);
+    py::object importedModuleAttr = importedModule.attr("pythonModule");
+    pythonModule = importedModuleAttr();
+  }
+  catch (py::error_already_set const &e)
+  {
+    std::cerr << e.what() << std::endl;
+    PyErr_Print();
+  }
+}
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
