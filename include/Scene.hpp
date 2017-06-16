@@ -2,6 +2,7 @@
 # define SCENE_HPP
 
 # include <OgreFrameListener.h>
+# include "Joystick.hpp"
 
 class Game;
 
@@ -21,6 +22,7 @@ public:
   virtual ~Scene(void) = default;
 
   virtual bool update(Game &, Ogre::FrameEvent const &);
+  virtual void resetSceneCallbacks(void);
 };
 
 #endif // !SCENE_HPP

@@ -34,7 +34,7 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     void setupOIS(void);
 
     /// Instanciate a Joystick, return true if successful.
-    bool addJoystick(void);
+    bool addJoystick(size_t);
 
   protected:
     /// Ogre::FrameListener

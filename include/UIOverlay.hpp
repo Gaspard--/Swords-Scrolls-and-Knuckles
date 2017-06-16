@@ -3,6 +3,7 @@
 
 # include <unordered_map>
 # include <memory>
+# include "Joystick.hpp"
 # include "UIButton.hpp"
 
 class UIOverlay {
@@ -10,7 +11,8 @@ private:
 
 protected:
   UIOverlayResource<Ogre::Overlay> overlay;
-  std::unordered_map<Ogre::String, std::unique_ptr<UIButton>> buttons;
+  std::vector<std::unique_ptr<UIButton>> buttons;
+  size_t selectedButton;
 
 public:
   UIOverlay() = delete;
@@ -28,6 +30,13 @@ public:
 
   void mousePressed(Ogre::Real, Ogre::Real);
   void mouseMoved(Ogre::Real, Ogre::Real);
+
+  virtual void resetUICallbacks(void);
+  bool isVisible(void) const;
+  virtual void setUIVisible(bool);
+
+  void setSelectedButton(int i);
+  size_t getSelectedButton(void) const;
 };
 
 #endif // !UIOVERLAY_HPP

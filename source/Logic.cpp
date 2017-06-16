@@ -200,6 +200,16 @@ void Logic::updateDisplay(LevelScene &levelScene)
     p0 += {1.0, 0.0};
   }
 
+  // TODO : replace this with a better solution when character selection will be available
+  if (Joystick::getJoysticks()[0]) {
+    p0 = {
+      Joystick::getJoysticks()[0]->getAxes()[joystickAxe::LEFT_HRZ] / 100.f,
+      Joystick::getJoysticks()[0]->getAxes()[joystickAxe::LEFT_VRT] / 100.f,
+    };
+    if (p0.length2() <= 0.20f * 0.20f) // Joystick axes are never really at 0
+      p0 = { 0.f, 0.f };
+  }
+
   if (Keyboard::getKeys()[OIS::KC_I]) {
     p1 += {0.0, -1.0};
   }

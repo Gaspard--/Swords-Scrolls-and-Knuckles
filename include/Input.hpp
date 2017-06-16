@@ -39,4 +39,8 @@ class Input : public E
     }
 };
 
+namespace InputCallbacks {
+  void clearAllCallbacks(void);
+};
+
 #endif // !INPUT_HPP

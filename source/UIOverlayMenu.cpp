@@ -27,7 +27,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   }));
   play->init("HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(play->getPanel());
-  buttons["Play"] = std::move(play);
+  buttons.emplace_back(std::move(play));
 
   // Exit button
   std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
@@ -35,7 +35,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   }));
   load->init("HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(load->getPanel());
-  buttons["Load"] = std::move(load);
+  buttons.emplace_back(std::move(load));
 
   // Exit button
   std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
@@ -43,7 +43,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   }));
   options->init("HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
-  buttons["Options"] = std::move(options);
+  buttons.emplace_back(std::move(options));
 
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", []() {
@@ -51,7 +51,8 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   }));
   exit->init("HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
-  buttons["Exit"] = std::move(exit);
+  buttons.emplace_back(std::move(exit));
 
   overlay->add2D(bg.get());
+  setSelectedButton(0);
 }

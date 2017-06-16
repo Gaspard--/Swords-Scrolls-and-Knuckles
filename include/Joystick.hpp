@@ -3,7 +3,7 @@
 
 # include <functional>
 # include <OISJoyStick.h>
-# include <vector>
+# include <array>
 # include <memory>
 # include "Input.hpp"
 
@@ -45,12 +45,13 @@ enum joystickAxe
 
 class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
 {
-    std::map<joystickState, std::function<bool(bool)>> statesCallbacks;
-    std::map<joystickState, bool> states;
+    std::map<joystickState, std::function<void(bool, size_t)>> statesCallbacks;
+    std::map<joystickState, int> states;
     std::map<joystickAxe, int> axes;
+    size_t idx;
 
     /// Singleton instance
-    static std::vector<std::unique_ptr<Joystick>> joystickInstances;
+    static std::array<std::unique_ptr<Joystick>, 4> joystickInstances;
 
   protected:
     /// OIS::JoyStickListener
@@ -59,7 +60,8 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
     virtual bool axisMoved(OIS::JoyStickEvent const &arg, int axis) override;
 
   public:
-    Joystick(void);
+    Joystick(void) = delete;
+    Joystick(size_t);
     Joystick(Joystick const &) = delete;
     Joystick(Joystick &&) = delete;
     virtual ~Joystick(void) = default;
@@ -70,13 +72,15 @@ class Joystick : public Input<OIS::JoyStick, OIS::JoyStickListener>
     /// This callback takes in parameter a boolean, true if it's a current state,
     /// otherwise false.
     /// It should return false if the game should exit, true otherwise.
-    void registerCallback(joystickState state, std::function<bool(bool)> const &);
+    void registerCallback(joystickState state, std::function<void(bool, size_t)> const &);
 
     /// Clear all Button callback
     void clearCallbacks(void);
 
     /// Joystick singleton getter & instance
-    static std::vector<std::unique_ptr<Joystick>> &getJoysticks(void);
+    static std::array<std::unique_ptr<Joystick>, 4> &getJoysticks(void);
+    static void registerGlobalCallback(joystickState state, std::function<void(bool, size_t)> const &);
+    static void clearGlobalCallbacks(void);
 
     /// Equivalent to isKeyDown for JoyStick states.
     bool isStateUp(joystickState js) const;
