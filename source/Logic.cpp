@@ -66,6 +66,10 @@ bool Logic::tick()
     });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
+  for (auto &enemy : gameState.enemies)
+  {
+    pyBindInstance.chaseAI(enemy, pyEvaluate);
+  }
   return stop;
 }
 
@@ -75,6 +79,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
+  , pyEvaluate(gameState.players)
 {
   for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
