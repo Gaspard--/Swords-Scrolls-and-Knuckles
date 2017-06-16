@@ -119,20 +119,20 @@ void LevelScene::resetSceneCallbacks(void) {
 void LevelScene::setTerrain(Terrain const &terrain)
 {
   for (unsigned int i(0); i < 100; ++i)
-  {
-    for (unsigned int j(0); j < 100; ++j)
     {
-      if (terrain.getTile({ i, j }).isSolid)
-      {
-	Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
-	Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
+      for (unsigned int j(0); j < 100; ++j)
+	{
+	  if (terrain.getTile({i, j}).isSolid)
+	    {
+	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
+	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
 
-	wall->setCastShadows(true);
-	wallNode->attachObject(wall);
-	wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
-      }
+	      wall->setCastShadows(true);
+	      wallNode->attachObject(wall);
+	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	    }
+	}
     }
-  }
 }
 
 void LevelScene::createWallMesh()
@@ -149,24 +149,24 @@ void LevelScene::createWallMesh()
     Vect<3u, double> right{ 0.0, 0.0, 1.0 };
 
     for (unsigned int i(0); i < 3; ++i)
-    {
-      for (Vect<2u, double> const &coef : { Vect<2u, double>(0, 0), Vect<2u, double>(1, 0),
-	    Vect<2u, double>(0, 1), Vect<2u, double>(1, 1) })
       {
-	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
+	for (Vect<2u, double> const &coef : {Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+	      Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+	  {
+	    Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
-	obj.position(
-	  static_cast<Ogre::Real>(pos[0]),
-	  static_cast<Ogre::Real>(pos[1]),
-	  static_cast<Ogre::Real>(pos[2])
-	);
-	obj.textureCoord(
-	  static_cast<Ogre::Real>(coef[0]),
-	  static_cast<Ogre::Real>(coef[1])
-	);
-      }
-      start = start + right;
-      right = { right[2], 0, -right[0] };
+	    obj.position(
+	      static_cast<Ogre::Real>(pos[0]),
+	      static_cast<Ogre::Real>(pos[1]),
+	      static_cast<Ogre::Real>(pos[2])
+	    );
+	    obj.textureCoord(
+	      static_cast<Ogre::Real>(coef[0]),
+	      static_cast<Ogre::Real>(coef[1])
+	    );
+	  }
+	start = start + right;
+	right = {right[2], 0.0, -right[0]};
 
       obj.triangle(offset, offset + 1, offset + 3);
       obj.triangle(offset, offset + 3, offset + 2);
@@ -179,10 +179,10 @@ void LevelScene::createWallMesh()
     Vect<3u, double> right{ 1.0, 0.0, 0.0 };
 
     for (Vect<2u, double> const &coef : {
-	Vect<2u, double>(0, 0), Vect<2u, double>(1, 0),
-	  Vect<2u, double>(0, 1), Vect<2u, double>(1, 1) })
-    {
-      Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
+  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+      {
+  	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
       obj.position(
 	static_cast<Ogre::Real>(pos[0]),

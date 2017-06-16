@@ -20,26 +20,31 @@ bool Logic::tick()
 			      for (auto &element : elements)
 				{
 				  element.update(*this);
-				  gameState.terrain.correctFixture(element);
+				  gameState.terrain.correctFixture(element,
+								   [](auto &element, Vect<2u, double> dir)
+								   {
+								     if (element.isStun())
+								       Physics::BounceResponse{0.5}(element, dir);
+								   });
 				}
 			    });
 
   updateElements(gameState.players);
   updateElements(gameState.enemies);
+  for (auto &player : gameState.players)
+    player.checkSpells(*this);
   for (auto &projectile : gameState.projectiles)
     {
       projectile.update(*this);
-      gameState.terrain.correctFixture(projectile, Physics::BounceResponse{0.9});
-    }
-  if (!(rand() % 15))
-    {
-      projectiles.add([this](){
-	  return entityFactory.spawnOgreHead();
-	}, Vect<2u, double>{5.5, 5.5}, Vect<2u, double>{(rand() % 100 + 1), (rand() % 100 + 1)} * 0.0005);
+      gameState.terrain.correctFixture(projectile, [](auto &projectile, Vect<2u, double>)
+				       {
+					 // Physics::BounceResponse{0.9}(projectile, dir);
+					 projectile.toRemove = true;
+				       });
     }
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.pos[0] > 15.0 || projectile.pos[1] > 15.0;
+			 return projectile.toRemove;
 		       });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -49,7 +54,8 @@ bool Logic::tick()
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &projectile, auto &enemy){
-			   enemy.knockback(projectile.speed.normalized() * 0.1, 5);
+			   enemy.knockback(projectile.speed.normalized() * 0.2, 10);
+			   projectile.toRemove = true;
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -71,11 +77,18 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , entityFactory(renderer)
 {
   for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.emplace_back(0.5, Vect<2u, double>{i, i});
+    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
   levelScene.setTerrain(gameState.terrain);
   enemies.add([this](){
       return entityFactory.spawnEnemy();
-    }, 0.5, Vect<2u, double>{7.5, 7.5});
+    }, 100u, 0.5, Vect<2u, double>{7.5, 7.5});
+}
+
+void Logic::spawnArrow(Vect<2u, double> pos, Vect<2u, double> speed)
+{
+  projectiles.add([this](){
+      return entityFactory.spawnOgreHead();
+    }, pos, speed);
 }
 
 void Logic::run()
@@ -86,7 +99,7 @@ void Logic::run()
   updatesSinceLastFrame = 0;
   while (!tick())
     {
-      auto now(Clock::now());
+      auto const now(Clock::now());
 
       if (now > lastUpdate + TICK_TIME * 3)
 	{
@@ -121,14 +134,21 @@ void Logic::updateDisplay(LevelScene &levelScene)
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
       animatedEntity.getEntity().setPosition(
-	static_cast<Ogre::Real>(controllable.pos[0]),
-	animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
-	static_cast<Ogre::Real>(controllable.pos[1])
-      );
+					     static_cast<Ogre::Real>(controllable.pos[0]),
+					     animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
+					     static_cast<Ogre::Real>(controllable.pos[1])
+					     );
     });
-  enemies.forEach([updateControllableEntity](AnimatedEntity &animatedEntity, Enemy &enemy)
+  enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
+		    if (enemy.isWalking())
+		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
+		    else if (enemy.isStun())
+		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);
+		    else
+		      animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 		    updateControllableEntity(animatedEntity, enemy);
+		    animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
 		  });
 
   for (unsigned int i(0); i != gameState.players.size(); ++i)
@@ -143,7 +163,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).play();
 	  if (animatedEntity.isMounted())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::WALK_RIDE);
+	      animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
 	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
 	    }
 	  else
@@ -155,7 +175,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).stop();
 	  if (animatedEntity.isMounted())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::STAND_RIDE);
+	      animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
 	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
 	    }
 	  else
@@ -220,6 +240,10 @@ void Logic::updateDisplay(LevelScene &levelScene)
   }
 
   gameState.players[0].setInput(p0 * 0.03);
+  gameState.players[0].setAttacking(0u, Keyboard::getKeys()[OIS::KC_V]);
+  gameState.players[0].setAttacking(1u, Keyboard::getKeys()[OIS::KC_B]);
+  gameState.players[0].setAttacking(2u, Keyboard::getKeys()[OIS::KC_N]);
+  gameState.players[0].setLocked(Keyboard::getKeys()[OIS::KC_LSHIFT]);
   gameState.players[1].setInput(p1 * 0.03);
   // gameState.players[2].setInput(p2 * 0.03);
 
@@ -230,23 +254,26 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
 void Logic::calculateCamera(LevelScene &levelScene)
 {
-  constexpr Ogre::Real const angle(180 - 60 / 2);
-  Ogre::Real const tanAngle(tan(angle));
-  constexpr Ogre::Real const angleUp(180 - 80 / 2);
-  Ogre::Real const tanAngleUp(tan(angleUp));
-  constexpr Ogre::Real const yMax(20.f);
-  Ogre::Vector3 const cameraPos(levelScene.cameraNode->getPosition());
-  Ogre::Vector3 cameraDest;
+  constexpr double const angle(180 - 60 / 2);
+  double const tanAngle(tan(angle));
+  constexpr double const angleUp(180 - 80 / 2);
+  double const tanAngleUp(tan(angleUp));
+  constexpr double const yMax(20.f);
+  Vect<3u, double> const cameraPos(levelScene.cameraNode->getPosition().x,
+				   levelScene.cameraNode->getPosition().y,
+				   levelScene.cameraNode->getPosition().z);
 
   auto const minmax_x(std::minmax_element(gameState.players.cbegin(),
-				    gameState.players.cend(),
-				    [](auto const &p1, auto const&p2) {
-				      return p1.getPos()[0] < p2.getPos()[0];
-				    }));
-  auto const leftVecX(Ogre::Vector3{minmax_x.first->getPos()[0], 0,
-    minmax_x.first->getPos()[1]} - cameraPos);
-  auto const rightVecX(Ogre::Vector3{minmax_x.second->getPos()[0], 0,
-    minmax_x.first->getPos()[1]} - cameraPos);
+					  gameState.players.cend(),
+					  [](auto const &p1, auto const &p2) {
+					    return p1.getPos()[0] < p2.getPos()[0];
+					  }));
+  Vect<3u, double> const leftVecX(Vect<3u, double>(minmax_x.first->getPos()[0],
+						   0.0,
+						   minmax_x.first->getPos()[1]) - cameraPos);
+  Vect<3u, double> const rightVecX(Vect<3u, double>{
+      minmax_x.second->getPos()[0], 0.0,
+	minmax_x.first->getPos()[1]} - cameraPos);
   auto const midVecX((rightVecX - leftVecX) / 2);
 
   auto const minmax_z(std::minmax_element(gameState.players.cbegin(),
@@ -254,25 +281,29 @@ void Logic::calculateCamera(LevelScene &levelScene)
 					  [](auto const &p1, auto const &p2) {
 					    return p1.getPos()[1] < p2.getPos()[1];
 					  }));
-  auto const leftVecZ(Ogre::Vector3{minmax_z.first->getPos()[1], 0,
-    minmax_z.first->getPos()[1]} - cameraPos);
-  auto const rightVecZ(Ogre::Vector3{minmax_z.second->getPos()[1], 0,
-    minmax_z.first->getPos()[1]} - cameraPos);
+  auto const leftVecZ(Vect<3u, double>{
+      (double)minmax_z.first->getPos()[1], 0.0,
+	(double)minmax_z.first->getPos()[1]} - cameraPos);
+  auto const rightVecZ(Vect<3u, double>{
+      (double)minmax_z.second->getPos()[1], 0.0,
+	(double)minmax_z.first->getPos()[1]} - cameraPos);
   auto const midVecZ((rightVecZ - leftVecZ) / 2);
 
-  Ogre::Real const yxpos((-tanAngle * (midVecX.length()) + 10) * 1.5f);
-  Ogre::Real const yzpos((-tanAngleUp * (midVecZ.length()) + 10) * 0.8f);
+  double const yxpos((-tanAngle * (std::sqrt(midVecX.length2())) + 10) * 1.5f);
+  double const yzpos((-tanAngleUp * (std::sqrt(midVecZ.length2())) + 10) * 0.8f);
 
-  cameraDest.x = minmax_x.first->getPos()[0]
-    + (minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
-  cameraDest.y = clamp(std::max(yxpos, yzpos), 0.0f, yMax);
-  cameraDest.z = (minmax_z.first->getPos()[1]
-		  + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
-    + 0.5f * cameraDest.y;
+  Vect<3u, double> cameraDest;
 
-  levelScene.cameraNode->setPosition(cameraPos.x + (cameraDest.x - cameraPos.x) / 10,
-				     cameraPos.y + (cameraDest.y - cameraPos.y) / 10,
-				     cameraPos.z + (cameraDest.z - cameraPos.z) / 10);
+  cameraDest[0] = minmax_x.first->getPos()[0]
+    + (double)(minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
+  cameraDest[1] = clamp(std::max(yxpos, yzpos), 0.0, yMax);
+  cameraDest[2] = (double)(minmax_z.first->getPos()[1]+ (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
+    + 0.5f * cameraDest[1];
+
+  cameraDest = cameraPos + (cameraDest - cameraPos) / 10.0;
+  levelScene.cameraNode->setPosition((Ogre::Real)cameraDest[0],
+				     (Ogre::Real)cameraDest[1],
+				     (Ogre::Real)cameraDest[2]);
 
   AudioListener::setPos(levelScene.cameraNode->getPosition());
 }
