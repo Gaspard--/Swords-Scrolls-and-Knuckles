@@ -6,8 +6,9 @@
 class SaveState
 {
 private:
-  std::fstream  file;
+  std::ofstream  file;
   int  seed;
+  Vect<unsigned int, unsigned int> vectsize;
 public:
   SaveState() = delete;
   SaveState(GameState, long unsigned int);
@@ -15,7 +16,15 @@ public:
   SaveState &operator=(SaveState const &) = delete;
   ~SaveState();
 
-  bool Serialize(unsigned int);
+  void Serialize(unsigned int);
+  void Serialize(long double, unsigned, unsigned);
 };
+
+template<unsigned int SIZE, class T>
+void    SaveState::Serialize(Vect<SIZE, T> data)
+{
+  for (auto &&t : data)
+    Serialize(t);
+}
 
 #endif

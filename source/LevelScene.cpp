@@ -154,8 +154,8 @@ void LevelScene::createWallMesh()
 
     for (unsigned int i(0); i < 3; ++i)
       {
-	for (Vect<2u, double> const &coef : {Vect<2u, double>(0, 0), Vect<2u, double>(1, 0),
-	      Vect<2u, double>(0, 1), Vect<2u, double>(1, 1)})
+	for (Vect<2u, double> const &coef : {Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+	      Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
 	  {
 	    Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
@@ -170,7 +170,7 @@ void LevelScene::createWallMesh()
 	    );
 	  }
 	start = start + right;
-	right = {right[2], 0, -right[0]};
+	right = {right[2], 0.0, -right[0]};
 
 	obj.triangle(offset, offset + 1, offset + 3);
 	obj.triangle(offset, offset + 3, offset + 2);
@@ -183,8 +183,8 @@ void LevelScene::createWallMesh()
     Vect<3u, double> right{1.0, 0.0, 0.0};
 
     for (Vect<2u, double> const &coef : {
-  	Vect<2u, double>(0, 0), Vect<2u, double>(1, 0),
-  	  Vect<2u, double>(0, 1), Vect<2u, double>(1, 1)})
+  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
       {
   	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 

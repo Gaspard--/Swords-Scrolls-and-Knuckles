@@ -11,69 +11,39 @@ class Vect
 private:
   T data[dim];
 
+  template<class V, std::size_t... Indices, typename std::enable_if<!std::is_same<T, V>::value>::type * = nullptr>
+  constexpr Vect(Vect<dim, V> const &other,  std::index_sequence<Indices...>)
+  : Vect(static_cast<T>(other[Indices])...)
+  {}
+
+  template<std::size_t... Indices>
+  constexpr Vect(Vect<dim, T> &&other, std::index_sequence<Indices...>)
+  : data{std::move(other[Indices])...}
+  {}
+
 public:
-  template<class Op, class P, class... U, typename std::enable_if<sizeof...(U) < dim>::type * = nullptr>
-	   constexpr Vect(Function<T, P, Op> function, U... indices)
-    : Vect(function, dim - sizeof...(indices) - 1, indices...)
-  {}
-
-  template<class Op, class P, class... U, typename std::enable_if<sizeof...(U) == dim>::type * = nullptr>
-  constexpr Vect(Function<T, P, Op> function, U... indices)
-    : Vect(function.apply(indices)...)
-  {}
-
-  template<class V>
-  constexpr Vect(V const (&other)[dim])
-    : Vect(other, dim - 1u)
-  {}
-
-  template<class V, class... U, typename std::enable_if<sizeof...(U) < dim - 1>::type * = nullptr>
-  constexpr Vect(V const (&other)[dim], unsigned int i, U... indices)
-    : Vect(other, dim - sizeof...(indices) - 2u, i, indices...)
-  {}
-
-  template<class V, class... U, typename std::enable_if<sizeof...(U) == dim>::type * = nullptr>
-  constexpr Vect(V const (&other)[dim], U... indices)
-    : Vect(static_cast<T>(other[indices])...)
-  {}
-
-  template<class V>
+  template<class V, typename std::enable_if<!std::is_same<T, V>::value>::type * = nullptr>
   constexpr Vect(Vect<dim, V> const &other)
-    : Vect(other, dim - 1u)
+  : Vect(other, std::make_index_sequence<dim>{})
   {}
 
-  template<class V, class... U, typename std::enable_if<sizeof...(U) < dim - 1>::type * = nullptr>
-  constexpr Vect(Vect<dim, V> const &other, unsigned int i, U... indices)
-    : Vect(other, dim - sizeof...(indices) - 2u, i, indices...)
-  {}
-
-  template<class V, class... U, typename std::enable_if<sizeof...(U) == dim>::type * = nullptr>
-  constexpr Vect(Vect<dim, V> const &other, U... indices)
-    : Vect(static_cast<T>(other[indices])...)
-  {}
-
-  template<class... U, typename std::enable_if<sizeof...(U) < dim - 1>::type * = nullptr>
-  constexpr Vect(Vect<dim - 1, T> const &other, T added, U... indices)
-    : Vect(other, added, indices..., dim - sizeof...(indices) - 2)
-  {}
-
-  template<class... U, typename std::enable_if<sizeof...(U) == dim - 1>::type * = nullptr>
-  constexpr Vect(Vect<dim - 1, T> const &other, T added, U... indices)
-    : Vect(other[indices]..., added)
+  template<typename std::enable_if<std::is_move_constructible<T>::value>::type * = nullptr>
+  constexpr Vect(Vect<dim, T> &&other)
+  : Vect(std::forward<Vect<dim, T>>(other), std::make_index_sequence<dim>{})
   {}
 
   template<class... U, typename std::enable_if<sizeof...(U) == dim>::type * = nullptr>
   constexpr Vect(U &&... ts)
-  : data{static_cast<T>(ts)...}
+  : data{std::forward<U>(ts)...}
   {}
 
   constexpr Vect() = default;
 
-  template<class Operation>
-  constexpr void applyOnSelf(Operation op)
+  constexpr Vect<dim, T> &operator=(Vect<dim, T> other)
   {
-    for (unsigned int i(0); i != dim; ++i)
-      data[i] = op(i);
+    for (std::size_t i(0); i < dim; ++i)
+      data[i] = std::move(other[i]);
+    return *this;
   }
 
   constexpr T &operator[](unsigned int index)
@@ -148,28 +118,6 @@ public:
     return true;
   }
 
-  template<class Op>
-  constexpr static Vect<dim, T> applyOp(Op const op)
-  {
-    return Vect<dim, T>(Function<T, unsigned int, Op>(op));
-  }
-
-  template<class Op>
-  constexpr Vect<dim, T> map(Op const op) const
-  {
-    return applyOp([op, this](unsigned int i) {
-	return (op(data[i]));
-      });
-  }
-
-  template<class Op, class U>
-  constexpr Vect<dim, T> applyOpPerComponent(Op op, const Vect<dim, U>& other) const
-  {
-    return applyOp([this, other, op](unsigned int i) {
-	return op((*this)[i], other[i]);
-      });
-  }
-
   template<class U>
   constexpr Vect<dim, T> operator+(Vect<dim, U> const &other) const
   {
@@ -207,13 +155,18 @@ public:
     return Vect<dim, T>(*this) -= other;
   }
 
-  constexpr Vect<dim, T> operator-(void) const
+private:
+  template<std::size_t... Indexes>
+  constexpr Vect<dim, T> minus(std::index_sequence<Indexes...>) const
   {
-    return map([](T t){return (-t);});
+    return Vect<dim, T>(-data[Indexes]...);
   }
 
-private:
-
+public:
+  constexpr Vect<dim, T> operator-(void) const
+  {
+    return minus(std::make_index_sequence<dim>{});
+  }
 
 public:
   constexpr T sum(void) const
@@ -261,6 +214,16 @@ public:
     for (index[0] = begin[0]; index[0] < end[0]; ++index[0])
       for (index[1] = begin[1]; index[1] < end[1]; ++index[1])
 	l(index);
+  }
+
+  constexpr T *begin()
+  {
+    return (data);
+  }
+
+  constexpr T *end()
+  {
+    return (data + dim);
   }
 
   template<unsigned int n = dim, typename std::enable_if<(n >= 1)>::type * = nullptr>
