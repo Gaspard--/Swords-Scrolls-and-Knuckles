@@ -2,24 +2,42 @@
 #include <iostream>
 
 /// Singleton
-std::vector<std::unique_ptr<Joystick>> Joystick::joystickInstances;
+std::array<std::unique_ptr<Joystick>, 4> Joystick::joystickInstances;
 
-std::vector<std::unique_ptr<Joystick>> &Joystick::getJoysticks(void)
+std::array<std::unique_ptr<Joystick>, 4> &Joystick::getJoysticks(void)
 {
   return (joystickInstances);
 }
 
+void Joystick::registerGlobalCallback(joystickState state, std::function<void(bool, size_t)> const &fn) {
+  for (auto const &js : joystickInstances) {
+    if (js) {
+      js->registerCallback(state, fn);
+    }
+  }
+}
+
+void Joystick::clearGlobalCallbacks(void) {
+  for (auto const &js : joystickInstances) {
+    if (js) {
+      js->clearCallbacks();
+    }
+  }
+}
+
 // Default constructor
-Joystick::Joystick(void)
+Joystick::Joystick(size_t i)
   : Input<OIS::JoyStick, OIS::JoyStickListener>()
+  , idx(i)
 {}
 
 bool Joystick::buttonPressed(OIS::JoyStickEvent const &, int button)
 {
+  std::cout << "Button :" << button << std::endl;
   states[static_cast<joystickState>(button + 1)] = true;
   try
   {
-    return (statesCallbacks.at(static_cast<joystickState>(button + 1))(false));
+    statesCallbacks.at(static_cast<joystickState>(button + 1))(false, idx);
   }
   catch (std::out_of_range const &) {}
   return (true);
@@ -30,7 +48,7 @@ bool Joystick::buttonReleased(OIS::JoyStickEvent const &, int button)
   states[static_cast<joystickState>(button + 1)] = false;
   try
   {
-    return (statesCallbacks.at(static_cast<joystickState>(button + 1))(true));
+    statesCallbacks.at(static_cast<joystickState>(button + 1))(true, idx);
   }
   catch (std::out_of_range const &) {}
   return (true);
@@ -42,8 +60,41 @@ bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int)
   {
     return ((arg.state.mAxes[i].abs * 100) / 32767);
   });
-  axes[LEFT_HRZ] = calcAxes(0);
-  axes[LEFT_VRT] = calcAxes(1);
+  auto const updateCallbacks([this, &arg](joystickAxe axe, joystickState a, joystickState b) {
+    if (axes[axe] < -90)
+    {
+      states[a] += (states[a] < 2);
+      states[b] = 0;
+      if (states[a] == 1) {
+	try {
+	  statesCallbacks.at(a)(false, idx);
+	}
+	catch (std::out_of_range const &) {}
+      }
+    }
+    else if (axes[axe] > 90) {
+      states[b] += (states[b] < 2);
+      states[a] = 0;
+      if (states[b] == 1) {
+	try {
+	  statesCallbacks.at(b)(false, idx);
+	}
+	catch (std::out_of_range const &) {}
+      }
+    }
+    else {
+      states[a] = 0;
+      states[b] = 0;
+    }
+  });
+  axes[LEFT_VRT] = calcAxes(0);
+  axes[LEFT_HRZ] = calcAxes(1);
+  updateCallbacks(LEFT_VRT, JS_LUP, JS_LDOWN);
+  updateCallbacks(LEFT_HRZ, JS_LRIGHT, JS_LLEFT);
+
+  /*
+  TODO: verify these axes too
+
   axes[LEFT_TOP] = calcAxes(2);
   axes[RIGHT_HRZ] = calcAxes(3);
   axes[RIGHT_VRT] = calcAxes(4);
@@ -58,17 +109,18 @@ bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int)
   states[JS_RUP] = arg.state.mAxes[4].abs < -10000;
   states[JS_RDOWN] = arg.state.mAxes[4].abs > 10000;
   states[JS_RT] = (arg.state.mAxes[5].abs > -25000 && arg.state.mAxes[5].abs != 0);
+  */
   return (true);
 }
 
-void Joystick::registerCallback(joystickState state, std::function<bool(bool)> const &fn)
+void Joystick::registerCallback(joystickState state, std::function<void(bool, size_t)> const &fn)
 {
   statesCallbacks[state] = fn;
 }
 
 void Joystick::clearCallbacks(void)
 {
-  states.clear();
+  statesCallbacks.clear();
 }
 
 bool Joystick::isStateUp(joystickState js) const

@@ -37,11 +37,13 @@ public:
     Keyboard::getKeyboard().clearCallbacks();
     Mouse::getMouse().clearCallbacks();
     for (auto const &js : Joystick::getJoysticks()) {
-      js->clearCallbacks();
+      if (js != nullptr)
+	js->clearCallbacks();
     }
     scene.reset(nullptr);
     scenemgr->clearScene();
     scene.reset(se.switchScene());
+    scene->resetSceneCallbacks();
   }
 
   /// Switch the current scene to the given one.
