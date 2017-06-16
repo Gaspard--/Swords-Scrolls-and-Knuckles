@@ -52,6 +52,7 @@ PyBindInstance::PyBindInstance()
     py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);
     py::object importedModuleAttr = importedModule.attr("pythonModule");
     pythonModule = importedModuleAttr();
+    execAI[0u] = &PyBindInstance::chaseAI;
   }
   catch (py::error_already_set const &e)
   {

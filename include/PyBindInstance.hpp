@@ -24,6 +24,7 @@ public:
     py::object import(const std::string &mod,
         const std::string &path, py::object &glb);
     void chaseAI(Controllable &, PyEvaluate &);
+    std::map<unsigned int, std::function<void(PyBindInstance *, Controllable &, PyEvaluate &)>> execAI;
 
 private:
     py::object main;
