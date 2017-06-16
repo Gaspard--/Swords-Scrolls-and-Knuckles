@@ -35,6 +35,18 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 
+if ("$ENV{PYTHON_INCLUDE_DIR}" STREQUAL "")
+  message(FATAL_ERROR "The PYTHON_INCLUDE_DIR environment variable is not set.")
+else ()
+  set(PYTHON_INCLUDE_DIR "$ENV{PYTHON_INCLUDE_DIR}")
+endif ("$ENV{PYTHON_INCLUDE_DIR}" STREQUAL "")
+
+if ("$ENV{PYTHON_LIBRARY}" STREQUAL "")
+  message(FATAL_ERROR "The PYTHON_LIBRARY environment variable is not set.")
+else ()
+  set(PYTHON_LIBRARY "$ENV{PYTHON_LIBRARY}")
+endif ("$ENV{PYTHON_LIBRARY}" STREQUAL "")
+
 if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
   if ("$ENV{OGRE_HOME}" STREQUAL "")
@@ -106,6 +118,7 @@ if (UNIX)
         alut
         vorbisfile
         ogg
+  python2.7
 	dl
 	util
   )
