@@ -10,6 +10,8 @@
 #include "ModVector.hpp"
 #include "EntityFactory.hpp"
 #include "AudioSource.hpp"
+#include "PyBindInstance.hpp"
+#include "PyEvaluate.hpp"
 
 class LevelScene;
 
@@ -38,6 +40,8 @@ private:
 public:
   GameState gameState;
   EntityFactory entityFactory;
+  PyBindInstance pyBindInstance;
+  PyEvaluate pyEvaluate;
 
   /**
    * Parameter isn't stored, only used for setup.
