@@ -8,7 +8,6 @@
 
 #include "GameState.hpp"
 #include "ModVector.hpp"
-#include "Projectile.hpp"
 #include "EntityFactory.hpp"
 
 class LevelScene;
@@ -29,7 +28,6 @@ private:
   unsigned int updatesSinceLastFrame;
   bool stop;
 
-
   std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
@@ -45,10 +43,26 @@ public:
    */
   Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
 
-  void spawnOgreHead(Vect<2u, float> pos);
+  void spawnArrow(Vect<2u, double> pos, Vect<2u, double> speed);
   void run();
   void exit();
   void updateDisplay(LevelScene &);
 };
+
+constexpr void Controllable::update(Logic &)
+{
+  if (!stun)
+    {
+      speed = speed * 0.9 + input * 0.1;
+    }
+  else
+    {
+      dir = dir * 0.8 - speed * 0.2;
+      --stun;
+    }
+  if (stun || !locked)
+    dir = dir * 0.9 + targetDir * 0.1;
+  pos += speed;
+}
 
 #endif
