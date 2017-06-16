@@ -246,8 +246,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
   gameState.players[0].setLocked(Keyboard::getKeys()[OIS::KC_LSHIFT]);
   gameState.players[1].setInput(p1 * 0.03);
   // gameState.players[2].setInput(p2 * 0.03);
-
   calculateCamera(levelScene);
+
+  levelScene.updateUI(gameState.players);
 
   updatesSinceLastFrame = 0;
 }

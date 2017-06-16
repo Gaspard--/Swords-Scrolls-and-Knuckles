@@ -1,6 +1,7 @@
 #ifndef UI_OVERLAY_RESOURCE_HPP
 # define UI_OVERLAY_RESOURCE_HPP
 
+# include <algorithm>
 # include <memory>
 # include <Overlay/OgreOverlaySystem.h>
 
@@ -24,11 +25,21 @@ public:
   {}
 
   UIOverlayResource(UIOverlayResource const &) = delete;
-  UIOverlayResource(UIOverlayResource &&) = delete;
+  UIOverlayResource(UIOverlayResource &&r)
+    : resource(r.resource)
+  {
+    r.resource = nullptr;
+  }
+
   UIOverlayResource &operator=(UIOverlayResource const &) = delete;
-  UIOverlayResource &operator=(UIOverlayResource &&) = delete;
+  UIOverlayResource &operator=(UIOverlayResource &&r)
+  {
+    std::swap(resource, r.resource);
+  }
+
   ~UIOverlayResource() {
-    Ogre::OverlayManager::getSingleton().destroyOverlayElement(resource);
+    if (resource)
+      Ogre::OverlayManager::getSingleton().destroyOverlayElement(resource);
   }
 
   T *operator->(void) {
@@ -68,11 +79,21 @@ public:
   {}
 
   UIOverlayResource(UIOverlayResource const &) = delete;
-  UIOverlayResource(UIOverlayResource &&) = delete;
+  UIOverlayResource(UIOverlayResource &&r)
+    : resource(r.resource)
+  {
+    r.resource = nullptr;
+  }
+
   UIOverlayResource &operator=(UIOverlayResource const &) = delete;
-  UIOverlayResource &operator=(UIOverlayResource &&) = delete;
+  UIOverlayResource &operator=(UIOverlayResource &&r) 
+  {
+    std::swap(resource, r.resource);
+  }
+
   ~UIOverlayResource() {
-    Ogre::OverlayManager::getSingleton().destroy(resource);
+    if (resource)
+      Ogre::OverlayManager::getSingleton().destroy(resource);
   }
 
   Ogre::Overlay *operator->(void) {

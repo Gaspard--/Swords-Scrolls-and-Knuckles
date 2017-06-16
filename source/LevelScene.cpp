@@ -216,6 +216,10 @@ bool LevelScene::isInPause(void) const {
   return (inPause);
 }
 
+void LevelScene::updateUI(std::vector<Player> const &v) {
+  uiHUD.updateHUD(v);
+}
+
 void LevelScene::pauseScene(void) {
   logicThread->pause();
   inPause = true;
