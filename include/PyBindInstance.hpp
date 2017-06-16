@@ -8,6 +8,11 @@
 
 namespace py = pybind11;
 
+class Controllable;
+class PyEvaluate;
+
+#define PYTHONMODULE "resources/scripts/pythonModule.py"
+
 class	PyBindInstance
 {
 public:
@@ -18,17 +23,12 @@ public:
     // Import a .py file.
     py::object import(const std::string &mod,
         const std::string &path, py::object &glb);
-    void executeAI();
+    void chaseAI(Controllable &, PyEvaluate &);
 
 private:
     py::object main;
-    // Put this on every mob :
-    // py::object globals;
-
-    // The std::string may be replaced to match the type of monster's type id.
-    // EDIT: if we do only make one class, a map will not be necessary.
-    std::map<std::string, py::object> modules;
-    std::map<std::string, py::object> wrappers;
+    py::object globals;
+    py::object pythonModule;
 };
 
 #endif // !PYBINDINSTANCE_HPP_
