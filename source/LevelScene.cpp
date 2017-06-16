@@ -15,34 +15,34 @@ LevelScene::LevelScene(Renderer &renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
   , inPause(false)
   , cameraNode([&renderer]()
-{
-  auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
+	       {
+		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
 
-  cameraNode->attachObject(&renderer.getCamera());
-  cameraNode->setPosition(Ogre::Vector3(8, 13, 5 + 8));
-  cameraNode->lookAt(Ogre::Vector3(8, 0, 8), Ogre::Node::TS_WORLD);
-  renderer.getCamera().setNearClipDistance(5);
-  return cameraNode;
-}())
-, ground([&renderer]()
-{
-  Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-  Ogre::MeshManager::getSingleton()
-    .createPlane("ground",
-      Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-      plane,
-      25000, 25000, 1, 1,
-      true,
-      1, 25000, 25000,
-      Ogre::Vector3::UNIT_Z);
-  Entity ground(renderer, "ground");
+		 cameraNode->attachObject(&renderer.getCamera());
+		 cameraNode->setPosition(Ogre::Vector3(8, 13, 5 + 8));
+		 cameraNode->lookAt(Ogre::Vector3(8, 0, 8), Ogre::Node::TS_WORLD);
+		 renderer.getCamera().setNearClipDistance(5);
+		 return cameraNode;
+	       }())
+  , ground([&renderer]()
+	   {
+	     Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+	     Ogre::MeshManager::getSingleton()
+	       .createPlane("ground",
+			    Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+			    plane,
+			    25000, 25000, 1, 1,
+			    true,
+			    1, 25000, 25000,
+			    Ogre::Vector3::UNIT_Z);
+	     Entity ground(renderer, "ground");
 
-  ground.getOgre()->setCastShadows(false);
-  ground.getOgre()->setMaterialName("wall");
-  return ground;
-}())
-, logicThread(*this, renderer, players)
-// , music(Musics::SMALL_WORLD)
+	     ground.getOgre()->setCastShadows(false);
+	     ground.getOgre()->setMaterialName("wall");
+	     return ground;
+	   }())
+  , logicThread(*this, renderer, players)
+    // , music(Musics::SMALL_WORLD)
 {
   // music.setVolume(0.2f);
   // music.play();
@@ -86,34 +86,31 @@ void LevelScene::resetSceneCallbacks(void) {
   if (uiPause.isVisible())
     uiPause.resetUICallbacks();
   else
-  {
-    // For demonstration / test purpose. Remove it if needed.
-    auto const setMounted([this](bool b, size_t i = 0) {
-      if (!b && !isInPause())
-      {
-	for (auto &p : players) {
-	  p.setMounted(!p.isMounted());
-	}
-      }
-    });
-    Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, setMounted);
-    Joystick::registerGlobalCallback(joystickState::JS_A, setMounted);
+    {
+      // For demonstration / test purpose. Remove it if needed.
+      auto const setMounted([this](bool b, size_t = 0) {
+	  if (!b && !isInPause())
+	    for (auto &p : players) {
+	      p.setMounted(!p.isMounted());
+	    }
+	});
+      Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, setMounted);
+      Joystick::registerGlobalCallback(joystickState::JS_A, setMounted);
 
-    // Go back to menu
-    auto const goBackToMenu([this](bool b, size_t i = 0) {
-      if (!b)
-      {
-	if (uiPause.getOverlay()->isVisible()) {
-	  unpauseScene();
-	}
-	else {
-	  pauseScene();
-	}
-      }
-    });
-    Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, goBackToMenu);
-    Joystick::registerGlobalCallback(joystickState::JS_START, goBackToMenu);
-  }
+      // Go back to menu
+      auto const goBackToMenu([this](bool b, size_t = 0) {
+	  if (!b)
+	    {
+	      if (uiPause.getOverlay()->isVisible()) {
+		unpauseScene();
+	      } else {
+		pauseScene();
+	      }
+	    }
+	});
+      Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, goBackToMenu);
+      Joystick::registerGlobalCallback(joystickState::JS_START, goBackToMenu);
+    }
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)

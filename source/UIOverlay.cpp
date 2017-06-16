@@ -67,10 +67,10 @@ void UIOverlay::resetUICallbacks(void) {
       buttons[selectedButton]->getCallback()();
     }
   });
-  Joystick::registerGlobalCallback(joystickState::JS_LDOWN, [this](bool b, size_t) {
+  Joystick::registerGlobalCallback(joystickState::JS_LDOWN, [this](bool , size_t) {
     setSelectedButton(selectedButton + 1);
   });
-  Joystick::registerGlobalCallback(joystickState::JS_LUP, [this](bool b, size_t) {
+  Joystick::registerGlobalCallback(joystickState::JS_LUP, [this](bool , size_t) {
     setSelectedButton(selectedButton - 1);
   }); 
   Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
