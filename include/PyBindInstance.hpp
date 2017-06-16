@@ -9,7 +9,7 @@
 namespace py = pybind11;
 
 class Controllable;
-class PyEvaluate;
+struct PyEvaluate;
 
 #define PYTHONMODULE "resources/scripts/pythonModule.py"
 
