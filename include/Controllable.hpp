@@ -10,15 +10,23 @@ class Controllable : public Fixture
 private:
   Vect<2u, double> input;
   Vect<2u, double> dir;
+  Vect<2u, double> targetDir;
   unsigned int stun;
+  bool locked;
+  unsigned int health;
+  unsigned int maxHealth;
 
 public:
   template<class... PARAMS>
-  constexpr Controllable(PARAMS &&... params)
-  : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0, 0}}
-    , input(0.0, 0.0)
+  constexpr Controllable(unsigned int health, PARAMS &&... params)
+  : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0.0, 0.0}}
+    , input{0.0, 0.0}
     , dir{0.0, 1.0}
+    , targetDir(dir)
     , stun(0)
+    , locked(false)
+    , health(health)
+    , maxHealth(health)
   {
   }
 
@@ -26,6 +34,7 @@ public:
 
   constexpr void knockback(Vect<2u, double> speed, unsigned int stun)
   {
+    targetDir = -speed.normalized();
     this->speed = speed;
     this->stun = stun;
   }
@@ -43,7 +52,15 @@ public:
   // setter only.
   constexpr void setInput(Vect<2u, double> input)
   {
+    if (!stun && input.length2() > 0)
+      targetDir = input.normalized();
     this->input = input;
+  }
+
+  // setter only.
+  constexpr void setLocked(bool locked)
+  {
+    this->locked = locked;
   }
 
   constexpr Vect<2u, double> getDir() const
@@ -51,23 +68,5 @@ public:
     return dir;
   }
 };
-
-# include "Logic.hpp"
-
-constexpr void Controllable::update(Logic &logic)
-{
-  if (!stun)
-    {
-      speed = speed * 0.9 + input * 0.1;
-      dir = dir * 0.9 + input * 0.1;
-    }
-  else
-    {
-      dir = dir * 0.9 - speed * 0.1;
-      --stun;
-    }
-  pos += speed;
-}
-
 
 #endif // !CONTROLLABLE_HPP

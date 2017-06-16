@@ -62,4 +62,11 @@ auto const &clamp(T const &a, T const &min, T const &max)
   return a < min ? min : a > max ? max : a;
 }
 
+struct NOOP
+{
+  template<class... PARAMS>
+  constexpr void operator()(PARAMS &&... ) const
+  {};
+};
+
 #endif // !UTIL_HPP_

@@ -14,12 +14,12 @@ struct Fixture
     return radius;
   }
 
-  constexpr Vect<2u, float> getPos() const
+  constexpr Vect<2u, double> getPos() const
   {
     return (pos);
   }
 
-  constexpr Vect<2u, float> getSpeed() const
+  constexpr Vect<2u, double> getSpeed() const
   {
     return (speed);
   }
