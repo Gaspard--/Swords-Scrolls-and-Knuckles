@@ -1,6 +1,7 @@
 #include "PyBindInstance.hpp"
 #include "Enemy.hpp"
 #include "Vect.hpp"
+#include "PyEvaluate.hpp"
 
 namespace PyPlugin
 {
@@ -58,18 +59,22 @@ PyBindInstance::PyBindInstance()
     PyErr_Print();
   }
 }
+
+void PyBindInstance::chaseAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("chaseAI")(&ctr, pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
 {
-    py::dict  lcl;
-    lcl["path"]        = py::cast(path);
-    lcl["module_name"] = py::cast(mod);
+  py::dict lcl;
+  lcl["path"]        = py::cast(path);
+  lcl["module_name"] = py::cast(mod);
 
-    py::eval<py::eval_statements>(
-        "import imp\n"
-        "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
-        glb,
-        lcl);
-    return lcl["new_module"];
+  py::eval<py::eval_statements>(
+    "import imp\n"
+    "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
+    glb,
+    lcl);
+  return (lcl["new_module"]);
 }
