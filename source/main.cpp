@@ -8,6 +8,9 @@ int main() {
     game.run();
     return (0);
   }
+  catch (Game::GameQuitException const &) {
+    return (0);
+  }
   catch (Game::SetupException const &e) {
     std::cerr << "Failed to setup game: " << e.what() << std::endl;
   }

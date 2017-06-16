@@ -7,9 +7,13 @@
 #include "EntityFactory.hpp"
 #include "LevelScene.hpp"
 #include "Entity.hpp"
+#include "AudioSource.hpp"
 
 LevelScene::LevelScene(Renderer &renderer)
-  : terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  : uiHUD(renderer)
+  , uiPause(*this, renderer)
+  , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  , inPause(false)
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -38,17 +42,18 @@ LevelScene::LevelScene(Renderer &renderer)
 	     return ground;
 	   }())
   , logicThread(*this, renderer, players)
+  // , music(Musics::SMALL_WORLD)
 {
+  // music.setVolume(0.2f);
+  // music.play();
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
+
+  std::clog << "Loading level scene" << std::endl;
 
   {
     EntityFactory ef(renderer);
 
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-  }
-  {
-    EntityFactory ef(renderer);
-
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 
@@ -66,14 +71,53 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // For demonstration / test purpose. Remove it if needed.
   Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, [this](bool b) {
-    if (b)
+    if (b && !isInPause())
     {
       for (auto &p : players) {
 	p.setMounted(!p.isMounted());
       }
     }
-    return (false);
   });
+
+  // Go back to menu
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [this](bool b) {
+    if (!b)
+    {
+      if (uiPause.getOverlay()->isVisible()) {
+	unpauseScene();
+      }
+      else {
+	pauseScene();
+      }
+    }
+  });
+
+  // UI Mouse stuff
+  Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
+    uiHUD.mouseMoved(x, y);
+    uiPause.mouseMoved(x, y);
+  });
+  Mouse::getMouse().registerCallback(OIS::MouseButtonID::MB_Left, [this](OIS::MouseEvent const &e) {
+    uiHUD.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
+    uiPause.mousePressed(
+      static_cast<Ogre::Real>(e.state.X.abs),
+      static_cast<Ogre::Real>(e.state.Y.abs)
+    );
+  });
+
+  // Hide pause
+  uiPause.getOverlay()->hide();
+
+  std::clog << "End loading level scene" << std::endl;
+}
+
+LevelScene::~LevelScene() {
+  if (isInPause()) {
+    unpauseScene();
+  }
 }
 
 void LevelScene::setTerrain(Terrain const &terrain)
@@ -165,6 +209,25 @@ void LevelScene::createWallMesh()
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
 {
-  logicThread->updateDisplay(*this);
+  if (!isInPause()) {
+    logicThread->updateDisplay(*this);
+  }
+  // music.update();
   return true;
+}
+
+bool LevelScene::isInPause(void) const {
+  return (inPause);
+}
+
+void LevelScene::pauseScene(void) {
+  logicThread->pause();
+  inPause = true;
+  uiPause.getOverlay()->show();
+}
+
+void LevelScene::unpauseScene(void) {
+  logicThread->unpause();
+  inPause = false;
+  uiPause.getOverlay()->hide();
 }

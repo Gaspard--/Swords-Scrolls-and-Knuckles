@@ -4,7 +4,9 @@
 # include <string>
 # include <OgreSceneNode.h>
 # include <OgreEntity.h>
+# include <unordered_map>
 
+# include "AudioSource.hpp"
 # include "Vect.hpp"
 # include "Game.hpp"
 
@@ -14,17 +16,22 @@ protected:
   Ogre::Entity *ogreEntity;
   Ogre::SceneNode *sceneNode;
 
+  void updateSoundsPos(void);
+
 public:
+  std::unique_ptr<std::unordered_map<Sounds, AudioSource>> soundMap;
+
   constexpr Entity(void)
-  : ogreEntity(nullptr)
+    : ogreEntity(nullptr)
     , sceneNode(nullptr)
+    , soundMap(nullptr)
   {}
 
   Entity(Renderer &renderer,
-	 std::string const &mesh);
+    std::string const &mesh);
 
   Entity(std::string const &mesh,
-	 Ogre::SceneNode *parent);
+    Ogre::SceneNode *parent);
 
   Entity(Entity const &) = delete;
 
@@ -35,8 +42,8 @@ public:
   {
     std::swap(ogreEntity, e.ogreEntity);
     std::swap(sceneNode, e.sceneNode);
+    std::swap(soundMap, e.soundMap);
   }
-
 
   Entity &operator=(Entity const &e) = delete;
   Entity &operator=(Entity &&e);
@@ -55,7 +62,6 @@ public:
   void setPosition(float x, float y, float z);
   void setPosition(Vect<3, float> pos);
   void setPosition(Ogre::Vector3 pos);
-
 
   void setDirection(Vect<2u, Ogre::Real> v);
 };

@@ -2,10 +2,13 @@
 # define LEVEL_SCENE_HPP
 
 #include <vector>
+#include "UIOverlayHUD.hpp"
+#include "UIOverlayPause.hpp"
 #include "Scene.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
+#include "Music.hpp"
 
 class Terrain;
 
@@ -18,7 +21,10 @@ class Terrain;
 class LevelScene : public Scene
 {
 private:
+  UIOverlayHUD uiHUD;
+  UIOverlayPause uiPause;
   Ogre::SceneNode *terrainNode;
+  bool inPause;
 
 public:
   Ogre::SceneNode *cameraNode;
@@ -30,14 +36,21 @@ private:
   std::vector<Ogre::Light *> lights;
   Entity ground;
   LogicThread logicThread;
+  // Music music;
 
 public:
+  LevelScene(void) = delete;
   LevelScene(Renderer &);
-  virtual ~LevelScene(void) = default;
+  virtual ~LevelScene(void);
 
   static void createWallMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
+
+  bool isInPause(void) const;
+
+  void pauseScene(void);
+  void unpauseScene(void);
 };
 
 #endif

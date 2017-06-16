@@ -177,7 +177,7 @@ public:
       result += data[i];
     return (result);
   }
-  
+
   constexpr T scalar(Vect<dim, T> const &other) const
   {
     return ((*this * other).sum());
@@ -191,6 +191,11 @@ public:
   constexpr Vect<dim, T> normalized() const
   {
     return length2() > 0 ? ((*this) / std::sqrt(length2())) : *this;
+  }
+
+  constexpr Vect<dim, T> unsafeNormalized() const
+  {
+    return ((*this) / std::sqrt(length2()));
   }
 
   constexpr bool all() const
@@ -219,6 +224,18 @@ public:
   constexpr T *end()
   {
     return (data + dim);
+  }
+
+  template<unsigned int n = dim, typename std::enable_if<(n >= 1)>::type * = nullptr>
+  constexpr T const &x() const
+  {
+    return data[0];
+  }
+
+  template<unsigned int n = dim, typename std::enable_if<(n >= 2)>::type * = nullptr>
+  constexpr T const &y() const
+  {
+    return data[1];
   }
 };
 

@@ -9,6 +9,7 @@
 #include "GameState.hpp"
 #include "ModVector.hpp"
 #include "EntityFactory.hpp"
+#include "AudioSource.hpp"
 
 class LevelScene;
 
@@ -47,6 +48,9 @@ public:
   void run();
   void exit();
   void updateDisplay(LevelScene &);
+
+  void pause(void);
+  void unpause(void);
 };
 
 constexpr void Controllable::update(Logic &)
