@@ -34,6 +34,10 @@ Game::Game()
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneMainMenu(*renderer)));
   }));
+
+  // Adding the joysticks
+  for (size_t i = 0; i < 4; i++)
+    addJoystick(i);
 }
 
 Game::~Game(void)
@@ -105,22 +109,23 @@ void Game::setupOIS(void) {
 
   Keyboard::getKeyboard().init(OIS::OISKeyboard, inputManager);
   Mouse::getMouse().init(OIS::OISMouse, inputManager);
-  addJoystick();
   OIS::MouseState const &ms = Mouse::getMouse()->getMouseState();
   ms.width = Game::WIDTH;
   ms.height = Game::HEIGHT;
 }
 
-bool Game::addJoystick(void)
+bool Game::addJoystick(size_t i)
 {
   try
   {
-    std::unique_ptr<Joystick> newJoystick(new Joystick);
+    std::unique_ptr<Joystick> newJoystick(new Joystick(i));
     newJoystick->init(OIS::OISJoyStick, inputManager);
-    Joystick::getJoysticks().push_back(std::move(newJoystick));
+    Joystick::getJoysticks()[i] = std::move(newJoystick);
+    if (renderer->getScene())
+      renderer->getScene()->resetSceneCallbacks();
     return (true);
   }
-  catch (std::exception e) {}
+  catch (std::exception const &) {}
   return (false);
 }
 
@@ -139,7 +144,8 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
     Mouse::getMouse()->capture();
     for (auto &it : Joystick::getJoysticks())
     {
-      (*it)->capture();
+      if (it != nullptr)
+	(*it)->capture();
     }
 
     // Update the current scene's logic

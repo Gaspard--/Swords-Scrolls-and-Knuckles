@@ -23,7 +23,7 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   }));
   resume->init("HUD/ButtonPauseResume", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(resume->getPanel());
-  buttons["Resume"] = std::move(resume);
+  buttons.emplace_back(std::move(resume));
 
   // Exit button
   std::unique_ptr<UIButton> save(new UIButton(manager, "Save", [&ls]() {
@@ -31,7 +31,7 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   }));
   save->init("HUD/ButtonPauseSave", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(save->getPanel());
-  buttons["Save"] = std::move(save);
+  buttons.emplace_back(std::move(save));
 
   // Exit button
   std::unique_ptr<UIButton> options(new UIButton(manager, "Options", [&ls]() {
@@ -39,7 +39,7 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   }));
   options->init("HUD/ButtonPauseOptions", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
-  buttons["Options"] = std::move(options);
+  buttons.emplace_back(std::move(options));
 
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", [&renderer]() {
@@ -49,8 +49,9 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   }));
   exit->init("HUD/ButtonPauseExit", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
-  buttons["Exit"] = std::move(exit);
+  buttons.emplace_back(std::move(exit));
 
   overlay->add2D(bg.get());
   overlay->setZOrder(600); // Put the Pause overlay in front of pretty much anything
+  setSelectedButton(0);
 }

@@ -46,6 +46,7 @@ public:
   static void createWallMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
+  virtual void resetSceneCallbacks(void);
 
   bool isInPause(void) const;
 
@@ -53,4 +54,4 @@ public:
   void unpauseScene(void);
 };
 
-#endif
+#endif // !LEVEL_SCENE_HPP
