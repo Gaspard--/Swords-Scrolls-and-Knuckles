@@ -49,6 +49,7 @@ public:
   virtual void resetSceneCallbacks(void);
 
   bool isInPause(void) const;
+  void updateUI(std::vector<Player> const &);
 
   void pauseScene(void);
   void unpauseScene(void);

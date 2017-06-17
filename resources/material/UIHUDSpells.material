@@ -1,0 +1,184 @@
+material HUD/SpellHovered
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 0 0 0
+				alpha_op_ex source1 src_manual src_current 0.5
+			}
+		}
+	}
+}
+
+material HUD/Jaina/Spell1
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture JainaSpell1.png
+			}
+		}
+	}
+}
+
+material HUD/Jaina/Spell2
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture JainaSpell2.png
+			}
+		}
+	}
+}
+
+material HUD/Jaina/Spell3
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture JainaSpell3.png
+			}
+		}
+	}
+}
+
+material HUD/Muradin/Spell1
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture MuradinSpell1.png
+			}
+		}
+	}
+}
+
+material HUD/Muradin/Spell2
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture MuradinSpell2.png
+			}
+		}
+	}
+}
+
+material HUD/Muradin/Spell3
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture MuradinSpell3.png
+			}
+		}
+	}
+}
+
+material HUD/Thrall/Spell1
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ThrallSpell1.png
+			}
+		}
+	}
+}
+
+material HUD/Thrall/Spell2
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ThrallSpell2.png
+			}
+		}
+	}
+}
+
+material HUD/Thrall/Spell3
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ThrallSpell3.png
+			}
+		}
+	}
+}
+
+material HUD/Sylvanas/Spell1
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SylvanasSpell1.png
+			}
+		}
+	}
+}
+
+material HUD/Sylvanas/Spell2
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SylvanasSpell2.png
+			}
+		}
+	}
+}
+
+material HUD/Sylvanas/Spell3
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SylvanasSpell3.png
+			}
+		}
+	}
+}
