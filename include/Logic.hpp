@@ -12,7 +12,6 @@
 #include "AudioSource.hpp"
 #include "PyBindInstance.hpp"
 #include "PyEvaluate.hpp"
-#include "ProjectileList.hpp"
 
 class LevelScene;
 
@@ -35,6 +34,7 @@ private:
   std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
+  ModVector<decltype(GameState::enemyProjectiles)::value_type, Entity> enemyProjectiles;
 
   void calculateCamera(LevelScene &);
   bool tick();
@@ -44,6 +44,7 @@ public:
   PyBindInstance pyBindInstance;
   PyEvaluate pyEvaluate;
   ProjectileList projectileList;
+  SpellList spellList;
 
   /**
    * Parameter isn't stored, only used for setup.

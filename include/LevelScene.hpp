@@ -31,10 +31,11 @@ public:
   std::vector<AnimatedEntity> players;
   std::vector<AnimatedEntity> enemies;
   std::vector<Entity> projectiles;
+  std::vector<Entity> enemyProjectiles;
 
 private:
   std::vector<Ogre::Light *> lights;
-  Entity ground;
+  // Entity ground;
   LogicThread logicThread;
   // Music music;
 
@@ -44,6 +45,7 @@ public:
   virtual ~LevelScene(void);
 
   static void createWallMesh();
+  static void createGroundMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
   virtual void resetSceneCallbacks(void);
