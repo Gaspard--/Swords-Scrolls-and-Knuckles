@@ -6,7 +6,7 @@ Renderer::Renderer(Game &game)
   , camera(scenemgr->createCamera("MainCamera"))
   , viewport(game.getWindow().addViewport(camera))
 {
-  scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+  scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
   scenemgr->addRenderQueueListener(new Ogre::OverlaySystem());
 
   viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
