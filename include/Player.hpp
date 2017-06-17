@@ -6,9 +6,18 @@
 
 class Logic;
 
+enum class PlayerId
+  {
+    ARCHER = 0,
+    MAGE = 1,
+    TANK = 2,
+    WARRIOR = 3
+  };
+
 class Player : public Controllable
 {
 private:
+  
   Vect<3u, Spell> spells;
 
 public:
@@ -28,10 +37,10 @@ public:
   // In seconds / 10
   int getSpellTimeleft(size_t i) const;
 
-  // ARCHER
-  void shootArrow(Logic &);
-
   static Player makeArcher(Vect<2u, double> pos);
+  static Player makeMage(Vect<2u, double> pos);
+  static Player makeTank(Vect<2u, double> pos);
+  static Player makeWarrior(Vect<2u, double> pos);
 };
 
 #endif // !PLAYER_HPP
