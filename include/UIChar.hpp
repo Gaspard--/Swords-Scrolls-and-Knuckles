@@ -56,38 +56,6 @@ public:
   static constexpr float PORTRAIT_X_OFFSET = 22.f / Game::WIDTH;
   static constexpr float PORTRAIT_Y_OFFSET = 54.f / Game::HEIGHT;
 
-  static constexpr char const *PORTRAITS_HUD[] =
-  {
-    "HUD/PortraitSylvanas",
-    "HUD/PortraitJaina",
-    "HUD/PortraitThrall",
-    "HUD/PortraitMuradin",
-  };
-
-  static constexpr char const *SPELLS_HUD[4][3] =
-  {
-    {
-      "HUD/Sylvanas/Spell1",
-      "HUD/Sylvanas/Spell2",
-      "HUD/Sylvanas/Spell3",
-    },
-    {
-      "HUD/Jaina/Spell1",
-      "HUD/Jaina/Spell2",
-      "HUD/Jaina/Spell3",
-    },
-    {
-      "HUD/Thrall/Spell1",
-      "HUD/Thrall/Spell2",
-      "HUD/Thrall/Spell3",
-    },
-    {
-      "HUD/Muradin/Spell1",
-      "HUD/Muradin/Spell2",
-      "HUD/Muradin/Spell3",
-    },
-  };
-
   UIChar(UIOverlayHUD &, size_t id);
   UIChar(UIChar const &) = delete;
   UIChar(UIChar &&) = delete;

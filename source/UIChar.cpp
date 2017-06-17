@@ -1,6 +1,38 @@
 #include "UIOverlayHUD.hpp"
 #include "UIChar.hpp"
 
+static char const *PORTRAITS_HUD[] =
+{
+  "HUD/PortraitSylvanas",
+  "HUD/PortraitJaina",
+  "HUD/PortraitThrall",
+  "HUD/PortraitMuradin",
+};
+
+static char const *SPELLS_HUD[4][3] =
+{
+  {
+    "HUD/Sylvanas/Spell1",
+    "HUD/Sylvanas/Spell2",
+    "HUD/Sylvanas/Spell3",
+  },
+  {
+    "HUD/Jaina/Spell1",
+    "HUD/Jaina/Spell2",
+    "HUD/Jaina/Spell3",
+  },
+  {
+    "HUD/Thrall/Spell1",
+    "HUD/Thrall/Spell2",
+    "HUD/Thrall/Spell3",
+  },
+  {
+    "HUD/Muradin/Spell1",
+    "HUD/Muradin/Spell2",
+    "HUD/Muradin/Spell3",
+  },
+};
+
 UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   : idx(idx)
   , statBg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "StatBg_" + idx))
@@ -58,7 +90,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   hud.getOverlay()->add2D(portrait.get());
   hud.getOverlay()->add2D(coinIcon.get());
   hud.getOverlay()->add2D(keyIcon.get());
- 
+
   for (size_t i = 0; i < 3; i++) {
     spells.emplace_back(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", std::string("Spell") + std::to_string(i) + std::string("_") + std::to_string(idx)));
     spellGreyBG.emplace_back(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", std::string("Spell") + std::to_string(i) + std::string("CB_") + std::to_string(idx)));
