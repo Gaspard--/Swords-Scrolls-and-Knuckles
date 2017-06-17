@@ -5,17 +5,10 @@ UIOverlayHUD::UIOverlayHUD(Renderer &renderer)
 {
   std::clog << "Init HUD" << std::endl;
 
-  std::unique_ptr<UIChar> player1(new UIChar(*this, 0));
-  charPanels.emplace_back(std::move(player1));
-
-  std::unique_ptr<UIChar> player2(new UIChar(*this, 1));
-  charPanels.emplace_back(std::move(player2));
-
-  std::unique_ptr<UIChar> player3(new UIChar(*this, 2));
-  charPanels.emplace_back(std::move(player3));
-
-  std::unique_ptr<UIChar> player4(new UIChar(*this, 3));
-  charPanels.emplace_back(std::move(player4));
+  for (std::size_t i = 0; i < 4; i++) {
+    std::unique_ptr<UIChar> player(new UIChar(*this, i));
+    charPanels.emplace_back(std::move(player));
+  }
 
   std::clog << "Finshed init HUD" << std::endl;
 }
