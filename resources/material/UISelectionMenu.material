@@ -1,0 +1,46 @@
+material HUD/SelectionMenuBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SelectionMenuBG.png
+			}
+		}
+	}
+}
+
+material HUD/ButtonSelectionPlay
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture PlaySelectionButton.png
+			}
+		}
+	}
+}
+
+material HUD/ButtonSelectionCancel
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture CancelSelectionButton.png
+			}
+		}
+	}
+	
+}
