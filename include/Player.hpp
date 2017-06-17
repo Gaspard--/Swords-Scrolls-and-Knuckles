@@ -25,8 +25,8 @@ public:
   void checkSpells(Logic &);
   void setAttacking(unsigned int index, bool attacking);
 
-  // In seconds
-  int getSpellCooldown(size_t i) const;
+  // In seconds / 10
+  int getSpellTimeleft(size_t i) const;
 
   // ARCHER
   void shootArrow(Logic &);

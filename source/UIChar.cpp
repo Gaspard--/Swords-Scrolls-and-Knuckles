@@ -10,7 +10,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   , portrait(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "Portrait_" + idx))
   , coinIcon(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "CoinIcon_" + idx))
   , keyIcon(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "KeyIcon_" + idx))
-  , score(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "score_" + idx))
+  , score(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "Score_" + idx))
 {
   Ogre::Real posX(0.5f - 2.f * UIChar::STATBG_WIDTH + idx * UIChar::STATBG_WIDTH);
 
@@ -43,12 +43,13 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   coinIcon->setPosition(posX + UIChar::COINICON_X_OFFSET, 1.f - UIChar::COINICON_Y_OFFSET);
 
   score->setFontName("HUD/Font");
-  score->setCaption("0");
+  score->setCaption("12345");
   score->setColour(Ogre::ColourValue::White);
   score->setMetricsMode(Ogre::GMM_PIXELS);
-  score->setPosition(85.f, 217.f);
-  score->setCharHeight(20.f);
-  score->setAlignment(Ogre::TextAreaOverlayElement::Left);
+  score->setPosition(145.f, 214.f);
+  score->setCharHeight(25.f);
+  score->setAlignment(Ogre::TextAreaOverlayElement::Right);
+  score->show();
 
   hud.getOverlay()->add2D(statBg.get());
   hud.getOverlay()->add2D(spellBg.get());
@@ -57,7 +58,6 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   hud.getOverlay()->add2D(portrait.get());
   hud.getOverlay()->add2D(coinIcon.get());
   hud.getOverlay()->add2D(keyIcon.get());
-  statBg->addChild(score.get());
  
   for (size_t i = 0; i < 3; i++) {
     spells.emplace_back(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", std::string("Spell") + std::to_string(i) + std::string("_") + std::to_string(idx)));
@@ -76,7 +76,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
     greyBG.setPosition(0, 0);
 
     textCD.setFontName("HUD/Font");
-    textCD.setCaption("8");
+    textCD.setCaption("");
     textCD.setColour(Ogre::ColourValue::White);
     textCD.setMetricsMode(Ogre::GMM_PIXELS);
     textCD.setPosition(25.f, 8.f);
@@ -87,6 +87,8 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
     spell.addChild(spellGreyBG.back().get());
     greyBG.addChild(spellCD.back().get());
   }
+
+  statBg->addChild(score.get());
 
   defaultCharUI();
 }
@@ -102,7 +104,7 @@ void UIChar::updateCharUI(Player const &p) {
     auto &greyBG(spellGreyBG[i]);
     auto &textCD(spellCD[i]);
 
-    int cd(p.getSpellCooldown(i));
+    int cd(p.getSpellTimeleft(i));
     spell->show();
     if (cd == 0) {
       greyBG->hide();
