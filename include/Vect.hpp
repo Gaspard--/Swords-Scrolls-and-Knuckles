@@ -226,13 +226,11 @@ public:
     return (data + dim);
   }
 
-  template<unsigned int n = dim, typename std::enable_if<(n >= 1)>::type * = nullptr>
   constexpr T const &x() const
   {
     return data[0];
   }
 
-  template<unsigned int n = dim, typename std::enable_if<(n >= 2)>::type * = nullptr>
   constexpr T const &y() const
   {
     return data[1];

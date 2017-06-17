@@ -17,6 +17,10 @@ void Player::shootArrow(Logic &logic)
   logic.spawnArrow(pos, getDir().normalized() * 0.1);
 }
 
+int Player::getSpellTimeleft(size_t i) const {
+  return (spells[i].timeLeft / 12);
+}
+
 Player Player::makeArcher(Vect<2u, double> pos)
 {
   return Player(Vect<3u, Spell>
