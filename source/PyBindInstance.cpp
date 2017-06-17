@@ -5,9 +5,6 @@ PyBindInstance::PyBindInstance()
 {
   try
   {
-    Py_Initialize();
-    PyPlugin::pybind11_init();
-
     main = py::module::import("__main__");
     globals = main.attr("__dict__");
     py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);

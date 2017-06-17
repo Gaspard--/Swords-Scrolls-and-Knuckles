@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include "SceneMainMenu.hpp"
 #include "Joystick.hpp"
+#include "PyPlugin.hpp"
 
 // Constructor
 
@@ -42,6 +43,9 @@ Game::Game()
   // Adding the joysticks
   for (size_t i = 0; i < 4; i++)
     addJoystick(i);
+
+  Py_Initialize();
+  PyPlugin::pybind11_init();
 }
 
 Game::~Game(void)
