@@ -3,6 +3,7 @@
 
 # include "Fixture.hpp"
 
+class SaveState;
 class Logic;
 
 class Controllable : public Fixture
@@ -67,6 +68,8 @@ public:
   {
     return dir;
   }
+
+  void   serialize(SaveState &state) const;
 };
 
 #endif // !CONTROLLABLE_HPP

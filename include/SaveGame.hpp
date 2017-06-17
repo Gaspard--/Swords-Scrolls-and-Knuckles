@@ -1,30 +1,46 @@
 #ifndef SAVEGAME_HPP
 # define SAVEGAME_HPP
 
+# include <fstream>
+# include <vector>
 # include "GameState.hpp"
 
 class SaveState
 {
 private:
   std::ofstream  file;
-  int  seed;
-  Vect<unsigned int, unsigned int> vectsize;
+  unsigned int  seed;
 public:
   SaveState() = delete;
-  SaveState(GameState, long unsigned int);
+  SaveState(GameState &, long unsigned int);
   SaveState(SaveState const &) = delete;
   SaveState &operator=(SaveState const &) = delete;
   ~SaveState();
 
-  void Serialize(unsigned int);
-  void Serialize(long double, unsigned, unsigned);
+  void    serialize(unsigned int);
+  void    serialize(double);
+  void    serialize(long unsigned int);
+  void    serialize(bool);
+
+  template<unsigned int SIZE, class T>
+  void    serialize(Vect<SIZE, T> data);
+
+  template<class T>
+  void    serialize(std::vector<T> const &data);
 };
 
 template<unsigned int SIZE, class T>
-void    SaveState::Serialize(Vect<SIZE, T> data)
+void    SaveState::serialize(Vect<SIZE, T> data)
 {
   for (auto &&t : data)
-    Serialize(t);
+    serialize(t);
+}
+
+template<class T>
+void    SaveState::serialize(std::vector<T> const &data)
+{
+  for (auto const &t : data)
+    t.serialize(*this);
 }
 
 #endif

@@ -3,6 +3,7 @@
 
 # include "Fixture.hpp"
 
+class SaveState;
 class Enemy;
 class Logic;
 
@@ -24,6 +25,7 @@ public:
   {
     pos += speed;
   }
+  void   serialize(SaveState &state) const;
 };
 
 #endif
