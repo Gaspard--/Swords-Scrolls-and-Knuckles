@@ -25,6 +25,7 @@ namespace PyPlugin
       .def("x", &Vect<2u, double>::x)
       .def("y", &Vect<2u, double>::y)
       .def("normalized", &Vect<2u, double>::normalized)
+      .def("length2", &Vect<2u, double>::length2)
       ;
 
     py::class_<Fixture, Controllable>(m, "Controllable")
@@ -34,6 +35,7 @@ namespace PyPlugin
 
     py::class_<PyEvaluate>(m, "PyEvaluate")
       .def("closestPlayer", &PyEvaluate::closestPlayer)
+      .def("closestEnemy", &PyEvaluate::closestEnemy)
       ;
 
     return m.ptr();
@@ -52,7 +54,10 @@ PyBindInstance::PyBindInstance()
     py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);
     py::object importedModuleAttr = importedModule.attr("pythonModule");
     pythonModule = importedModuleAttr();
-    execAI[0u] = &PyBindInstance::chaseAI;
+    execAI[1u] = &PyBindInstance::chasePlayerAI;
+    execAI[2u] = &PyBindInstance::fleePlayerAI;
+    execAI[3u] = &PyBindInstance::chaseEnemyAI;
+    execAI[4u] = &PyBindInstance::fleeEnemyAI;
   }
   catch (py::error_already_set const &e)
   {
@@ -61,9 +66,24 @@ PyBindInstance::PyBindInstance()
   }
 }
 
-void PyBindInstance::chaseAI(Controllable &ctr, PyEvaluate &pyEv)
+void PyBindInstance::chasePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("chaseAI")(&ctr, pyEv);
+  pythonModule.attr("chasePlayerAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::fleePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("fleePlayerAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::chaseEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("chaseEnemyAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::fleeEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("fleeEnemyAI")(&ctr, pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
