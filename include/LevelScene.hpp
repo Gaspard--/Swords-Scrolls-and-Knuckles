@@ -31,6 +31,7 @@ public:
   std::vector<AnimatedEntity> players;
   std::vector<AnimatedEntity> enemies;
   std::vector<Entity> projectiles;
+  std::vector<Entity> enemyProjectiles;
 
 private:
   std::vector<Ogre::Light *> lights;
