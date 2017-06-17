@@ -3,6 +3,7 @@
 UIOverlayHUD::UIOverlayHUD(Renderer &renderer)
   : UIOverlay("hud")
 {
+  (void)renderer;
   std::clog << "Init HUD" << std::endl;
 
   for (std::size_t i = 0; i < 4; i++) {

@@ -66,7 +66,8 @@ bool Logic::tick()
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
   {
-    pyBindInstance.chaseAI(enemy, pyEvaluate);
+    if (enemy.ai)
+      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
   }
   return stop;
 }
@@ -77,16 +78,21 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
-  , pyEvaluate(gameState.players)
+  , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
 {
   for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
   levelScene.setTerrain(gameState.terrain);
-  for (unsigned int i(0u); i < 20; ++i)
-    enemies.add([this](){
-	return entityFactory.spawnEnemy();
-      }, 100u, 0.5, Vect<2u, double>{(double)i + 7.5, 7.5});
+  for (unsigned int i(0u); i < 10; ++i)
+    {
+      enemies.add([this](){
+	  return entityFactory.spawnEnemy();
+	}, 1u, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
+      enemies.add([this](){
+	  return entityFactory.spawnEnemy();
+	}, 2u, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
+    }
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)

@@ -11,7 +11,14 @@ class Enemy : public Controllable
 private:
 
 public:
-  using Controllable::Controllable;
+  unsigned int ai;
+
+public:
+  template<class... PARAMS>
+  Enemy(unsigned int ai, PARAMS &&... params)
+    : Controllable(std::forward<PARAMS>(params)...)
+    , ai(ai)
+  {}
 };
 
 #endif
