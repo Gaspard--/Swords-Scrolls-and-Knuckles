@@ -36,7 +36,7 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
     light->setSpecularColour(1.0f, 1.0f, 1.0f);
     light->setAttenuation(100, 0.5f, 0.001f, 0.0f);
     sceneNode->attachObject(light);
-    sceneNode->setPosition(0, 180, 0);
+    sceneNode->setPosition(0, 150, 0);
   }
  
   return (archer);
