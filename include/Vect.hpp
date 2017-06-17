@@ -226,6 +226,26 @@ public:
     return (data + dim);
   }
 
+  constexpr T const *begin() const
+  {
+    return (data);
+  }
+
+  constexpr T const *end() const
+  {
+    return (data + dim);
+  }
+
+  constexpr T const *cbegin() const
+  {
+    return (begin());
+  }
+
+  constexpr T const *cend() const
+  {
+    return (end());
+  }
+
   constexpr T const &x() const
   {
     return data[0];
