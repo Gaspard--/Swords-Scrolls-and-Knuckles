@@ -30,7 +30,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   healthBarFull->setDimensions(UIChar::HEALTHBAR_WIDTH, UIChar::HEALTHBAR_HEIGHT);
   healthBarFull->setPosition(posX + UIChar::HEALTHBAR_X_OFFSET, 1.f - UIChar::STATBG_HEIGHT + UIChar::HEALTHBAR_Y_OFFSET);
 
-  portrait->setMaterialName(PORTRAITS_HUD[idx]);
+  portrait->setMaterialName(Ogre::String(PORTRAITS_HUD[idx]));
   portrait->setDimensions(UIChar::PORTRAITBG_WIDTH, UIChar::PORTRAITBG_HEIGHT);
   portrait->setPosition(posX + UIChar::PORTRAIT_X_OFFSET, 1.f - UIChar::STATBG_HEIGHT + UIChar::PORTRAIT_Y_OFFSET);
 
@@ -68,7 +68,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
     Ogre::PanelOverlayElement &greyBG(*spellGreyBG.back().get());
     Ogre::TextAreaOverlayElement &textCD(*spellCD.back().get());
 
-    spell.setMaterialName(SPELLS_HUD[idx][i]);
+    spell.setMaterialName(Ogre::String(SPELLS_HUD[idx][i]));
     spell.setDimensions(UIChar::SPELL_WIDTH, UIChar::SPELL_HEIGHT);
     spell.setPosition(posX + UIChar::SPELL_X_OFFSET + UIChar::SPELL_X_OFFSETWIDTH * i, 1.f - UIChar::STATBG_HEIGHT - UIChar::SPELLBG_HEIGHT + UIChar::SPELL_Y_OFFSET);
     greyBG.setMaterialName("HUD/SpellHovered");

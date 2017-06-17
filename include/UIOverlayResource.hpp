@@ -35,6 +35,7 @@ public:
   UIOverlayResource &operator=(UIOverlayResource &&r)
   {
     std::swap(resource, r.resource);
+    return (*this);
   }
 
   ~UIOverlayResource() {
@@ -89,6 +90,7 @@ public:
   UIOverlayResource &operator=(UIOverlayResource &&r) 
   {
     std::swap(resource, r.resource);
+    return (*this);
   }
 
   ~UIOverlayResource() {
