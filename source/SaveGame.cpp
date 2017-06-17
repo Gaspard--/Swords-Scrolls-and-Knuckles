@@ -32,7 +32,6 @@ void    SaveState::serialize(unsigned int data)
   for (unsigned int i(0); i < 4; ++i)
   {
     c[i] = (data & 255);
-    file << c[i];
     data = data >> 8;
   }
   if (!file.write((const char *)c, 4u))
@@ -51,10 +50,9 @@ void    SaveState::serialize(long unsigned int data)
 {
   unsigned char c[8];
 
-  for (unsigned int i(0); i < 4; ++i)
+  for (unsigned int i(0); i < 8; ++i)
   {
     c[i] = (data & 255);
-    file << c[i];
     data = data >> 8;
   }
   if (!file.write((const char *)c, 8u))

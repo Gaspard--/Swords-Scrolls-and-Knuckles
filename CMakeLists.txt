@@ -35,6 +35,8 @@ project(ssk)
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
 
+set(Python_ADDITIONAL_VERSIONS 2.7)
+
 if (WIN32)
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
   if ("$ENV{OGRE_HOME}" STREQUAL "")
@@ -106,6 +108,7 @@ if (UNIX)
         alut
         vorbisfile
         ogg
+  python2.7
 	dl
 	util
   )

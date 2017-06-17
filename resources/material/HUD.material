@@ -5,7 +5,7 @@ material HUD/ButtonHovered
 		pass
 		{
 			scene_blend alpha_blend
-			
+
 			texture_unit
 			{
 				colour_op_ex source1 src_manual src_current 120 120 120
@@ -13,7 +13,7 @@ material HUD/ButtonHovered
 			}
 		}
 	}
-	
+
 }
 
 material HUD/Black

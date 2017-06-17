@@ -64,6 +64,12 @@ public:
     this->locked = locked;
   }
 
+  constexpr void setInputPy(double a, double b)
+  {
+    this->input[0] = a;
+    this->input[1] = b;
+  }
+
   constexpr Vect<2u, double> getDir() const
   {
     return dir;

@@ -27,7 +27,7 @@ material HUD/ButtonPlay
 			}
 		}
 	}
-	
+
 }
 
 material HUD/ButtonOptions
@@ -44,7 +44,7 @@ material HUD/ButtonOptions
 			}
 		}
 	}
-	
+
 }
 
 material HUD/ButtonLoad
@@ -61,26 +61,9 @@ material HUD/ButtonLoad
 			}
 		}
 	}
-	
+
 }
 
-material HUD/ButtonPlay
-{
-	technique
-	{
-
-		pass
-		{
-			scene_blend alpha_blend
-
-			texture_unit
-			{
-				texture ButtonPlay.png
-			}
-		}
-	}
-	
-}
 
 material HUD/ButtonExit
 {
@@ -96,6 +79,5 @@ material HUD/ButtonExit
 			}
 		}
 	}
-	
-}
 
+}

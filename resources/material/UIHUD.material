@@ -1,0 +1,143 @@
+material HUD/StatBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture StatBG.png
+			}
+		}
+	}
+}
+
+material HUD/SpellBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SpellsBG.png
+			}
+		}
+	}
+}
+
+material HUD/HealthBarFull
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture HealthBarFull.png
+			}
+		}
+	}
+}
+
+material HUD/PortraitMuradin
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture MuradinIcon.png
+			}
+		}
+	}
+}
+
+material HUD/PortraitSylvanas
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture SylvanasIcon.png
+			}
+		}
+	}
+}
+
+material HUD/PortraitJaina
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture JainaIcon.png
+			}
+		}
+	}
+}
+
+material HUD/PortraitThrall
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ThrallIcon.png
+			}
+		}
+	}
+}
+
+material HUD/HealthBarEmpty
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture HealthBarEmpty.png
+			}
+		}
+	}
+}
+
+material HUD/KeyIcon
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture IconKey.png
+			}
+		}
+	}
+}
+
+material HUD/CoinIcon
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture IconCoin.png
+			}
+		}
+	}
+}
