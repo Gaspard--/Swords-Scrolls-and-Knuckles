@@ -38,18 +38,7 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
     sceneNode->attachObject(light);
     sceneNode->setPosition(75, 75, 75);
   }
-  // Light 2
-  {
-    auto light(renderer.getSceneManager().createLight());
-    auto sceneNode(archer.getEntity().getNode()->createChildSceneNode());
-
-    light->setType(Ogre::Light::LT_POINT);
-    light->setDiffuseColour(1.f, 1.f, 1.f);
-    light->setSpecularColour(1.0f, 1.0f, 1.0f);
-    light->setAttenuation(100, 0.5f, 0.001f, 0.0f);
-    sceneNode->attachObject(light);
-    sceneNode->setPosition(-75, 75, 75);
-  }
+ 
   return (archer);
 }
 

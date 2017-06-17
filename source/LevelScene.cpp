@@ -31,7 +31,7 @@ LevelScene::LevelScene(Renderer &renderer)
 	       .createPlane("ground",
 			    Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 			    plane,
-			    100, 100, 255, 255,
+			    100, 100, 100, 100,
 			    true,
 			    1, 100, 100,
 			    Ogre::Vector3::NEGATIVE_UNIT_X,
@@ -50,9 +50,6 @@ LevelScene::LevelScene(Renderer &renderer)
 {
   // music.setVolume(0.2f);
   // music.play();
-
-  // TODO delete this
-  //renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
   std::clog << "Loading level scene" << std::endl;
 
