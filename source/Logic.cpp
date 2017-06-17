@@ -87,10 +87,10 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   levelScene.setTerrain(gameState.terrain);
   enemies.add([this](){
       return entityFactory.spawnEnemy();
-  }, 1u, 100u, 0.5, Vect<2u, double>{7.5, 7.5});
+  }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5});
   enemies.add([this](){
       return entityFactory.spawnEnemy();
-  }, 2u, 100u, 0.5, Vect<2u, double>{3.0, 3.0});
+  }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0});
 }
 
 void Logic::spawnArrow(Vect<2u, double> pos, Vect<2u, double> speed)

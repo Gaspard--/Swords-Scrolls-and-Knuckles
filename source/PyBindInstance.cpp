@@ -10,10 +10,11 @@ PyBindInstance::PyBindInstance()
     py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);
     py::object importedModuleAttr = importedModule.attr("pythonModule");
     pythonModule = importedModuleAttr();
-    execAI[1u] = &PyBindInstance::chasePlayerAI;
-    execAI[2u] = &PyBindInstance::fleePlayerAI;
-    execAI[3u] = &PyBindInstance::chaseEnemyAI;
-    execAI[4u] = &PyBindInstance::fleeEnemyAI;
+    execAI[AI::CHASEPLAYER] = &PyBindInstance::chasePlayerAI;
+    execAI[AI::FLEEPLAYER] = &PyBindInstance::fleePlayerAI;
+    execAI[AI::CHASEENEMY] = &PyBindInstance::chaseEnemyAI;
+    execAI[AI::FLEEENEMY] = &PyBindInstance::fleeEnemyAI;
+    execAI[AI::STAND] = &PyBindInstance::standAI;
   }
   catch (py::error_already_set const &e)
   {

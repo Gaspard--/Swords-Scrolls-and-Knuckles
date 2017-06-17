@@ -14,6 +14,15 @@ struct PyEvaluate;
 
 #define PYTHONMODULE "resources/scripts/pythonModule.py"
 
+namespace AI
+{
+  constexpr unsigned int CHASEPLAYER = 1u;
+  constexpr unsigned int FLEEPLAYER = 2u;
+  constexpr unsigned int CHASEENEMY = 3u;
+  constexpr unsigned int FLEEENEMY = 4u;
+  constexpr unsigned int STAND = 5u;
+};
+
 class	PyBindInstance
 {
 public:
