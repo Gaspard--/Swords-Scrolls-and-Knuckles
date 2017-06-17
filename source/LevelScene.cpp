@@ -24,27 +24,6 @@ LevelScene::LevelScene(Renderer &renderer)
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
 	       }())
-  , ground([&renderer]()
-	   {
-	     Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-	     Ogre::MeshManager::getSingleton()
-	       .createPlane("ground",
-			    Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-			    plane,
-			    100, 100, 100, 100,
-			    true,
-			    1, 100, 100,
-			    Ogre::Vector3::NEGATIVE_UNIT_X,
-			    Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY,
-			    Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY,
-			    true, true);
-	     Entity ground(renderer, "ground");
-
-	     ground.getOgre()->setCastShadows(true);
-	     ground.getOgre()->setMaterialName("wall");
-	     ground.getNode()->setPosition(50, 0, 50);
-	     return ground;
-	   }())
   , logicThread(*this, renderer, players)
     // , music(Musics::SMALL_WORLD)
 {
@@ -64,7 +43,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
   // Hide pause
   uiPause.setUIVisible(false);
-  ground.getOgre()->setMaterialName("wall");
+  // ground.getOgre()->setMaterialName("wall");
 
   std::clog << "End loading level scene" << std::endl;
 }
@@ -106,13 +85,13 @@ void LevelScene::resetSceneCallbacks(void) {
       Joystick::registerGlobalCallback(joystickState::JS_START, goBackToMenu);
     }
 }
-
 void LevelScene::setTerrain(Terrain const &terrain)
 {
   for (unsigned int i(0); i < 100; ++i)
     {
       for (unsigned int j(0); j < 100; ++j)
 	{
+	      
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
 	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
@@ -122,8 +101,54 @@ void LevelScene::setTerrain(Terrain const &terrain)
 	      wallNode->attachObject(wall);
 	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
 	    }
+	  else
+	    {
+	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
+	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
+
+	      ground->setCastShadows(true);
+	      wallNode->attachObject(ground);
+	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	    }
 	}
     }
+}
+
+void LevelScene::createGroundMesh()
+{
+  constexpr double const dim(1.0);
+  Ogre::ManualObject obj("GroundObject");
+  unsigned int offset(0u);
+
+  obj.begin("wall", Ogre::RenderOperation::OT_TRIANGLE_LIST); // TODO: add multiple material(s) ?
+  {
+    Vect<3u, double> up{ 0.0, 0.0, 1.0 };
+    Vect<3u, double> right{ 1.0, 0.0, 0.0 };
+
+    for (Vect<2u, double> const &coef : {
+  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+      {
+  	Vect<3u, double> const pos((right * coef[0] + up * coef[1]) * dim);
+
+	obj.position(
+		     static_cast<Ogre::Real>(pos[0]),
+		     static_cast<Ogre::Real>(pos[1]),
+		     static_cast<Ogre::Real>(pos[2])
+		     );
+	obj.normal(0.0f, 1.0f, 0.0f);
+	obj.textureCoord(
+			 static_cast<Ogre::Real>(coef[0]),
+			 static_cast<Ogre::Real>(coef[1])
+			 );
+      }
+
+    obj.triangle(offset, offset + 3, offset + 1);
+    obj.triangle(offset, offset + 2, offset + 3);
+    offset += 4;
+  }
+  obj.end();
+  obj.convertToMesh("GroundMesh");
 }
 
 void LevelScene::createWallMesh()
@@ -135,7 +160,7 @@ void LevelScene::createWallMesh()
   unsigned int offset(0u);
   { // make the 3 walls
     Vect<3u, double> start{ 0.0, 0.0, 0.0 };
-    Vect<3u, double> up{ 0.0, 1.0, 0.0 };
+    Vect<3u, double> const up{ 0.0, 2.0, 0.0 };
     Vect<3u, double> right{ 0.0, 0.0, 1.0 };
 
     for (unsigned int i(0); i < 4; ++i)
@@ -145,52 +170,54 @@ void LevelScene::createWallMesh()
 	  {
 	    Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
-	    obj.position(
-	      static_cast<Ogre::Real>(pos[0]),
-	      static_cast<Ogre::Real>(pos[1]),
-	      static_cast<Ogre::Real>(pos[2])
-	    );
-	    obj.textureCoord(
-	      static_cast<Ogre::Real>(coef[0]),
-	      static_cast<Ogre::Real>(coef[1])
-	    );
+	    obj.position(static_cast<Ogre::Real>(pos[0]),
+			 static_cast<Ogre::Real>(pos[1]),
+			 static_cast<Ogre::Real>(pos[2])
+			 );
+	    obj.normal(-right[2], 0.0, right[0]);
+	    obj.textureCoord(static_cast<Ogre::Real>(coef[0]),
+			     static_cast<Ogre::Real>(coef[1] * 2)
+			     );
 	  }
 	start = start + right;
 	right = {right[2], 0.0, -right[0]};
 
-      obj.triangle(offset, offset + 1, offset + 3);
-      obj.triangle(offset, offset + 3, offset + 2);
-      offset += 4;
-    }
+	obj.triangle(offset, offset + 1, offset + 3);
+	obj.triangle(offset, offset + 3, offset + 2);
+	offset += 4;
+      }
   }
-  { // make the roof
-    Vect<3u, double> start{ 0.0, 1.0, 0.0 };
+  {
+    Vect<3u, double> start{ 0.0, 2.0, 0.0 };
     Vect<3u, double> up{ 0.0, 0.0, 1.0 };
     Vect<3u, double> right{ 1.0, 0.0, 0.0 };
 
     for (Vect<2u, double> const &coef : {
-  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
-  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
       {
-  	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
+	Vect<3u, double> const pos((start + right * coef[0] + up * coef[1]) * dim);
 
-      obj.position(
-	static_cast<Ogre::Real>(pos[0]),
-	static_cast<Ogre::Real>(pos[1]),
-	static_cast<Ogre::Real>(pos[2])
-      );
-      obj.textureCoord(
-	static_cast<Ogre::Real>(coef[0]),
-	static_cast<Ogre::Real>(coef[1])
-      );
-    }
+	obj.position(
+		     static_cast<Ogre::Real>(pos[0]),
+		     static_cast<Ogre::Real>(pos[1]),
+		     static_cast<Ogre::Real>(pos[2])
+		     );
+	obj.normal(0.0, 1.0, 0.0);
+	obj.textureCoord(
+			 static_cast<Ogre::Real>(coef[0]),
+			 static_cast<Ogre::Real>(coef[1])
+			 );
+      }
 
     obj.triangle(offset, offset + 3, offset + 1);
     obj.triangle(offset, offset + 2, offset + 3);
     offset += 4;
   }
+
   obj.end();
   obj.convertToMesh("WallMesh");
+  createGroundMesh();
 }
 
 bool LevelScene::update(Game &, Ogre::FrameEvent const &)
