@@ -174,7 +174,7 @@ void LevelScene::createWallMesh()
 			 static_cast<Ogre::Real>(pos[1]),
 			 static_cast<Ogre::Real>(pos[2])
 			 );
-	    obj.normal(-right[2], 0.0, right[0]);
+	    obj.normal(static_cast<Ogre::Real>(-right[2]), 0.0f, static_cast<Ogre::Real>(right[0]));
 	    obj.textureCoord(static_cast<Ogre::Real>(coef[0]),
 			     static_cast<Ogre::Real>(coef[1] * 2)
 			     );
