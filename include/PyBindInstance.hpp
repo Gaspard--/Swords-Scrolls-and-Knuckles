@@ -37,6 +37,7 @@ public:
     void fleePlayerAI(Controllable &, PyEvaluate &);
     void chaseEnemyAI(Controllable &, PyEvaluate &);
     void fleeEnemyAI(Controllable &, PyEvaluate &);
+    void standAI(Controllable &, PyEvaluate &);
     std::map<unsigned int, std::function<void(PyBindInstance *, Controllable &, PyEvaluate &)>> execAI;
 
 private:

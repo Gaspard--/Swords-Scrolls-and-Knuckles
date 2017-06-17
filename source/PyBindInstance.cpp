@@ -1,4 +1,5 @@
 #include "PyBindInstance.hpp"
+#include "Controllable.hpp"
 #include "PyEvaluate.hpp"
 
 PyBindInstance::PyBindInstance()
@@ -41,6 +42,11 @@ void PyBindInstance::chaseEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 void PyBindInstance::fleeEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 {
   pythonModule.attr("fleeEnemyAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::standAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("standAI")(&ctr, pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
