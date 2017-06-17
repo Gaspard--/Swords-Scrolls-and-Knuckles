@@ -5,6 +5,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eval.h>
 #include <map>
+#include <functional>
 
 namespace py = pybind11;
 
