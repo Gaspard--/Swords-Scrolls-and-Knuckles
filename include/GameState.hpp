@@ -14,6 +14,7 @@ struct GameState
   std::vector<Player> players;
   std::vector<Enemy> enemies;
   std::vector<Projectile> projectiles;
+  std::vector<Projectile> enemyProjectiles;
 };
 
 #endif
