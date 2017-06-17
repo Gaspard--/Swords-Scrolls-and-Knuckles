@@ -5,6 +5,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eval.h>
 #include <map>
+#include <functional>
 
 namespace py = pybind11;
 
@@ -12,6 +13,15 @@ class Controllable;
 struct PyEvaluate;
 
 #define PYTHONMODULE "resources/scripts/pythonModule.py"
+
+namespace AI
+{
+  constexpr unsigned int CHASEPLAYER = 1u;
+  constexpr unsigned int FLEEPLAYER = 2u;
+  constexpr unsigned int CHASEENEMY = 3u;
+  constexpr unsigned int FLEEENEMY = 4u;
+  constexpr unsigned int STAND = 5u;
+};
 
 class	PyBindInstance
 {
@@ -27,6 +37,7 @@ public:
     void fleePlayerAI(Controllable &, PyEvaluate &);
     void chaseEnemyAI(Controllable &, PyEvaluate &);
     void fleeEnemyAI(Controllable &, PyEvaluate &);
+    void standAI(Controllable &, PyEvaluate &);
     std::map<unsigned int, std::function<void(PyBindInstance *, Controllable &, PyEvaluate &)>> execAI;
 
 private:

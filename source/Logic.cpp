@@ -87,11 +87,11 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   for (unsigned int i(0u); i < 10; ++i)
     {
       enemies.add([this](){
-	  return entityFactory.spawnEnemy();
-	}, 1u, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
+        return entityFactory.spawnEnemy();
+      }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
       enemies.add([this](){
-	  return entityFactory.spawnEnemy();
-	}, 2u, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
+        return entityFactory.spawnEnemy();
+      }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
     }
 }
 

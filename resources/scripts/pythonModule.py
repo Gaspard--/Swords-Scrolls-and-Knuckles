@@ -1,14 +1,29 @@
 #!/usr/bin/python3
 import PyPlugin
 
+def addVec(a, b):
+    ax = a.x()
+    ay = a.y()
+    bx = b.x()
+    by = b.y()
+    return (PyPlugin.Vect(ax + bx, ay + by))
+
+def subVec(a, b):
+    ax = a.x()
+    ay = a.y()
+    bx = b.x()
+    by = b.y()
+    return (PyPlugin.Vect(ax - bx, ay - by))
+
+def mulVec(a, b):
+    ax = a.x()
+    ay = a.y()
+    return (PyPlugin.Vect(ax * b, ay * b))
+
 class pythonModule():
     def moveEntityFromVec(self, entity, vec, speed):
-        vecx = vec.x()
-        vecy = vec.y()
-        posx = entity.pos.x()
-        posy = entity.pos.y()
-        newpos = PyPlugin.Vect(vecx - posx, vecy - posy).normalized()
-        entity.setInput(newpos.x() * speed, newpos.y() * speed);
+        newpos = subVec(vec, entity.pos).normalized()
+        entity.setInput(mulVec(newpos, speed))
 
     def chasePlayerAI(self, entity, evaluater):
         vec = evaluater.closestPlayer(entity.pos)
@@ -20,7 +35,7 @@ class pythonModule():
         if (dist < 75):
             self.moveEntityFromVec(entity, vec, -0.015)
         else:
-            entity.setInput(0.0, 0.0);
+            self.standAI(entity, evaluater)
 
     def chaseEnemyAI(self, entity, evaluater):
         vec = evaluater.closestEnemy(entity.pos)
@@ -32,4 +47,7 @@ class pythonModule():
         if (dist < 75):
             self.moveEntityFromVec(entity, vec, -0.015)
         else:
-            entity.setInput(0.0, 0.0);
+            self.standAI(entity, evaluater)
+
+    def standAI(self, entity, evaluater):
+        entity.setInput(PyPlugin.Vect(0.0, 0.0))
