@@ -17,7 +17,7 @@ enum class PlayerId
 class Player : public Controllable
 {
 private:
-  
+  unsigned int    id;
   Vect<3u, Spell> spells;
 
 public:
@@ -41,6 +41,9 @@ public:
   static Player makeMage(Vect<2u, double> pos);
   static Player makeTank(Vect<2u, double> pos);
   static Player makeWarrior(Vect<2u, double> pos);
+
+  void  serialize(SaveState &state) const;
+  void  unserialize(LoadGame &);
 };
 
 #endif // !PLAYER_HPP

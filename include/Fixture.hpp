@@ -3,7 +3,9 @@
 
 # include "Vect.hpp"
 
+class LoadGame;
 class SaveState;
+
 struct Fixture
 {
   double radius;
@@ -24,7 +26,9 @@ struct Fixture
   {
     return (speed);
   }
+
   void  serialize(SaveState &state) const;
+  void  unserialize(LoadGame &);
 };
 
 #endif

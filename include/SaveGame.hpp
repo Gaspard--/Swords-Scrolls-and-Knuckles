@@ -9,7 +9,8 @@ class SaveState
 {
 private:
   std::ofstream  file;
-  unsigned int  seed;
+  unsigned int   seed;
+
 public:
   SaveState() = delete;
   SaveState(GameState &, long unsigned int);

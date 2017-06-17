@@ -34,6 +34,7 @@ public:
   {
   }
 
+  Controllable() = default;
   constexpr void update(Logic &logic);
 
   constexpr void knockback(Vect<2u, double> speed, unsigned int stun)
@@ -87,6 +88,7 @@ public:
   }
 
   void   serialize(SaveState &state) const;
+  void   unserialize(LoadGame &);
 };
 
 #endif // !CONTROLLABLE_HPP

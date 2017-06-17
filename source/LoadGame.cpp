@@ -1,22 +1,25 @@
 #include "LoadGame.hpp"
 
-LoadGame::LoadGame(GameState &game, SaveState &save)
+LoadGame::LoadGame(GameState &game, std::string name)
 {
-  unserialize(seed);
-  unserialize((long unsigned)state.players.size());
-  unserialize(state.players);
-  unserialize((long unsigned)state.enemies.size());
-  unserialize(state.enemies);
-  unserialize((long unsigned)state.projectiles.size());
-  unserialize(state.projectiles);
+  unsigned int size[3];
+
+  save.open(name);
+  // unserialize(game.seed);
+  unserialize(size[0]);
+  unserialize(game.players, size[0]);
+  unserialize(size[1]);
+  unserialize(game.enemies, size[1]);
+  unserialize(size[2]);
+  unserialize(game.projectiles, size[2]);
 }
 
 void  LoadGame::unserialize(unsigned int &data)
 {
-  unsigned char buf[4];
+  char buf[4];
 
   data = 0;
-  if (!save.file.read(buf, 4u))
+  if (!save.read(buf, 4u))
     throw std::runtime_error("Failed to read to save file");
   for (unsigned int i(3); ~i; --i)
   {
@@ -27,7 +30,7 @@ void  LoadGame::unserialize(unsigned int &data)
 
 void  LoadGame::unserialize(bool &data)
 {
-  int i(0);
+  unsigned int i(0);
   unserialize(i);
   if (i)
     data = true;
@@ -35,16 +38,18 @@ void  LoadGame::unserialize(bool &data)
     data = false;
 }
 
-void  LoadGame::unserialize(double & data)
+void  LoadGame::unserialize(double &data)
 {
-
+  (void)data;
+  return;
 }
-void  LoadGame::unserialize(long unsigned int &)
+
+void  LoadGame::unserialize(long unsigned int &data)
 {
-  unsigned char buf[8];
+  char buf[8];
 
   data = 0;
-  if (!save.file.read(buf, 8u))
+  if (!save.read(buf, 8u))
     throw std::runtime_error("Failed to read to save file");
   for (unsigned int i(7); ~i; --i)
   {

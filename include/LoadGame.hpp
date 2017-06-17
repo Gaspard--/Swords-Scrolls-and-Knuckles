@@ -3,8 +3,12 @@
 
 class LoadGame
 {
+private:
+  std::fstream  save;
+
+public:
   LoadGame() = delete;
-  LoadGame(GameState &, SaveState &);
+  LoadGame(GameState &, std::string);
   LoadGame(GameState const &) = delete;
   LoadGame &operator=(GameState const &) = delete;
   ~LoadGame();
@@ -16,22 +20,23 @@ class LoadGame
   void  unserialize(double &);
 
   template<unsigned int SIZE, class T>
-  void    unserialize(Vect<SIZE, T> data);
+  void    unserialize(Vect<SIZE, T> &data);
 
   template<class T>
-  void    unserialize(std::vector<T> const &data);
+  void    unserialize(std::vector<T> &data, unsigned int);
 };
 
 template<unsigned int SIZE, class T>
-void    LoadGame::unserialize(Vect<SIZE, T> data)
+void    LoadGame::unserialize(Vect<SIZE, T> &data)
 {
   for (auto &&t : data)
     unserialize(t);
 }
 
 template<class T>
-void    LoadGame::unserialize(std::vector<T> const &data)
+void    LoadGame::unserialize(std::vector<T> &data, unsigned int size)
 {
-  for (auto const &t : data)
+  data.resize(size);
+  for (auto &t : data)
     t.unserialize(*this);
 }
