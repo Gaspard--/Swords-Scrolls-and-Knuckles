@@ -10,6 +10,7 @@
 # include <OgreException.h>
 # include <OgreWindowEventUtilities.h>
 # include <OgreFrameListener.h>
+# include <Overlay/OgreFontManager.h>
 # include <OISInputManager.h>
 
 # include "Renderer.hpp"

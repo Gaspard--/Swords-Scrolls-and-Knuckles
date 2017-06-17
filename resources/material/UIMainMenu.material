@@ -64,7 +64,6 @@ material HUD/ButtonLoad
 
 }
 
-
 material HUD/ButtonExit
 {
 	technique

@@ -12,6 +12,7 @@
 #include "AudioSource.hpp"
 #include "PyBindInstance.hpp"
 #include "PyEvaluate.hpp"
+#include "ProjectileList.hpp"
 
 class LevelScene;
 
@@ -42,13 +43,14 @@ public:
   EntityFactory entityFactory;
   PyBindInstance pyBindInstance;
   PyEvaluate pyEvaluate;
+  ProjectileList projectileList;
 
   /**
    * Parameter isn't stored, only used for setup.
    */
   Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
 
-  void spawnArrow(Vect<2u, double> pos, Vect<2u, double> speed);
+  void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type);
   void run();
   void exit();
   void updateDisplay(LevelScene &);
@@ -65,7 +67,7 @@ constexpr void Controllable::update(Logic &)
     }
   else
     {
-      dir = dir * 0.8 - speed * 0.2;
+      // dir = dir * 0.8 - speed * 0.2;
       --stun;
     }
   if (stun || !locked)

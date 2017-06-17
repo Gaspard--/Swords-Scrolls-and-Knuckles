@@ -4,6 +4,7 @@
 # include <memory>
 # include <functional>
 # include <unordered_map>
+# include <Overlay/OgrePanelOverlayElement.h>
 # include "Renderer.hpp"
 # include "UIButton.hpp"
 # include "UIOverlay.hpp"

@@ -18,6 +18,8 @@ private:
   unsigned int maxHealth;
 
 public:
+  bool invulnerable;
+
   template<class... PARAMS>
   constexpr Controllable(unsigned int health, PARAMS &&... params)
   : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0.0, 0.0}}
@@ -28,6 +30,7 @@ public:
     , locked(false)
     , health(health)
     , maxHealth(health)
+    , invulnerable(false)
   {
   }
 
@@ -35,9 +38,12 @@ public:
 
   constexpr void knockback(Vect<2u, double> speed, unsigned int stun)
   {
-    targetDir = -speed.normalized();
-    this->speed = speed;
-    this->stun = stun;
+    if (!invulnerable)
+      {
+	targetDir = -speed.normalized();
+	this->speed = speed;
+	this->stun = stun;
+      }
   }
 
   constexpr bool isWalking() const
@@ -54,8 +60,14 @@ public:
   constexpr void setInput(Vect<2u, double> input)
   {
     if (!stun && input.length2() > 0)
-      targetDir = input.normalized();
+      targetDir = input.unsafeNormalized();
     this->input = input;
+  }
+
+  constexpr void dash(double speed, unsigned int time)
+  {
+    this->speed = input * speed;
+    this->stun = time;
   }
 
   // setter only.
@@ -66,8 +78,7 @@ public:
 
   constexpr void setInputPy(double a, double b)
   {
-    this->input[0] = a;
-    this->input[1] = b;
+    setInput({a, b});
   }
 
   constexpr Vect<2u, double> getDir() const
