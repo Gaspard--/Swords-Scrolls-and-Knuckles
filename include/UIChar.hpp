@@ -3,6 +3,9 @@
 
 # include <vector>
 # include <string>
+# include <Overlay/OgrePanelOverlayElement.h>
+# include <Overlay/OgreTextAreaOverlayElement.h>
+# include "Game.hpp"
 # include "UIOverlayResource.hpp"
 
 class UIOverlayHUD;
