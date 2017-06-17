@@ -64,24 +64,6 @@ material HUD/ButtonLoad
 	
 }
 
-material HUD/ButtonPlay
-{
-	technique
-	{
-
-		pass
-		{
-			scene_blend alpha_blend
-
-			texture_unit
-			{
-				texture ButtonPlay.png
-			}
-		}
-	}
-	
-}
-
 material HUD/ButtonExit
 {
 	technique

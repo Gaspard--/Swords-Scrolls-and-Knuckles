@@ -9,7 +9,7 @@
 Both Windows and Linux versions require the same dependencies:
  * Cmake (> 2.6)
  * Ogre 1.10
- * OIS (Generaly presentend as a dependency of Ogre)
+ * OIS (Generally presentend as a dependency of Ogre)
  * OpenAL
  * PyBind ( -> Python 2.7)
 

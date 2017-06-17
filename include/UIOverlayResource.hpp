@@ -4,6 +4,8 @@
 # include <algorithm>
 # include <memory>
 # include <Overlay/OgreOverlaySystem.h>
+# include <Overlay/OgreOverlayManager.h>
+# include <Overlay/OgreOverlayElement.h>
 
 template<typename T>
 class UIOverlayResource

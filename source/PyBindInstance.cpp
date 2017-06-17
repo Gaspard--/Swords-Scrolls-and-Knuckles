@@ -1,57 +1,21 @@
 #include "PyBindInstance.hpp"
-#include "Enemy.hpp"
-#include "Vect.hpp"
+#include "Controllable.hpp"
 #include "PyEvaluate.hpp"
-
-namespace PyPlugin
-{
-  PYBIND11_PLUGIN(PyPlugin)
-  {
-    py::module m("PyPlugin", "Plugin wich allow access to a cpp class in python");
-
-    /*
-    ** How to define a class template for python :
-    py::class_<ClassName>(m, "ClassName")
-        .def_readwrite("var1", &ClassName::var1) // Py can access and modify var1.
-        .def_readonly ("var2", &ClassName::var2) // Py can only read var2's value.
-        .def("method1", &ClassName::method1) // Py can call the method1.
-        .def_readwrite("method2", &ClassName::method2) // Exposes the return value of method2.
-        .def_readonly("method3", &ClassName::method3) // Equivalent to a const method.
-        ;
-    */
-
-    py::class_<Vect<2u, double>>(m, "Vect")
-      .def(py::init<double, double>())
-      .def("x", &Vect<2u, double>::x)
-      .def("y", &Vect<2u, double>::y)
-      .def("normalized", &Vect<2u, double>::normalized)
-      ;
-
-    py::class_<Fixture, Controllable>(m, "Controllable")
-      .def("setInput", &Controllable::setInputPy)
-      .def_readwrite("pos", &Fixture::pos)
-      ;
-
-    py::class_<PyEvaluate>(m, "PyEvaluate")
-      .def("closestPlayer", &PyEvaluate::closestPlayer)
-      ;
-
-    return m.ptr();
-  }
-}
 
 PyBindInstance::PyBindInstance()
 {
   try
   {
-    Py_Initialize();
-    PyPlugin::pybind11_init();
-
     main = py::module::import("__main__");
     globals = main.attr("__dict__");
     py::object importedModule = this->import("pythonModule", PYTHONMODULE, globals);
     py::object importedModuleAttr = importedModule.attr("pythonModule");
     pythonModule = importedModuleAttr();
+    execAI[AI::CHASEPLAYER] = &PyBindInstance::chasePlayerAI;
+    execAI[AI::FLEEPLAYER] = &PyBindInstance::fleePlayerAI;
+    execAI[AI::CHASEENEMY] = &PyBindInstance::chaseEnemyAI;
+    execAI[AI::FLEEENEMY] = &PyBindInstance::fleeEnemyAI;
+    execAI[AI::STAND] = &PyBindInstance::standAI;
   }
   catch (py::error_already_set const &e)
   {
@@ -60,9 +24,29 @@ PyBindInstance::PyBindInstance()
   }
 }
 
-void PyBindInstance::chaseAI(Controllable &ctr, PyEvaluate &pyEv)
+void PyBindInstance::chasePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("chaseAI")(&ctr, pyEv);
+  pythonModule.attr("chasePlayerAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::fleePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("fleePlayerAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::chaseEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("chaseEnemyAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::fleeEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("fleeEnemyAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::standAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("standAI")(&ctr, pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
