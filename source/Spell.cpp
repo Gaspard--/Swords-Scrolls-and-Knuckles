@@ -1,10 +1,11 @@
 #include "Spell.hpp"
 
-Spell::Spell(std::function<void(Logic &, Player &)> cast,
-	     unsigned int cooldown)
+Spell::Spell(std::function<void(Logic &, Player &, unsigned int)> cast,
+	     unsigned int cooldown, unsigned int duration, unsigned int timeLeft)
   : cast(cast)
   , cooldown(cooldown)
-  , timeLeft(0u)
+  , duration(duration)
+  , timeLeft(timeLeft)
   , active(false)
 {
 }
@@ -17,9 +18,8 @@ Spell::Spell()
 void Spell::update(Logic &logic, Player &player)
 {
   if (!timeLeft && active)
-    {
-      cast(logic, player);
-      timeLeft = cooldown;
-    }
+    timeLeft = cooldown;
+  if ((cooldown - timeLeft) < duration)
+    cast(logic, player, cooldown - timeLeft);
   timeLeft -= !!timeLeft;
 }

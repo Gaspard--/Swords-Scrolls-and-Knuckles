@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "AudioListener.hpp"
+#include "ProjectileList.hpp"
 
 // TODO: extract as mush as possible to gameState.
 // Logic could be passed as ref for spawning and & so on.
@@ -24,11 +25,10 @@ bool Logic::tick()
 								   [](auto &element, Vect<2u, double> dir)
 								   {
 								     if (element.isStun())
-								       Physics::BounceResponse{0.5}(element, dir);
+								       BounceResponse{0.5}(element, dir);
 								   });
 				}
 			    });
-
   updateElements(gameState.players);
   updateElements(gameState.enemies);
   for (auto &player : gameState.players)
@@ -36,10 +36,9 @@ bool Logic::tick()
   for (auto &projectile : gameState.projectiles)
     {
       projectile.update(*this);
-      gameState.terrain.correctFixture(projectile, [](auto &projectile, Vect<2u, double>)
+      gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
 				       {
-					 // Physics::BounceResponse{0.9}(projectile, dir);
-					 projectile.toRemove = true;
+					 projectileList[projectile.type].wallResponse(projectile, dir);
 				       });
     }
   projectiles.removeIf([](auto const &projectile)
@@ -53,9 +52,8 @@ bool Logic::tick()
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
-			 [](auto &projectile, auto &enemy){
-			   enemy.knockback(projectile.speed.normalized() * 0.2, 10);
-			   projectile.toRemove = true;
+			 [this](auto &projectile, auto &enemy){
+			   projectileList[projectile.type].hitEnemy(enemy, projectile);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -81,23 +79,27 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
   , pyEvaluate(gameState.players, gameState.enemies)
+  , projectileList{}
 {
   for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
   levelScene.setTerrain(gameState.terrain);
-  enemies.add([this](){
-      return entityFactory.spawnEnemy();
-  }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5});
-  enemies.add([this](){
-      return entityFactory.spawnEnemy();
-  }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0});
+  for (unsigned int i(0u); i < 10; ++i)
+    {
+      enemies.add([this](){
+        return entityFactory.spawnEnemy();
+      }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
+      enemies.add([this](){
+        return entityFactory.spawnEnemy();
+      }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
+    }
 }
 
-void Logic::spawnArrow(Vect<2u, double> pos, Vect<2u, double> speed)
+void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
 {
   projectiles.add([this](){
       return entityFactory.spawnOgreHead();
-    }, pos, speed);
+    }, pos, speed, type);
 }
 
 void Logic::run()
@@ -142,21 +144,20 @@ void Logic::updateDisplay(LevelScene &levelScene)
 		      });
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
-      animatedEntity.getEntity().setPosition(
-					     static_cast<Ogre::Real>(controllable.pos[0]),
+      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]),
 					     animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
 					     static_cast<Ogre::Real>(controllable.pos[1])
 					     );
     });
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
+		    updateControllableEntity(animatedEntity, enemy);
 		    if (enemy.isWalking())
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 		    else if (enemy.isStun())
 		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);
 		    else
 		      animatedEntity.setMainAnimation(Animations::Controllable::STAND);
-		    updateControllableEntity(animatedEntity, enemy);
 		    animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
 		  });
 
@@ -278,26 +279,18 @@ void Logic::calculateCamera(LevelScene &levelScene)
 					  [](auto const &p1, auto const &p2) {
 					    return p1.getPos()[0] < p2.getPos()[0];
 					  }));
-  Vect<3u, double> const leftVecX(Vect<3u, double>(minmax_x.first->getPos()[0],
-						   0.0,
-						   minmax_x.first->getPos()[1]) - cameraPos);
-  Vect<3u, double> const rightVecX(Vect<3u, double>{
-      minmax_x.second->getPos()[0], 0.0,
-	minmax_x.first->getPos()[1]} - cameraPos);
-  auto const midVecX((rightVecX - leftVecX) / 2);
+  Vect<3u, double> const leftVecX(minmax_x.first->getPos()[0], 0.0, minmax_x.first->getPos()[1]);
+  Vect<3u, double> const rightVecX(minmax_x.second->getPos()[0], 0.0, minmax_x.first->getPos()[1]);
+  auto const midVecX((rightVecX - leftVecX) / 2 - cameraPos);
 
   auto const minmax_z(std::minmax_element(gameState.players.cbegin(),
 					  gameState.players.cend(),
 					  [](auto const &p1, auto const &p2) {
 					    return p1.getPos()[1] < p2.getPos()[1];
 					  }));
-  auto const leftVecZ(Vect<3u, double>{
-      (double)minmax_z.first->getPos()[1], 0.0,
-	(double)minmax_z.first->getPos()[1]} - cameraPos);
-  auto const rightVecZ(Vect<3u, double>{
-      (double)minmax_z.second->getPos()[1], 0.0,
-	(double)minmax_z.first->getPos()[1]} - cameraPos);
-  auto const midVecZ((rightVecZ - leftVecZ) / 2);
+  Vect<3u, double> const leftVecZ(minmax_z.first->getPos()[1], 0.0, minmax_z.first->getPos()[1]);
+  Vect<3u, double> const rightVecZ(minmax_z.second->getPos()[1], 0.0, minmax_z.first->getPos()[1]);
+  auto const midVecZ((rightVecZ - leftVecZ) / 2 - cameraPos);
 
   double const yxpos((-tanAngle * (std::sqrt(midVecX.length2())) + 10) * 1.5f);
   double const yzpos((-tanAngleUp * (std::sqrt(midVecZ.length2())) + 10) * 0.8f);
