@@ -1,3 +1,6 @@
+#ifndef PYPLUGIN_HPP_
+# define PYPLUGIN_HPP_
+
 #include "Enemy.hpp"
 #include "Vect.hpp"
 #include "PyEvaluate.hpp"
@@ -41,3 +44,5 @@ namespace PyPlugin
     return m.ptr();
   }
 }
+
+#endif // !PYPLUGIN_HPP_

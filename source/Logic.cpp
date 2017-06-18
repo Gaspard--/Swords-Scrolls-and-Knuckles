@@ -91,10 +91,27 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
   , spellList{}
+  , keyboardControllers{
+      std::map<unsigned int, OIS::KeyCode>
+      {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
+      {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
+      {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
+      std::map<unsigned int, OIS::KeyCode>
+      {{KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+      {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
+      {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
-  for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}));
+  for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
+    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
+  action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
+  action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
+  if (Joystick::getJoysticks()[0])
+  {
+      action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
+  }
   levelScene.setTerrain(gameState.terrain);
   // for (unsigned int i(0u); i < 10; ++i)
   //   {
@@ -209,73 +226,10 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	}
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
-  Vect<2u, double> p0{0.0, 0.0};
-  Vect<2u, double> p1{0.0, 0.0};
-  Vect<2u, double> p2{0.0, 0.0};
 
-  if (Keyboard::getKeys()[OIS::KC_Z]) {
-    p0 += {0.0, -1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_Q]) {
-    p0 += {-1.0, 0.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_S]) {
-    p0 += {0.0, 1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_D]) {
-    p0 += {1.0, 0.0};
-  }
-
-  // TODO : replace this with a better solution when character selection will be available
-  if (Joystick::getJoysticks()[0]) {
-    p0 = {
-      Joystick::getJoysticks()[0]->getAxes()[joystickAxe::LEFT_HRZ] / 100.f,
-      Joystick::getJoysticks()[0]->getAxes()[joystickAxe::LEFT_VRT] / 100.f,
-    };
-    if (p0.length2() <= 0.20f * 0.20f) // Joystick axes are never really at 0
-      p0 = { 0.f, 0.f };
-  }
-
-  if (Keyboard::getKeys()[OIS::KC_I]) {
-    p1 += {0.0, -1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_J]) {
-    p1 += {-1.0, 0.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_K]) {
-    p1 += {0.0, 1.0};
-  }
-  if (Keyboard::getKeys()[OIS::KC_L]) {
-    p1 += {1.0, 0.0};
-  }
-
-  if (Keyboard::getKeys()[OIS::KC_O]) {
-    AudioListener::setPos({0.f, 0.f, 0.f});
-  }
-  if (Keyboard::getKeys()[OIS::KC_UP]) {
-    AudioListener::setPos({0.f, 1.f, 0.f});
-  }
-  if (Keyboard::getKeys()[OIS::KC_LEFT]) {
-    AudioListener::setPos({1.f, 0.f, 0.f});
-  }
-  if (Keyboard::getKeys()[OIS::KC_DOWN]) {
-    AudioListener::setPos({0.f, -1.f, 0.f});
-  }
-  if (Keyboard::getKeys()[OIS::KC_RIGHT]) {
-    AudioListener::setPos({-1.f, 0.f, 0.f});
-  }
-
-  gameState.players[0].setInput(p0 * 0.03);
-  gameState.players[0].setAttacking(0u, Keyboard::getKeys()[OIS::KC_V]);
-  gameState.players[0].setAttacking(1u, Keyboard::getKeys()[OIS::KC_B]);
-  gameState.players[0].setAttacking(2u, Keyboard::getKeys()[OIS::KC_N]);
-  gameState.players[0].setLocked(Keyboard::getKeys()[OIS::KC_LSHIFT]);
-  gameState.players[1].setInput(p1 * 0.03);
-  // gameState.players[2].setInput(p2 * 0.03);
+  action.update();
   calculateCamera(levelScene);
-
   levelScene.updateUI(gameState.players);
-
   updatesSinceLastFrame = 0;
 }
 

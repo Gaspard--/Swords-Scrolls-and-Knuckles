@@ -12,6 +12,8 @@
 #include "AudioSource.hpp"
 #include "PyBindInstance.hpp"
 #include "PyEvaluate.hpp"
+#include "Action.hpp"
+#include "KeyboardController.hpp"
 
 class LevelScene;
 
@@ -45,6 +47,8 @@ public:
   PyEvaluate pyEvaluate;
   ProjectileList projectileList;
   SpellList spellList;
+  Action action;
+  Vect<2u, KeyboardController> keyboardControllers;
 
   /**
    * Parameter isn't stored, only used for setup.

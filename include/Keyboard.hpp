@@ -47,7 +47,7 @@ class Keyboard : public Input<OIS::Keyboard, OIS::KeyListener>
     {
 	constexpr KeyboardKey(void) = default;
 	~KeyboardKey(void) = default;
-	bool operator[](OIS::KeyCode &&);
+	bool operator[](OIS::KeyCode const &);
     };
 };
 
