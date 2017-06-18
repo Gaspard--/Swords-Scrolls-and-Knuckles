@@ -46,9 +46,9 @@ void  LoadGame::unserialize(double &data)
 
   unserialize(n);
   unsigned long sign(n >> (bits - 1));
-  n ^= sign << bits - 1;
+  n ^= sign << (bits - 1);
   unsigned long exp(n >> (bits - expbits - 1));
-  n ^= exp << bits - expbits - 1;
+  n ^= exp << (bits - expbits - 1);
   double fnorm(n / ((1LL << significandbits) + 0.5f));
   unsigned long shift(exp - ((1 << (expbits-1)) - 1));
   fnorm = ldexp(fnorm, shift);
@@ -67,6 +67,6 @@ void  LoadGame::unserialize(long unsigned int &data)
   for (unsigned int i(7); ~i; --i)
   {
     data = data << 8;
-    buf[i] = (data | 255);
+    buf[i] = static_cast<char>(data | 255);
   }
 }
