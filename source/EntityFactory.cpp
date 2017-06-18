@@ -2,6 +2,7 @@
 #include "EntityFactory.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
+#include "Projectile.hpp"
 
 Entity EntityFactory::spawnOgreHead(void)
 {
@@ -12,24 +13,40 @@ Entity EntityFactory::spawnOgreHead(void)
   return ogre;
 }
 
-AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
+Entity EntityFactory::spawnProjectile(unsigned int projectileType)
 {
-  AnimatedEntity archer(renderer, skin);
+  Entity entity(renderer, "ogrehead.mesh");
 
-  archer.getEntity().getOgre()->setCastShadows(false);
-  archer.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
-  (*(archer.getEntity().soundMap))[Sounds::BOYAUX1].setSound(Sounds::BOYAUX1);
-  (*(archer.getEntity().soundMap))[Sounds::BOYAUX1].setLooping(true);
+  if (projectileType == ProjectileType::COOLDOWN_RESET)
+    entity = Entity(renderer, "feather.mesh");
+  else if (projectileType == ProjectileType::HEAL)
+    entity = Entity(renderer, "heart.mesh");
+  else
+    entity = Entity(renderer, "rupee.mesh");
+  entity.getOgre()->setCastShadows(false);
+  entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+  return entity;
+}
+
+AnimatedEntity EntityFactory::spawnHero(Skins::Skin skin)
+{
+  AnimatedEntity hero(renderer, skin);
+
+  hero.getEntity().getOgre()->setCastShadows(false);
+  hero.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
+  (*(hero.getEntity().soundMap))[Sounds::BOYAUX1].setSound(Sounds::BOYAUX1);
+  (*(hero.getEntity().soundMap))[Sounds::BOYAUX1].setLooping(true);
 
   // Mount
-  AnimatedEntity *mount(new AnimatedEntity("wolf.mesh", archer.getEntity().getNode()));
+  AnimatedEntity *mount(new AnimatedEntity("wolf.mesh", hero.getEntity().getNode()));
   mount->getEntity().getOgre()->setCastShadows(false);
-  archer.setMount(mount);
+  mount->getEntity().getNode()->setPosition(0, -150.f, 0);
+  hero.setMount(mount);
 
   // Light 1
   {
     auto light(renderer.getSceneManager().createLight());
-    auto sceneNode(archer.getEntity().getNode()->createChildSceneNode());
+    auto sceneNode(hero.getEntity().getNode()->createChildSceneNode());
 
     light->setType(Ogre::Light::LT_POINT);
     light->setDiffuseColour(1.f, 1.f, 1.f);
@@ -38,8 +55,7 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
     sceneNode->attachObject(light);
     sceneNode->setPosition(0, 150, 0);
   }
-
-  return (archer);
+  return (hero);
 }
 
 AnimatedEntity EntityFactory::spawnEnemy()

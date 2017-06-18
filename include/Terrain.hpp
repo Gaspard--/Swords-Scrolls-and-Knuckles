@@ -10,43 +10,42 @@ public:
   struct Tile
   {
     bool isSolid;
+    unsigned int roomId;
   };
 
-  
+  struct Room
+  {
+    Vect<2, double> pos;
+    unsigned int id;
+    bool mobsSpawned;
+
+    constexpr Room(Vect<2u, double> pos, unsigned int id = 0, bool mobsSpawned = true)
+    : pos(pos)
+      , id(id)
+      , mobsSpawned(mobsSpawned)
+    {}
+  };
 private:  
   Tile tiles[100][100];
+  std::vector<Room> rooms;
   unsigned int seed;
 
 public:
 
-  constexpr Terrain()
-  : tiles{}
-    , seed(0u)
-  {};
+  Terrain();
 
   void generateLevel(unsigned int seed);
   
-  constexpr Vect<2u, unsigned int> getSize() const
-  {
-    return {100u, 100u};
-  }
+  Vect<2u, unsigned int> getSize() const;
   
-  constexpr Tile const &getTile(Vect<2u, unsigned int> pos) const
-  {
-    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
-      return tiles[0][0];
-    return tiles[pos[0]][pos[1]];
-  }
+  Room &getRoom(Vect<2u, unsigned int> pos);
 
-  constexpr Tile &getTile(Vect<2u, unsigned int> pos)
-  {
-    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
-      return tiles[0][0];
-    return tiles[pos[0]][pos[1]];
-  }
+  Tile const &getTile(Vect<2u, unsigned int> pos) const;
+
+  Tile &getTile(Vect<2u, unsigned int> pos);
 
   template<class RESPONSE, class FIXTURE>
-  constexpr void correctFixture(FIXTURE &fixture, RESPONSE &&response)
+  void correctFixture(FIXTURE &fixture, RESPONSE &&response)
   {
     Vect<2u, Vect<2u, double>> const extremes{(fixture.pos - Vect<2u, double>{fixture.radius, fixture.radius}),
 	(fixture.pos + Vect<2u, double>{fixture.radius, fixture.radius})};
@@ -100,7 +99,7 @@ public:
 
 
   template<class FIXTURE>
-  constexpr void correctFixture(FIXTURE &fixture)
+  void correctFixture(FIXTURE &fixture)
   {
     return correctFixture(fixture, NOOP{});
   }

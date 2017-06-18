@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
-LevelScene::LevelScene(Renderer &renderer)
+LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
@@ -24,37 +24,37 @@ LevelScene::LevelScene(Renderer &renderer)
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
 	       }())
-  , logicThread(*this, renderer, players)
+  , logicThread(*this, renderer, players, classes)
     // , music(Musics::SMALL_WORLD)
 {
   // music.setVolume(0.2f);
   // music.play();
 
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
+
   std::clog << "Loading level scene" << std::endl;
 
-  {
-    EntityFactory ef(renderer);
-
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
+  for (auto const &fn : v) {
+    players.push_back(std::move(fn(renderer)));
   }
 
   terrainNode->scale(1.0, 1.0, 1.0);
 
   // Hide pause
   uiPause.setUIVisible(false);
-  // ground.getOgre()->setMaterialName("wall");
 
   std::clog << "End loading level scene" << std::endl;
 }
 
 LevelScene::~LevelScene() {
   if (isInPause()) {
-    unpauseScene();
+    logicThread->unpause();
+    inPause = false;
+    uiPause.setUIVisible(false);
   }
 }
 
-void LevelScene::resetSceneCallbacks(void) {
+void LevelScene::resetSceneCallbacks(Renderer &r) {
   InputCallbacks::clearAllCallbacks();
   if (uiPause.isVisible())
     uiPause.resetUICallbacks();
@@ -71,13 +71,13 @@ void LevelScene::resetSceneCallbacks(void) {
       Joystick::registerGlobalCallback(joystickState::JS_A, setMounted);
 
       // Go back to menu
-      auto const goBackToMenu([this](bool b, size_t = 0) {
+      auto const goBackToMenu([this, &r](bool b, size_t = 0) {
 	  if (!b)
 	    {
 	      if (uiPause.getOverlay()->isVisible()) {
-		unpauseScene();
+		unpauseScene(r);
 	      } else {
-		pauseScene();
+		pauseScene(r);
 	      }
 	    }
 	});
@@ -237,16 +237,16 @@ void LevelScene::updateUI(std::vector<Player> const &v) {
   uiHUD.updateHUD(v);
 }
 
-void LevelScene::pauseScene(void) {
+void LevelScene::pauseScene(Renderer &r) {
   logicThread->pause();
   inPause = true;
   uiPause.setUIVisible(true);
-  resetSceneCallbacks();
+  resetSceneCallbacks(r);
 }
 
-void LevelScene::unpauseScene(void) {
+void LevelScene::unpauseScene(Renderer &r) {
   logicThread->unpause();
   inPause = false;
   uiPause.setUIVisible(false);
-  resetSceneCallbacks();
+  resetSceneCallbacks(r);
 }

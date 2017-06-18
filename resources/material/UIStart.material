@@ -1,0 +1,29 @@
+material HUD/HurricaneLogo
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture Hurricane.png
+            }
+        }
+    }
+}
+
+material HUD/GameLogo
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            
+            texture_unit
+            {
+                texture LogoGame.png
+            }
+        }
+    }
+}

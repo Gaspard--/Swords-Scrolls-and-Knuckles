@@ -57,6 +57,7 @@ public:
   /// Get the node attached to this entity.
   Ogre::SceneNode *getNode(void);
   Ogre::SceneNode const *getNode(void) const;
+  void reasignNode(Ogre::SceneNode *);
 
   /// Shortcut to Entity::getNode().setPosition()
   void setPosition(float x, float y, float z);

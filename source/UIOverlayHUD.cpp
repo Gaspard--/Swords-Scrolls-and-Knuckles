@@ -2,6 +2,7 @@
 
 UIOverlayHUD::UIOverlayHUD(Renderer &renderer)
   : UIOverlay("hud")
+  , setup(false)
 {
   (void)renderer;
   std::clog << "Init HUD" << std::endl;
@@ -15,12 +16,18 @@ UIOverlayHUD::UIOverlayHUD(Renderer &renderer)
 }
 
 void UIOverlayHUD::updateHUD(std::vector<Player> const &v) {
+  if (setup == false) {
+    setupHUD(v);
+    setup = true;
+  }
+  for (size_t i = 0; i < v.size() && i < charPanels.size(); i++) {
+    charPanels[i]->updateValues(v[i]);
+  }
+}
+
+void UIOverlayHUD::setupHUD(std::vector<Player> const &v) {
   size_t i;
   for (i = 0; i < v.size() && i < charPanels.size(); i++) {
-    charPanels[i]->updateCharUI(v[i]);
-  }
-  while (i < charPanels.size()) {
-    charPanels[i]->defaultCharUI();
-    i++;
+    charPanels[i]->setCharLayout(v[i]);
   }
 }

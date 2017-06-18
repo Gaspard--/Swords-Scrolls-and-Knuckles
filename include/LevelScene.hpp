@@ -2,6 +2,7 @@
 # define LEVEL_SCENE_HPP
 
 #include <vector>
+#include <utility>
 #include "UIOverlayHUD.hpp"
 #include "UIOverlayPause.hpp"
 #include "Scene.hpp"
@@ -9,6 +10,7 @@
 #include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
 #include "Music.hpp"
+#include "Player.hpp"
 
 class Terrain;
 
@@ -41,20 +43,22 @@ private:
 
 public:
   LevelScene(void) = delete;
-  LevelScene(Renderer &);
+  LevelScene(Renderer &,
+    std::vector<std::function<AnimatedEntity(Renderer &)>> const &,
+    std::vector<PlayerId> const &);
   virtual ~LevelScene(void);
 
   static void createWallMesh();
   static void createGroundMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
-  virtual void resetSceneCallbacks(void);
+  virtual void resetSceneCallbacks(Renderer &);
 
   bool isInPause(void) const;
   void updateUI(std::vector<Player> const &);
 
-  void pauseScene(void);
-  void unpauseScene(void);
+  void pauseScene(Renderer &);
+  void unpauseScene(Renderer &);
 };
 
 #endif // !LEVEL_SCENE_HPP

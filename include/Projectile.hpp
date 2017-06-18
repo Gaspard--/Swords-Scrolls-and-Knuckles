@@ -7,7 +7,7 @@
 # include "Fixture.hpp"
 
 class SaveState;
-class Enemy;
+class Controllable;
 class Logic;
 class Projectile;
 
@@ -17,6 +17,10 @@ namespace ProjectileType
   static constexpr unsigned int const BOUNCY_ARROW{1};
   static constexpr unsigned int const ICE_PILLAR{2};
   static constexpr unsigned int const FIRE_BALL{3};
+  static constexpr unsigned int const COOLDOWN_RESET{4};
+  static constexpr unsigned int const HEAL{5};
+  static constexpr unsigned int const GOLD{6};
+  static constexpr unsigned int const EXPLOSION{7};
 };
 
 class Projectile : public Fixture
@@ -29,10 +33,15 @@ public:
 
   constexpr Projectile(Vect<2u, double> pos, Vect<2u, double> speed,
 		       unsigned int type, double size = 0.2, unsigned int removeIn = ~0u)
-  : Fixture{size, pos, speed}
+  : Fixture{size, pos, speed, true}
     , type(type)
     , timeLeft(removeIn)
   {
+  }
+
+  constexpr bool doCollision() const
+  {
+    return true;
   }
 
   constexpr void remove()
@@ -51,6 +60,14 @@ public:
     pos += speed;
   }
 
+  constexpr bool doSpin()
+  {
+    return (type == ProjectileType::FIRE_BALL
+	    || type == ProjectileType::GOLD
+	    || type == ProjectileType::HEAL
+	    || type == ProjectileType::COOLDOWN_RESET);
+  }
+
   void   serialize(SaveState &state) const;
   void   unserialize(LoadGame &);
 };
@@ -59,7 +76,7 @@ class Enemy;
 
 struct ProjectileReaction
 {
-  std::function<void(Enemy &, Projectile &)> hitEnemy;
+  std::function<void(Controllable &, Projectile &)> hitEnemy;
   std::function<void(Projectile &, Vect<2u, double>)> wallResponse;
 };
 
