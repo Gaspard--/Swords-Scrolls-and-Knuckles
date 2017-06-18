@@ -11,15 +11,12 @@ public:
   {
     bool isSolid;
   };
+
   
 private:  
   Tile tiles[100][100];
   unsigned int seed;
 
-  constexpr Tile &getTile(Vect<2u, unsigned int> pos)
-  {
-    return tiles[pos[0]][pos[1]];
-  }
 public:
 
   constexpr Terrain()
@@ -33,10 +30,17 @@ public:
   {
     return {100u, 100u};
   }
-
+  
   constexpr Tile const &getTile(Vect<2u, unsigned int> pos) const
   {
-    if (pos[0] >= 100 || pos[1] >= 100)
+    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
+      return tiles[0][0];
+    return tiles[pos[0]][pos[1]];
+  }
+
+  constexpr Tile &getTile(Vect<2u, unsigned int> pos)
+  {
+    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
       return tiles[0][0];
     return tiles[pos[0]][pos[1]];
   }

@@ -92,19 +92,19 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectileList{}
   , spellList{}
 {
-  gameState.terrain.generateLevel(11u); // TODO: something better
+  gameState.terrain.generateLevel(42u); // TODO: something better
   for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}));
   levelScene.setTerrain(gameState.terrain);
-  for (unsigned int i(0u); i < 10; ++i)
-    {
-      enemies.add([this](){
-        return entityFactory.spawnEnemy();
-      }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
-      enemies.add([this](){
-        return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
-    }
+  // for (unsigned int i(0u); i < 10; ++i)
+  //   {
+  //     enemies.add([this](){
+  //       return entityFactory.spawnEnemy();
+  //     }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
+  //     enemies.add([this](){
+  //       return entityFactory.spawnEnemy();
+  //     }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
+  //   }
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)

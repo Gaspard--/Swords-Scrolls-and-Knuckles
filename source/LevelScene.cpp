@@ -87,9 +87,9 @@ void LevelScene::resetSceneCallbacks(void) {
 }
 void LevelScene::setTerrain(Terrain const &terrain)
 {
-  for (unsigned int i(0); i < 100; ++i)
+  for (unsigned int i(0); i < terrain.getSize()[0]; ++i)
     {
-      for (unsigned int j(0); j < 100; ++j)
+      for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
 	{
 	      
 	  if (terrain.getTile({i, j}).isSolid)
