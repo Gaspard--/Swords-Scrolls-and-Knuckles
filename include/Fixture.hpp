@@ -11,7 +11,8 @@ struct Fixture
   double radius;
   Vect<2u, double> pos;
   Vect<2u, double> speed;
-
+  bool collision;
+  
   constexpr double getRadius() const
   {
     return radius;

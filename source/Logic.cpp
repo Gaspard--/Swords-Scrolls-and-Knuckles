@@ -43,17 +43,16 @@ bool Logic::tick()
 	  std::cout << "spawning mobs" << std::endl;
 	}
     }
-  auto const updateProjectile([this](auto &projectiles)
-			      {
-				for (auto &projectile : projectiles)
-				  {
-				    projectile.update(*this);
-				    gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
-								     {
-								       projectileList[projectile.type].wallResponse(projectile, dir);
-								     });
-				  }
-			      });
+  auto const updateProjectile([this](auto &projectiles) {
+      for (auto &projectile : projectiles)
+	{
+	  projectile.update(*this);
+	  gameState.terrain.correctFixture(projectile,
+					   [this](auto &projectile, Vect<2u, double> dir) {
+					     projectileList[projectile.type].wallResponse(projectile, dir);
+					   });
+	}
+    });
   updateProjectile(gameState.projectiles);
   updateProjectile(gameState.enemyProjectiles);
   projectiles.removeIf([](auto const &projectile)
@@ -64,6 +63,10 @@ bool Logic::tick()
 			    {
 			      return projectile.shouldBeRemoved();
 			    });
+  enemies.removeIf([](auto const &projectile)
+		   {
+		     return projectile.shouldBeRemoved();
+		   });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
@@ -211,7 +214,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
 		    updateControllableEntity(animatedEntity, enemy);
-		    if (enemy.isWalking())
+		    if (enemy.isDead())
+		      animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04f, false);
+		    else if (enemy.isWalking())
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 		    else if (enemy.isStun())
 		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);

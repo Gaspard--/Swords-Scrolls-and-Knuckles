@@ -5,7 +5,6 @@
 # include <Overlay/OgrePanelOverlayElement.h>
 # include "Game.hpp"
 # include "UIOverlayResource.hpp"
-# include <Overlay/OgrePanelOverlayElement.h>
 
 class UIButton
 {
