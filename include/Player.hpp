@@ -50,6 +50,10 @@ public:
   void serialize(SaveState &state) const;
   void unserialize(LoadGame &game);
 
+  constexpr unsigned int getGold(void) const {
+    return (gold);
+  }
+
   static Player makeArcher(Vect<2u, double> pos);
   static Player makeMage(Vect<2u, double> pos);
   static Player makeTank(Vect<2u, double> pos);

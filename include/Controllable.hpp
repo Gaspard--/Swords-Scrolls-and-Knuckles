@@ -64,6 +64,14 @@ public:
       }
   }
 
+  constexpr int getMaxHealth(void) const {
+    return maxHealth;
+  }
+
+  constexpr int getHealth(void) const {
+    return health;
+  }
+
   constexpr void takeDamage(unsigned int damage)
   {
     if (!invulnerable)

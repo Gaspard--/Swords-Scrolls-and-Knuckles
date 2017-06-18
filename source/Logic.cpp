@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include "UIOVerlayselection.hpp"
+#include "UIOverlayselection.hpp"
 #include "Logic.hpp"
 #include "Physics.hpp"
 #include "LevelScene.hpp"
@@ -242,7 +242,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
       projectiles.forEach([](Entity &entity, Projectile &projectile)
 			  {
 			    if (projectile.doSpin())
-			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01), std::sin(projectile.timeLeft * 0.01)));
+			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01f), std::sin(projectile.timeLeft * 0.01f)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
