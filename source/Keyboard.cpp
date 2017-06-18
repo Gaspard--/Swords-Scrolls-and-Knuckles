@@ -50,8 +50,6 @@ void Keyboard::clearCallbacks(void) {
 
 // KeyboardKey
 
-bool Keyboard::KeyboardKey::operator[](OIS::KeyCode &&kc) {
+bool Keyboard::KeyboardKey::operator[](OIS::KeyCode const &kc) {
   return (Keyboard::getKeyboard()->isKeyDown(kc));
 }
-
-
