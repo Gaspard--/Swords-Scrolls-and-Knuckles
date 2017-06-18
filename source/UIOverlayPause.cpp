@@ -18,24 +18,24 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   bg->setMaterialName("HUD/PauseMenuBG");
 
   // Play button
-  std::unique_ptr<UIButton> resume(new UIButton(manager, "Resume", [&ls]() {
-    ls.unpauseScene();
+  std::unique_ptr<UIButton> resume(new UIButton(manager, "Resume", [&ls, &renderer]() {
+    ls.unpauseScene(renderer);
   }));
   resume->init("HUD/ButtonPauseResume", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(resume->getPanel());
   buttons.emplace_back(std::move(resume));
 
   // Exit button
-  std::unique_ptr<UIButton> save(new UIButton(manager, "Save", [&ls]() {
-    ls.unpauseScene();
+  std::unique_ptr<UIButton> save(new UIButton(manager, "Save", [&ls, &renderer]() {
+    ls.unpauseScene(renderer);
   }));
   save->init("HUD/ButtonPauseSave", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(save->getPanel());
   buttons.emplace_back(std::move(save));
 
   // Exit button
-  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", [&ls]() {
-    ls.unpauseScene();
+  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", [&ls, &renderer]() {
+    ls.unpauseScene(renderer);
   }));
   options->init("HUD/ButtonPauseOptions", posX, offset + UIButton::HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
