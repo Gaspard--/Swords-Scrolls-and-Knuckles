@@ -1,7 +1,7 @@
 #include "UIOverlay.hpp"
 #include "Game.hpp"
 
-UIOverlay::UIOverlay(std::string const &name, enum class Direction dir)
+UIOverlay::UIOverlay(std::string const &name, Direction dir)
   : overlay(Ogre::OverlayManager::getSingleton().create(name))
   , buttons()
   , selectedButton(0)

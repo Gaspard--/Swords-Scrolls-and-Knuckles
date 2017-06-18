@@ -55,39 +55,39 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 
   // Exit button
   std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [this, &renderer]() {
-    auto skins(skins);
-    renderer.switchScene([&renderer, skins]() {
+    auto skin(skins);
+    renderer.switchScene([&renderer, skin]() {
       std::vector<std::function<AnimatedEntity(Renderer &)>> v;
-      std::vector<enum class PlayerId> classes;
+      std::vector<PlayerId> classes;
 
       //std::vector<int> s(skins);
-      for (size_t i = 0; i < skins.size(); i++) {
+      for (size_t i = 0; i < skin.size(); i++) {
 	  switch (i) {
 	  case 0:
-	    v.emplace_back([&skins, i](Renderer &renderer) {
+	    v.emplace_back([&skin, i](Renderer &renderer) {
 	      EntityFactory ef(renderer);
-	      return (ef.spawnArcher(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	      return (ef.spawnArcher(UIOverlaySelection::HEROES_SKINS[i][skin[i]]));
 	    });
 	    classes.emplace_back(PlayerId::ARCHER);
 	    break;
 	  case 1:
-	    v.emplace_back([&skins, i](Renderer &renderer) {
+	    v.emplace_back([&skin, i](Renderer &renderer) {
 	      EntityFactory ef(renderer);
-	      return (ef.spawnMage(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	      return (ef.spawnMage(UIOverlaySelection::HEROES_SKINS[i][skin[i]]));
 	    });
 	    classes.emplace_back(PlayerId::MAGE);
 	    break;
 	  case 2:
-	    v.emplace_back([&skins, i](Renderer &renderer) {
+	    v.emplace_back([&skin, i](Renderer &renderer) {
 	      EntityFactory ef(renderer);
-	      return (ef.spawnWarrior(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	      return (ef.spawnWarrior(UIOverlaySelection::HEROES_SKINS[i][skin[i]]));
 	    });
 	    classes.emplace_back(PlayerId::WARRIOR);
 	    break;
 	  default:
-	    v.emplace_back([&skins, i](Renderer &renderer) {
+	    v.emplace_back([&skin, i](Renderer &renderer) {
 	      EntityFactory ef(renderer);
-	      return (ef.spawnTank(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	      return (ef.spawnTank(UIOverlaySelection::HEROES_SKINS[i][skin[i]]));
 	    });
 	    classes.emplace_back(PlayerId::TANK);
 	    break;

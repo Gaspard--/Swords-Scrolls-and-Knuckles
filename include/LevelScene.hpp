@@ -45,7 +45,7 @@ public:
   LevelScene(void) = delete;
   LevelScene(Renderer &,
     std::vector<std::function<AnimatedEntity(Renderer &)>> const &,
-    std::vector<enum class PlayerId> const &);
+    std::vector<PlayerId> const &);
   virtual ~LevelScene(void);
 
   static void createWallMesh();

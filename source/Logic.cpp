@@ -91,7 +91,7 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<enum class PlayerId> const &vec)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
@@ -115,7 +115,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
   for (size_t i = 0; i < vec.size(); i++) {
-    gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}, vec[i]));
+    gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
   }
   if (gameState.players.size() > 0)
     action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];

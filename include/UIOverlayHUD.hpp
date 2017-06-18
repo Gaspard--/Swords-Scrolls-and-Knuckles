@@ -10,6 +10,7 @@
 
 class UIOverlayHUD : public UIOverlay {
   std::vector<std::unique_ptr<UIChar>> charPanels;
+  bool setup;
 
 public:
   UIOverlayHUD(void) = delete;
@@ -21,6 +22,7 @@ public:
   virtual ~UIOverlayHUD(void) = default;
 
   void updateHUD(std::vector<Player> const &);
+  void setupHUD(std::vector<Player> const &);
 };
 
 #endif // !UIOVERLAYHUD_HPP

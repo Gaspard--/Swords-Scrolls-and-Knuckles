@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
-LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<enum class PlayerId> const &classes)
+LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
