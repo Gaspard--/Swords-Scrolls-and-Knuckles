@@ -9,6 +9,14 @@ void Player::checkSpells(Logic &logic)
     spell.update(logic, *this);
 }
 
+void Player::setMounted(bool b) {
+  mounted = b;
+}
+
+bool Player::isMounted(void) const {
+  return (mounted);
+}
+
 void Player::setAttacking(unsigned int index, bool attacking)
 {
   spells[index].active = attacking;

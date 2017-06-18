@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include "UIOverlaySelection.hpp"
 #include "UIOverlayHUD.hpp"
 #include "UIOverlayPause.hpp"
 #include "Scene.hpp"
@@ -45,7 +46,8 @@ public:
   LevelScene(void) = delete;
   LevelScene(Renderer &,
     std::vector<std::function<AnimatedEntity(Renderer &)>> const &,
-    std::vector<PlayerId> const &);
+    std::vector<PlayerId> const &,
+    std::vector<Gameplays> const &);
   virtual ~LevelScene(void);
 
   static void createWallMesh();

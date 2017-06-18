@@ -87,11 +87,20 @@ bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int)
       states[b] = 0;
     }
   });
+
+#if defined OIS_WIN32_PLATFORM
   axes[LEFT_VRT] = calcAxes(0);
   axes[LEFT_HRZ] = calcAxes(1);
   axes[RIGHT_VRT] = calcAxes(2);
   axes[RIGHT_HRZ] = calcAxes(3);
   axes[LEFT_TOP] = calcAxes(4);
+#else
+  axes[LEFT_VRT] = calcAxes(1);
+  axes[LEFT_HRZ] = calcAxes(0);
+  axes[RIGHT_VRT] = calcAxes(2);
+  axes[RIGHT_HRZ] = calcAxes(3);
+  axes[LEFT_TOP] = calcAxes(4);
+#endif
   updateCallbacks(LEFT_VRT, JS_LUP, JS_LDOWN);
   updateCallbacks(LEFT_HRZ, JS_LRIGHT, JS_LLEFT);
   updateCallbacks(RIGHT_VRT, JS_RUP, JS_RDOWN);

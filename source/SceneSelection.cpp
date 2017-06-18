@@ -5,7 +5,7 @@
 SceneSelection::SceneSelection(Renderer &r)
   : uiSelection(r)
 {}
- 
+
 void SceneSelection::resetSceneCallbacks(Renderer &r) {
   auto const changeSkinUp([this, &r](bool b, size_t = 0) {
     if (!b) {
