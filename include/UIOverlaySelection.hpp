@@ -9,6 +9,7 @@
 # include "Renderer.hpp"
 # include "UIButton.hpp"
 # include "UIOverlay.hpp"
+# include "Skins.hpp"
 
 class UIOverlaySelection : public UIOverlay {
 private:
@@ -19,7 +20,13 @@ private:
 
   static constexpr Ogre::Real const SELECTIONBUTTON_WIDTH = 261.f / Game::WIDTH;
   static constexpr Ogre::Real const SELECTIONBUTTON_HEIGHT = 77.f / Game::HEIGHT;
-
+  static constexpr char const *HEROES_SKINS[4][2] = 
+  {
+    { Skins::Archer::BASE, Skins::Archer::HIGH_ELF },
+    { Skins::Mage::BASE, Skins::Mage::CLAUS },
+    { Skins::Warrior::BASE, Skins::Warrior::RED },
+    { Skins::Tank::BASE, Skins::Tank::MAGNI },
+  };
   void setHeroDefault(AnimatedEntity &ae, size_t);
 
 public:

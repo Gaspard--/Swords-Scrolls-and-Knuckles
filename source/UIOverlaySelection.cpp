@@ -59,7 +59,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   // Adding heroes
 
   for (size_t i = 0; i < 4; i++) {
-    heroes.emplace_back(renderer, Skins::Archer::BASE);
+    heroes.emplace_back(renderer, HEROES_SKINS[i][0]);
     setHeroDefault(heroes.back(), i);
   }
   setSelectedButton(0);
@@ -72,8 +72,8 @@ void UIOverlaySelection::updateUI(Ogre::Real x) {
 }
 
 void UIOverlaySelection::setHeroDefault(AnimatedEntity &ae, size_t i) {
-  static constexpr std::array<Ogre::Real, 4> pos{ 5.5f, 2.f, -1.8f, -5.5f };
-  static constexpr std::array<Vect<2, Ogre::Real>, 4> dir{ Vect<2, Ogre::Real>({-1.f, 0.3f}), {-1.f, 0.1f}, {-1.f, -0.1f}, {-1.f, -0.3f} };
+  static constexpr std::array<Ogre::Real, 4> pos{ 5.5f, 1.8f, -1.8f, -5.5f };
+  static constexpr std::array<Vect<2, Ogre::Real>, 4> dir{ Vect<2, Ogre::Real>({-1.f, 0.3f}), {-0.9f, 0.4f}, {-0.9f, -0.4f}, {-1.f, -0.3f} };
 
   ae.getEntity().getNode()->setPosition(0.f, -2.f, pos[i]);
   ae.getEntity().getNode()->setDirection(dir[i][0], 0.f, dir[i][1]);

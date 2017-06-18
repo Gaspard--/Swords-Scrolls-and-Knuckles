@@ -9,6 +9,21 @@ namespace Skins
     constexpr Skin BASE = "sylvanas.mesh";
     constexpr Skin HIGH_ELF = "sylvanas_highelf.mesh";
   };
+  namespace Tank
+  {
+    constexpr Skin BASE = "muradin.mesh";
+    constexpr Skin MAGNI = "muradin.mesh";
+  };
+  namespace Mage
+  {
+    constexpr Skin BASE = "jaina.mesh";
+    constexpr Skin CLAUS = "jaina.mesh";
+  };
+  namespace Warrior
+  {
+    constexpr Skin BASE = "thrall.mesh";
+    constexpr Skin RED = "thrall_red.mesh";
+  };
 };
 
 #endif // !SKINS_HPP
