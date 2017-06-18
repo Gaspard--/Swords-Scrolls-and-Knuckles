@@ -1,5 +1,7 @@
 #include "Player.hpp"
 #include "Logic.hpp"
+#include "SaveGame.hpp"
+#include "LoadGame.hpp"
 
 void Player::checkSpells(Logic &logic)
 {
@@ -52,4 +54,18 @@ Player Player::makeWarrior(Vect<2u, double> pos)
 		 Spell{SpellType::JUMP, 240, 30},
 		 Spell{SpellType::ARROW_ULTI, 2400, 480}),
 		100u, 0.5, pos);
+}
+
+void  Player::serialize(SaveState &state) const
+{
+  state.serialize(id);
+  for (auto const &spell : spells)
+    state.serialize(spell.timeLeft);
+}
+
+void  Player::unserialize(LoadGame &game)
+{
+  game.unserialize(id);
+  for (auto &spell : spells)
+    game.unserialize(spell.timeLeft);
 }

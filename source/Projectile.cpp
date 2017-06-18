@@ -1,5 +1,9 @@
 #include "Projectile.hpp"
-#include "Enemy.hpp"
+#include "SaveGame.hpp"
+#include "LoadGame.hpp"
+
+void    Projectile::serialize(SaveState &state) const
+{}
 
 ProjectileList::ProjectileList()
 {
@@ -23,7 +27,7 @@ ProjectileList::ProjectileList()
       BounceResponse{0.8}(projectile, v);
       projectile.type = ProjectileType::ARROW;
     }};
-  map[(unsigned int)ProjectileType::ICE_PILLAR] = 
+  map[(unsigned int)ProjectileType::ICE_PILLAR] =
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.03, 5);
@@ -42,4 +46,10 @@ ProjectileList::ProjectileList()
 ProjectileReaction const &ProjectileList::operator[](unsigned int n) const
 {
   return map.at(n);
+}
+
+void    Projectile::unserialize(LoadGame &game)
+{
+  game.unserialize(type);
+  game.unserialize(timeLeft);
 }
