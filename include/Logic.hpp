@@ -58,7 +58,7 @@ public:
    */
   Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &, std::vector<Gameplays> const &);
 
-  void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type);
+  void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size = 0.2, unsigned int timeLeft = ~0u);
   void run();
   void exit();
   void updateDisplay(LevelScene &);

@@ -30,8 +30,19 @@ bool Logic::tick()
 				     });
 				}
 			    });
-  updateElements(gameState.players);
   updateElements(gameState.enemies);
+  for (auto &enemy : gameState.enemies)
+    {
+      if (enemy.shouldBeRemoved())
+	{
+	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 3) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+
+	  enemyProjectiles.add([this, drop](){
+	      return entityFactory.spawnProjectile(drop);
+	    }, enemy.pos, Vect<2u, double>{0.0, 0.0}, drop, 0.5);
+	}
+    }
+  updateElements(gameState.players);
   for (auto &player : gameState.players)
     {
       auto &room(gameState.terrain.getRoom(Vect<2u, unsigned int>(player.pos)));
@@ -78,6 +89,15 @@ bool Logic::tick()
 			 [this](auto &projectile, auto &enemy){
 			   projectileList[projectile.type].hitEnemy(enemy, projectile);
 			 });
+  Physics::collisionTest(gameState.enemyProjectiles.begin(), gameState.enemyProjectiles.end(),
+			 gameState.players.begin(), gameState.players.end(),
+			 [this](auto &enemyProjectile, auto &player){
+			   if (enemyProjectile.type == ProjectileType::COOLDOWN_RESET)
+			     player.resetCooldowns();
+			   else if (enemyProjectile.type == ProjectileType::GOLD)
+			     player.addGold(99);
+			   projectileList[enemyProjectile.type].hitEnemy(player, enemyProjectile);
+			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
       auto const overlap((a.pos - b.pos).normalized() * (a.radius + b.radius));
@@ -100,7 +120,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
-  , enemyProjectiles(gameState.projectiles, levelScene.projectiles)
+  , enemyProjectiles(gameState.enemyProjectiles, levelScene.enemyProjectiles)
   , entityFactory(renderer)
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
@@ -175,11 +195,11 @@ void Logic::spawnMobGroup(Terrain::Room &room)
       }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
-void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
+void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size, unsigned int timeLeft)
 {
   projectiles.add([this](){
       return entityFactory.spawnOgreHead();
-    }, pos, speed, type);
+    }, pos, speed, type, size, timeLeft);
 }
 
 void Logic::run()
@@ -221,6 +241,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
       projectiles.updateTarget();
       projectiles.forEach([](Entity &entity, Projectile &projectile)
 			  {
+			    if (projectile.doSpin())
+			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01), std::sin(projectile.timeLeft * 0.01)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });

@@ -18,6 +18,7 @@ public:
   {}
 
   Entity spawnOgreHead(void);
+  Entity spawnProjectile(unsigned int porjectileType);
   AnimatedEntity spawnHero(Skins::Skin);
 
   template<typename... Args>

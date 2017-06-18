@@ -75,6 +75,13 @@ public:
       }
   }
 
+  void heal(unsigned int amount)
+  {
+    health += amount;
+    if (health > maxHealth)
+      health = maxHealth;
+  }
+
   constexpr bool isWalking() const
   {
     return !stun && !input.equals({0.0, 0.0});

@@ -2,6 +2,7 @@
 #include "EntityFactory.hpp"
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
+#include "Projectile.hpp"
 
 Entity EntityFactory::spawnOgreHead(void)
 {
@@ -10,6 +11,21 @@ Entity EntityFactory::spawnOgreHead(void)
   ogre.getOgre()->setCastShadows(false);
   ogre.getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
   return ogre;
+}
+
+Entity EntityFactory::spawnProjectile(unsigned int projectileType)
+{
+  Entity entity(renderer, "ogrehead.mesh");
+
+  if (projectileType == ProjectileType::COOLDOWN_RESET)
+    entity = Entity(renderer, "feather.mesh");
+  else if (projectileType == ProjectileType::HEAL)
+    entity = Entity(renderer, "heart.mesh");
+  else
+    entity = Entity(renderer, "rupee.mesh");
+  entity.getOgre()->setCastShadows(false);
+  entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+  return entity;
 }
 
 AnimatedEntity EntityFactory::spawnHero(Skins::Skin skin)

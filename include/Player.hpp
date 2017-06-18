@@ -19,6 +19,7 @@ class Player : public Controllable
 private:
   unsigned int    id;
   bool mounted;
+  unsigned int gold;
   Vect<3u, Spell> spells;
 
 public:
@@ -27,6 +28,7 @@ public:
     : Controllable(std::forward<PARAMS>(params)...)
     , id(static_cast<int>(id))
     , mounted(false)
+    , gold(0u)
     , spells(std::move(spells))
   {}
 
@@ -35,6 +37,8 @@ public:
   Player(Player &&) = default;
 
   void checkSpells(Logic &);
+  void resetCooldowns();
+  void addGold(unsigned int);
   void setAttacking(unsigned int index, bool attacking);
   void setMounted(bool);
   bool isMounted(void) const;
