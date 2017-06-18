@@ -14,9 +14,9 @@
 class UIOverlaySelection : public UIOverlay {
 private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
+  size_t selected;
   std::vector<AnimatedEntity> heroes;
   Ogre::Node *cameraNode;
-  Entity wall;
 
   static constexpr Ogre::Real const SELECTIONBUTTON_WIDTH = 261.f / Game::WIDTH;
   static constexpr Ogre::Real const SELECTIONBUTTON_HEIGHT = 77.f / Game::HEIGHT;
@@ -39,7 +39,8 @@ public:
   virtual ~UIOverlaySelection(void) = default;
 
   void updateUI(Ogre::Real x);
-  void changeSkin(size_t i, bool);
+  void changeSkin(Renderer &, bool);
+  void changeSelection(bool);
 };
 
 #endif // !UI_OVERLAY_SELECTION_HPP

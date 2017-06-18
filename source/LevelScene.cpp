@@ -30,13 +30,15 @@ LevelScene::LevelScene(Renderer &renderer)
   // music.setVolume(0.2f);
   // music.play();
 
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
+
   std::clog << "Loading level scene" << std::endl;
 
   {
     EntityFactory ef(renderer);
 
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
+    players.push_back(std::move(ef.spawnArcher(Skins::Mage::BASE)));
   }
 
   terrainNode->scale(1.0, 1.0, 1.0);

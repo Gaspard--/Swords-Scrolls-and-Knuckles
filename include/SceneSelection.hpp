@@ -15,7 +15,7 @@ public:
   virtual ~SceneSelection(void) = default;
 
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
-  virtual void resetSceneCallbacks(void);
+  virtual void resetSceneCallbacks(Renderer &) override;
 };
 
 #endif // !SCENE_SELECTION_HPP

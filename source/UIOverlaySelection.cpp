@@ -10,6 +10,7 @@
 UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   : UIOverlay("mainmenu")
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SelectBG"))
+  , selected(0)
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -81,4 +82,17 @@ void UIOverlaySelection::setHeroDefault(AnimatedEntity &ae, size_t i) {
   ae.getEntity().getOgre()->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
   ae.setMainAnimation(Animations::Controllable::STAND, 0.1f);
   ae.updateAnimations(0.1f);
+}
+
+void UIOverlaySelection::changeSkin(Renderer &r, bool b) {
+  heroes[selected] = AnimatedEntity(r, HEROES_SKINS[selected][b]);
+  setHeroDefault(heroes[selected], selected);
+}
+
+void UIOverlaySelection::changeSelection(bool b) {
+  int i = static_cast<int>(selected) - 1 + b * 2;
+  if (i < 0)
+    i = heroes.size() + i;
+  i %= heroes.size();
+  selected = static_cast<size_t>(i);
 }
