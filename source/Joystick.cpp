@@ -91,10 +91,12 @@ bool Joystick::axisMoved(const OIS::JoyStickEvent &arg, int)
   axes[LEFT_HRZ] = calcAxes(1);
   axes[RIGHT_VRT] = calcAxes(2);
   axes[RIGHT_HRZ] = calcAxes(3);
+  axes[LEFT_TOP] = calcAxes(4);
   updateCallbacks(LEFT_VRT, JS_LUP, JS_LDOWN);
   updateCallbacks(LEFT_HRZ, JS_LRIGHT, JS_LLEFT);
   updateCallbacks(RIGHT_VRT, JS_RUP, JS_RDOWN);
   updateCallbacks(RIGHT_HRZ, JS_RLEFT, JS_RRIGHT);
+  updateCallbacks(LEFT_TOP, JS_RT, JS_LT);
 
   /*
   TODO: verify these axes too
