@@ -10,10 +10,11 @@
 
 struct GameState
 {
-  Terrain terrain;
+  Terrain terrain{};
   std::vector<Player> players;
   std::vector<Enemy> enemies;
   std::vector<Projectile> projectiles;
+  std::vector<Projectile> enemyProjectiles;
 };
 
 #endif

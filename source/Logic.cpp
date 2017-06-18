@@ -6,7 +6,6 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "AudioListener.hpp"
-#include "ProjectileList.hpp"
 
 // TODO: extract as mush as possible to gameState.
 // Logic could be passed as ref for spawning and & so on.
@@ -21,30 +20,40 @@ bool Logic::tick()
 			      for (auto &element : elements)
 				{
 				  element.update(*this);
-				  gameState.terrain.correctFixture(element,
-								   [](auto &element, Vect<2u, double> dir)
-								   {
-								     if (element.isStun())
-								       BounceResponse{0.5}(element, dir);
-								   });
+				  gameState.terrain.correctFixture
+				    (element,
+				     [](auto &element, Vect<2u, double> dir)
+				     {
+				       if (element.isStun())
+					 BounceResponse{0.5}(element, dir);
+				     });
 				}
 			    });
   updateElements(gameState.players);
   updateElements(gameState.enemies);
   for (auto &player : gameState.players)
     player.checkSpells(*this);
-  for (auto &projectile : gameState.projectiles)
-    {
-      projectile.update(*this);
-      gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
-				       {
-					 projectileList[projectile.type].wallResponse(projectile, dir);
-				       });
-    }
+  auto const updateProjectile([this](auto &projectiles)
+			      {
+				for (auto &projectile : projectiles)
+				  {
+				    projectile.update(*this);
+				    gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
+								     {
+								       projectileList[projectile.type].wallResponse(projectile, dir);
+								     });
+				  }
+			      });
+  updateProjectile(gameState.projectiles);
+  updateProjectile(gameState.enemyProjectiles);
   projectiles.removeIf([](auto const &projectile)
 		       {
-			 return projectile.toRemove;
+			 return projectile.shouldBeRemoved();
 		       });
+  enemyProjectiles.removeIf([](auto const &projectile)
+			    {
+			      return projectile.shouldBeRemoved();
+			    });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
@@ -65,10 +74,10 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
-  {
-    if (enemy.ai)
-      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
-  }
+    {
+      if (enemy.ai)
+	pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+    }
   return stop;
 }
 
@@ -77,9 +86,11 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
+  , enemyProjectiles(gameState.projectiles, levelScene.projectiles)
   , entityFactory(renderer)
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
+  , spellList{}
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
       {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
@@ -92,6 +103,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
       {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 {
+  gameState.terrain.generateLevel(42u); // TODO: something better
   for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
   action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
@@ -101,15 +113,15 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
   }
   levelScene.setTerrain(gameState.terrain);
-  for (unsigned int i(0u); i < 10; ++i)
-    {
-      enemies.add([this](){
-        return entityFactory.spawnEnemy();
-      }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
-      enemies.add([this](){
-        return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
-    }
+  // for (unsigned int i(0u); i < 10; ++i)
+  //   {
+  //     enemies.add([this](){
+  //       return entityFactory.spawnEnemy();
+  //     }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
+  //     enemies.add([this](){
+  //       return entityFactory.spawnEnemy();
+  //     }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
+  //   }
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
@@ -154,11 +166,15 @@ void Logic::updateDisplay(LevelScene &levelScene)
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   enemies.updateTarget();
-  projectiles.updateTarget();
-  projectiles.forEach([](Entity &entity, Projectile &projectile)
-		      {
-			entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
-		      });
+  auto const updateProjectileEntities([this](auto &projectiles){
+      projectiles.updateTarget();
+      projectiles.forEach([](Entity &entity, Projectile &projectile)
+			  {
+			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
+			  });
+    });
+  updateProjectileEntities(projectiles);
+  updateProjectileEntities(enemyProjectiles);
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
       animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]),

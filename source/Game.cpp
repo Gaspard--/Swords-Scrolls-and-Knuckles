@@ -2,7 +2,7 @@
 #include <memory>
 #include <stdexcept>
 #include "Game.hpp"
-#include "SceneMainMenu.hpp"
+#include "SceneStart.hpp"
 #include "Joystick.hpp"
 #include "PyPlugin.hpp"
 
@@ -35,9 +35,9 @@ Game::Game()
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
 
-  // Go to main menu
+  // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
-    return (static_cast<Scene *>(new SceneMainMenu(*renderer)));
+    return (static_cast<Scene *>(new SceneStart(*renderer)));
   }));
 
   // Adding the joysticks
@@ -130,7 +130,7 @@ bool Game::addJoystick(size_t i)
     newJoystick->init(OIS::OISJoyStick, inputManager);
     Joystick::getJoysticks()[i] = std::move(newJoystick);
     if (renderer->getScene())
-      renderer->getScene()->resetSceneCallbacks();
+      renderer->getScene()->resetSceneCallbacks(*renderer);
     return (true);
   }
   catch (std::exception const &) {}

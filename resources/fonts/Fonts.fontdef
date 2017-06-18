@@ -2,6 +2,14 @@ HUD/Font
 {
 	type truetype
 	source ff_font.ttf
-	size 50
+	size 72
 	resolution 96
+}
+
+HUD/FontPA
+{
+    type truetype
+    source penelope.ttf
+    size 72
+    resolution 96
 }

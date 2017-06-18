@@ -43,7 +43,7 @@ public:
     scene.reset(nullptr);
     scenemgr->clearScene();
     scene.reset(se.switchScene());
-    scene->resetSceneCallbacks();
+    scene->resetSceneCallbacks(*this);
   }
 
   /// Switch the current scene to the given one.
