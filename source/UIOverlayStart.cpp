@@ -8,6 +8,7 @@ UIOverlayStart::UIOverlayStart(Renderer &)
   , logo(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "StartLogo"))
   , title(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "StartTitle"))
   , pressTxt(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "StartPress"))
+  , startTime(std::chrono::system_clock::now())
 {
   std::clog << "Init Overlay Start." << std::endl;
 
@@ -28,13 +29,16 @@ UIOverlayStart::UIOverlayStart(Renderer &)
 void UIOverlayStart::switchBG(void) {
   bg->setMaterialName("HUD/Black");
   logo->show();
-
-  initText(title, "PRESENTS", (Ogre::Real)Game::WIDTH / 2.0, 75.0, Ogre::ColourValue::White);
-  initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
+	
+  initText(title, "PRESENTS", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 75.0, Ogre::ColourValue::White);
+  initText(pressTxt, "Press space to start", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 925.0, Ogre::ColourValue::Red);
 }
 
 void UIOverlayStart::update(void) {
-  if (std::clock() / CLOCKS_PER_SEC == 3) {
+  std::chrono::time_point<std::chrono::system_clock> time(std::chrono::system_clock::now());
+  int seconds(std::chrono::duration_cast<std::chrono::seconds>(time - startTime).count());
+	
+  if (seconds == 3) {
     switchBG();
   }
   else {
@@ -55,19 +59,18 @@ void UIOverlayStart::initText(UIOverlayResource<Ogre::TextAreaOverlayElement> &t
 
 void UIOverlayStart::updateText(void) {
 
-  if (bg->getMaterialName() == "HUD/HurricaneLogo") {
-    return;
-  }
-
+	if (bg->getMaterialName() == "HUD/HurricaneLogo") {
+		return ;
+	}
+	
   if (std::time(nullptr) % 2 == 0) {
-    if (!pressTxt->isVisible()) {
-      pressTxt->show();
-      initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
-    }
-  }
-  else {
-    if (pressTxt->isVisible()) {
-      pressTxt->hide();
-    }
-  }
+		if (!pressTxt->isVisible()) {
+		  pressTxt->show();
+			initText(pressTxt, "Press space to start", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 925.0, Ogre::ColourValue::Red);
+		}
+  } else {
+		if (pressTxt->isVisible()) {
+		  pressTxt->hide();
+		}
+	}
 }
