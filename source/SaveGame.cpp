@@ -16,7 +16,6 @@ SaveState::SaveState (GameState &state, long unsigned int i)
   seed = i;
   if (!file)
     throw std::runtime_error("Failed to open file stream");
-  serialize(seed);
   serialize((long unsigned)state.players.size());
   serialize(state.players);
   serialize((long unsigned)state.enemies.size());
@@ -63,13 +62,14 @@ void    SaveState::serialize(double f)
 {
   unsigned int bits = 53;
   unsigned int expbits = 11;
+  unsigned int significandbits = bits - expbits - 1; // -1 for sign bit
+
   double fnorm;
   int shift;
   unsigned long sign, exp, significand;
-  unsigned int significandbits = bits - expbits - 1; // -1 for sign bit
 
   if (f == 0.0) // get this special case out of the way
-    return ;
+    return serialize(0ul);
   if (f < 0)// check sign and begin normalization
   {
     sign = 1;
@@ -81,17 +81,7 @@ void    SaveState::serialize(double f)
     fnorm = f;
   }
   shift = 0; // get the normalized form of f and track the exponent
-  while(fnorm >= 2.0)
-  {
-    fnorm /= 2.0;
-    shift++;
-  }
-  while(fnorm < 1.0)
-  {
-    fnorm *= 2.0;
-    shift--;
-  }
-  fnorm = fnorm - 1.0;
+  fnorm = frexp(fnorm, &shift);
   significand = fnorm * ((1LL<<significandbits) + 0.5f); // calculate the binary form (non-float) of the significand data
   exp = shift + ((1<<(expbits-1)) - 1); // get the biased exponent shift + bias
   serialize((sign<<(bits-1)) | (exp<<(bits-expbits-1)) | significand);

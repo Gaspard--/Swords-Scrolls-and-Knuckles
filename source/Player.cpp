@@ -60,7 +60,7 @@ void  Player::serialize(SaveState &state) const
 {
   state.serialize(id);
   for (auto const &spell : spells)
-    state.unserialize(spell.timeLeft);
+    state.serialize(spell.timeLeft);
 }
 
 void  Player::unserialize(LoadGame &game)

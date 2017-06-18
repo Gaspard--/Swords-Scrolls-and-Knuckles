@@ -5,7 +5,6 @@ LoadGame::LoadGame(GameState &game, std::string name)
   unsigned int size[3];
 
   save.open(name);
-  // unserialize(game.seed);
   unserialize(size[0]);
   unserialize(game.players, size[0]);
   unserialize(size[1]);
@@ -40,8 +39,22 @@ void  LoadGame::unserialize(bool &data)
 
 void  LoadGame::unserialize(double &data)
 {
-  (void)data;
-  return;
+  unsigned int bits = 53;
+  unsigned int expbits = 11;
+  unsigned int significandbits = bits - expbits - 1;
+  long unsigned int n(0);
+
+  unserialize(n);
+  unsigned long sign(n >> (bits - 1));
+  n ^= sign << bits - 1;
+  unsigned long exp(n >> (bits - expbits - 1));
+  n ^= exp << bits - expbits - 1;
+  double fnorm(n / ((1LL << significandbits) + 0.5f));
+  unsigned long shift(exp - ((1 << (expbits-1)) - 1));
+  fnorm = ldexp(fnorm, shift);
+  if (sign)
+    fnorm = -fnorm;
+  data = fnorm;
 }
 
 void  LoadGame::unserialize(long unsigned int &data)
