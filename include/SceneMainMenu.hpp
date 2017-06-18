@@ -21,7 +21,7 @@ public:
   virtual ~SceneMainMenu(void) = default;
 
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
-  virtual void resetSceneCallbacks(void);
+  virtual void resetSceneCallbacks(Renderer &);
 };
 
 #endif // !SCENE_MAIN_MENU_HPP

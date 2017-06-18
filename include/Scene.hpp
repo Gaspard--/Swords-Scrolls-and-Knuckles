@@ -5,6 +5,7 @@
 # include "Joystick.hpp"
 
 class Game;
+class Renderer;
 
 class Scene
 {
@@ -22,7 +23,7 @@ public:
   virtual ~Scene(void) = default;
 
   virtual bool update(Game &, Ogre::FrameEvent const &);
-  virtual void resetSceneCallbacks(void);
+  virtual void resetSceneCallbacks(Renderer &);
 };
 
 #endif // !SCENE_HPP
