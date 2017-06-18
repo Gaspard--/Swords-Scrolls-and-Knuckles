@@ -16,7 +16,6 @@ UIOverlayStart::UIOverlayStart(Renderer &)
   logo->setMaterialName("HUD/GameLogo");
   logo->hide();
   
-  
   bg->addChild(logo.get());
   bg->addChild(title.get());
   bg->addChild(pressTxt.get());

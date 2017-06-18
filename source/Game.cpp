@@ -35,7 +35,7 @@ Game::Game()
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
 
-  // Go to main menu
+  // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneStart(*renderer)));
   }));

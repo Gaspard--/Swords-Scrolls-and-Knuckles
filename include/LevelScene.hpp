@@ -48,13 +48,13 @@ public:
   static void createGroundMesh();
   void setTerrain(Terrain const &);
   virtual bool update(Game &, Ogre::FrameEvent const &) override;
-  virtual void resetSceneCallbacks(void);
+  virtual void resetSceneCallbacks(Renderer &);
 
   bool isInPause(void) const;
   void updateUI(std::vector<Player> const &);
 
-  void pauseScene(void);
-  void unpauseScene(void);
+  void pauseScene(Renderer &);
+  void unpauseScene(Renderer &);
 };
 
 #endif // !LEVEL_SCENE_HPP
