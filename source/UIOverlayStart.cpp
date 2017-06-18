@@ -68,13 +68,11 @@ void UIOverlayStart::updateText(void) {
   if (timer % 60 > 30) {
 		if (!pressTxt->isVisible()) {
 		  pressTxt->show();
-			std::clog << "OverlayStart::Showing text." << std::endl;
       initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
 		}
   } else {
 		if (pressTxt->isVisible()) {
 		  pressTxt->hide();
-			std::clog << "OverlayStart::Hiding text." << std::endl;
 		}
 	}
 }
