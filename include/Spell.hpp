@@ -16,7 +16,7 @@ namespace SpellType
   constexpr unsigned int FIRE_BALL{3u};
   constexpr unsigned int NOT_IMPL{4u};
   constexpr unsigned int FROST_WALL{5u};
-  
+
 };
 
 struct Spell
@@ -27,7 +27,7 @@ struct Spell
   unsigned int timeLeft;
   bool active;
 
-  Spell() = delete;
+  Spell() = default;
 
   constexpr Spell(unsigned int type, unsigned int cooldown,
 	unsigned int duration = 1, unsigned int timeLeft = 0)

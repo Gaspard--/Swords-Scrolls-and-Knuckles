@@ -1,4 +1,4 @@
-#include "LevelScene.hpp"
+#include "SceneSelection.hpp"
 #include "Game.hpp"
 #include "UIOverlayMenu.hpp"
 
@@ -19,13 +19,11 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
 
   // Play button
   std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [&renderer]() {
-    std::clog << "Going to level scene" << std::endl;
     renderer.switchScene([&renderer]() {
-      LevelScene::createWallMesh();
-      return static_cast<Scene *>(new LevelScene(renderer));
+      return static_cast<Scene *>(new SceneSelection(renderer));
     });
   }));
-  play->init("HUD/ButtonPlay", posX, offset + UIButton::HEIGHT * mult * i++);
+  play->init("HUD/ButtonPlay", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(play->getPanel());
   buttons.emplace_back(std::move(play));
 
@@ -33,7 +31,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
     throw Game::GameQuitException();
   }));
-  load->init("HUD/ButtonLoad", posX, offset + UIButton::HEIGHT * mult * i++);
+  load->init("HUD/ButtonLoad", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(load->getPanel());
   buttons.emplace_back(std::move(load));
 
@@ -41,7 +39,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
     throw Game::GameQuitException();
   }));
-  options->init("HUD/ButtonOptions", posX, offset + UIButton::HEIGHT * mult * i++);
+  options->init("HUD/ButtonOptions", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
   buttons.emplace_back(std::move(options));
 
@@ -49,7 +47,7 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", []() {
     throw Game::GameQuitException();
   }));
-  exit->init("HUD/ButtonExit", posX, offset + UIButton::HEIGHT * mult * i++);
+  exit->init("HUD/ButtonExit", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(exit->getPanel());
   buttons.emplace_back(std::move(exit));
 

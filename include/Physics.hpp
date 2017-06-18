@@ -23,7 +23,8 @@ namespace Physics
   {
     for (;beginA != endA; ++beginA)
       for (auto itB(beginB); itB != endB; ++itB)
-	if (circleTest(beginA->getPos(), beginA->getRadius(),
+	if (beginA->doCollision() && itB->doCollision()
+	    && circleTest(beginA->getPos(), beginA->getRadius(),
 		       itB->getPos(), itB->getRadius()))
 	  response(*beginA, *itB);
   }
@@ -34,7 +35,9 @@ namespace Physics
   {
     for (;begin != end; ++begin)
       for (auto begin2(begin); ++begin2 != end;)
-	if (circleTest(begin->getPos(), begin->getRadius(),
+	if (begin->doCollision() &&
+	    begin->doCollision() &&
+	    circleTest(begin->getPos(), begin->getRadius(),
 		       begin2->getPos(), begin2->getRadius()))
 	  response(*begin, *begin2);
   }

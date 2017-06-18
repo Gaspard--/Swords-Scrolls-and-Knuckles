@@ -3,12 +3,16 @@
 
 # include "Vect.hpp"
 
+class LoadGame;
+class SaveState;
+
 struct Fixture
 {
   double radius;
   Vect<2u, double> pos;
   Vect<2u, double> speed;
-
+  bool collision;
+  
   constexpr double getRadius() const
   {
     return radius;
@@ -23,6 +27,9 @@ struct Fixture
   {
     return (speed);
   }
+
+  void  serialize(SaveState &state) const;
+  void  unserialize(LoadGame &);
 };
 
 #endif

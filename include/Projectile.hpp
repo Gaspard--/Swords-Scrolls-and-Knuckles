@@ -6,6 +6,8 @@
 
 # include "Fixture.hpp"
 
+class SaveState;
+class Enemy;
 class Logic;
 class Projectile;
 
@@ -27,10 +29,15 @@ public:
 
   constexpr Projectile(Vect<2u, double> pos, Vect<2u, double> speed,
 		       unsigned int type, double size = 0.2, unsigned int removeIn = ~0u)
-  : Fixture{size, pos, speed}
+  : Fixture{size, pos, speed, true}
     , type(type)
     , timeLeft(removeIn)
   {
+  }
+
+  constexpr bool doCollision() const
+  {
+    return true;
   }
 
   constexpr void remove()
@@ -42,12 +49,15 @@ public:
   {
     return !timeLeft;
   }
-  
+
   constexpr void update(Logic &)
   {
     timeLeft -= !!timeLeft;
     pos += speed;
   }
+
+  void   serialize(SaveState &state) const;
+  void   unserialize(LoadGame &);
 };
 
 class Enemy;

@@ -25,7 +25,7 @@ namespace Animations
       constexpr char const JUMP[] = "Spell_A"; // JUMP
     };
 
-    namespace Ennemy
+    namespace Enemy
     {
       constexpr char const DEATH[] = "Death";
 

@@ -17,13 +17,14 @@ enum class PlayerId
 class Player : public Controllable
 {
 private:
-  
+  unsigned int    id;
   Vect<3u, Spell> spells;
 
 public:
   template<class... PARAMS>
-  Player(Vect<3u, Spell> &&spells, PARAMS &&... params)
+  Player(PlayerId id, Vect<3u, Spell> &&spells, PARAMS &&... params)
     : Controllable(std::forward<PARAMS>(params)...)
+    , id(static_cast<int>(id))
     , spells(std::move(spells))
   {}
 
@@ -36,11 +37,16 @@ public:
 
   // In seconds / 10
   int getSpellTimeleft(size_t i) const;
+  int getId(void) const;
+
+  void serialize(SaveState &state) const;
+  void unserialize(LoadGame &game);
 
   static Player makeArcher(Vect<2u, double> pos);
   static Player makeMage(Vect<2u, double> pos);
   static Player makeTank(Vect<2u, double> pos);
   static Player makeWarrior(Vect<2u, double> pos);
+  static Player makePlayer(Vect<2u, double> pos, PlayerId);
 };
 
 #endif // !PLAYER_HPP

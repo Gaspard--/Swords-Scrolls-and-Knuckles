@@ -43,17 +43,16 @@ bool Logic::tick()
 	  std::cout << "spawning mobs" << std::endl;
 	}
     }
-  auto const updateProjectile([this](auto &projectiles)
-			      {
-				for (auto &projectile : projectiles)
-				  {
-				    projectile.update(*this);
-				    gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
-								     {
-								       projectileList[projectile.type].wallResponse(projectile, dir);
-								     });
-				  }
-			      });
+  auto const updateProjectile([this](auto &projectiles) {
+      for (auto &projectile : projectiles)
+	{
+	  projectile.update(*this);
+	  gameState.terrain.correctFixture(projectile,
+					   [this](auto &projectile, Vect<2u, double> dir) {
+					     projectileList[projectile.type].wallResponse(projectile, dir);
+					   });
+	}
+    });
   updateProjectile(gameState.projectiles);
   updateProjectile(gameState.enemyProjectiles);
   projectiles.removeIf([](auto const &projectile)
@@ -64,6 +63,10 @@ bool Logic::tick()
 			    {
 			      return projectile.shouldBeRemoved();
 			    });
+  enemies.removeIf([](auto const &projectile)
+		   {
+		     return projectile.shouldBeRemoved();
+		   });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
@@ -91,7 +94,7 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
@@ -114,13 +117,20 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
-  for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 5.0, (double)i + 5.0}));
-  action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
-  action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
-  if (Joystick::getJoysticks()[0])
+  for (size_t i = 0; i < vec.size(); i++) {
+    gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
+  }
+  if (gameState.players.size() > 0)
+    action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
+  if (gameState.players.size() > 1)
+    action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
+  if (gameState.players.size() > 2 && Joystick::getJoysticks()[0])
   {
       action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
+  }
+  if (gameState.players.size() > 3 && Joystick::getJoysticks()[1])
+  {
+      action.joystickControlled[Joystick::getJoysticks()[1].get()] = &gameState.players[3];
   }
   levelScene.setTerrain(gameState.terrain);
   // for (unsigned int i(0u); i < 10; ++i)
@@ -140,7 +150,7 @@ void Logic::spawnMobGroup(Terrain::Room &room)
   for (unsigned int i(0u); i < 5; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0, (double)i * 0.1});
+      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
@@ -204,7 +214,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
 		    updateControllableEntity(animatedEntity, enemy);
-		    if (enemy.isWalking())
+		    if (enemy.isDead())
+		      animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04f, false);
+		    else if (enemy.isWalking())
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 		    else if (enemy.isStun())
 		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);

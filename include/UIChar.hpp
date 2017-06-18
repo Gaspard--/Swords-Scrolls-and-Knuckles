@@ -66,7 +66,8 @@ public:
   UIChar &operator=(UIChar &&) = delete;
   virtual ~UIChar(void) = default;
 
-  void updateCharUI(Player const &p);
+  void setCharLayout(Player const &p);
+  void updateValues(Player const &p);
   void defaultCharUI(void);
 };
 

@@ -55,7 +55,7 @@ public:
   /**
    * Parameter isn't stored, only used for setup.
    */
-  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
+  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<enum class PlayerId> const &);
 
   void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type);
   void run();
@@ -68,13 +68,18 @@ public:
 
 constexpr void Controllable::update(Logic &)
 {
+  if (isDead())
+    {
+      ++dePopCounter;
+      return ;
+    }
+
   if (!stun)
     {
       speed = speed * 0.9 + input * 0.1;
     }
   else
     {
-      // dir = dir * 0.8 - speed * 0.2;
       --stun;
     }
   if (stun || !locked)

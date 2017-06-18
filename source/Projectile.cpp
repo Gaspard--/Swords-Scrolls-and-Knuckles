@@ -1,5 +1,9 @@
 #include "Projectile.hpp"
-#include "Enemy.hpp"
+#include "SaveGame.hpp"
+#include "LoadGame.hpp"
+
+void    Projectile::serialize(SaveState &state) const
+{}
 
 ProjectileList::ProjectileList()
 {
@@ -7,6 +11,7 @@ ProjectileList::ProjectileList()
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback(projectile.speed.normalized() * 0.2, 10);
+      enemy.takeDamage(35);
       projectile.remove();
     },
     [](Projectile &p, Vect<2u, double>){
@@ -16,6 +21,7 @@ ProjectileList::ProjectileList()
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback(projectile.speed.normalized() * 0.2, 10);
+      enemy.takeDamage(35);
       BounceResponse{0.8}(projectile, (enemy.pos - projectile.pos).normalized());
       projectile.type = ProjectileType::ARROW;
     },
@@ -23,10 +29,11 @@ ProjectileList::ProjectileList()
       BounceResponse{0.8}(projectile, v);
       projectile.type = ProjectileType::ARROW;
     }};
-  map[(unsigned int)ProjectileType::ICE_PILLAR] = 
+  map[(unsigned int)ProjectileType::ICE_PILLAR] =
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.03, 5);
+      enemy.takeDamage(15);
     },
     [](Projectile &, Vect<2u, double>){
     }};
@@ -42,4 +49,10 @@ ProjectileList::ProjectileList()
 ProjectileReaction const &ProjectileList::operator[](unsigned int n) const
 {
   return map.at(n);
+}
+
+void    Projectile::unserialize(LoadGame &game)
+{
+  game.unserialize(type);
+  game.unserialize(timeLeft);
 }

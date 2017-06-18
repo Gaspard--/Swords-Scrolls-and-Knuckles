@@ -47,7 +47,7 @@ void Terrain::generateLevel(unsigned int seed)
 
   rooms.emplace_back(Vect<2u, unsigned int>{10u, 10u});
   for (unsigned int i(1); i < 30; ++i)
-    rooms.emplace_back(Vect<2u, unsigned int>{rangeX(engine), rangeY(engine)}, i, false);
+    rooms.emplace_back(Vect<2u, unsigned int>{static_cast<unsigned int>(rangeX(engine)), static_cast<unsigned int>(rangeY(engine))}, i, false);
   rooms.emplace_back(getSize() - Vect<2u, unsigned int>{5u, 5u}, 30u, false);
   std::vector<Vect<2u, unsigned int>> startNodes{};
 
@@ -56,8 +56,8 @@ void Terrain::generateLevel(unsigned int seed)
     {
       bool genConnection(true);
 
-      Vect<2u, unsigned int> size((range10(engine) + range10(engine)) / 2u, (range10(engine) + range10(engine)) / 2u);
-      Vect<2u, unsigned int> relative(range5(engine), range5(engine));
+      Vect<2u, unsigned int> size(static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u), static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u));
+      Vect<2u, unsigned int> relative(static_cast<unsigned int>(range5(engine)), static_cast<unsigned int>(range5(engine)));
 
       for (Vect<2u, unsigned int> i(0u, 0u); i[1] != size[1]; ++i[1])
 	for (i[0] = 0u; i[0] != size[0]; ++i[0])
