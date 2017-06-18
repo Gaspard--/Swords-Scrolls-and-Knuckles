@@ -1,11 +1,25 @@
+#include <OgrePlane.h>
+#include <OgreMeshManager.h>
+#include <OgreManualObject.h>
 #include "UIOverlaySelection.hpp"
 #include "LevelScene.hpp"
 #include "SceneMainMenu.hpp"
+#include "EntityFactory.hpp"
 #include "Game.hpp"
 
 UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   : UIOverlay("mainmenu")
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SelectBG"))
+  , cameraNode([&renderer]()
+	       {
+		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
+
+		 cameraNode->attachObject(&renderer.getCamera());
+		 cameraNode->setPosition(Ogre::Vector3(10, 0, 0));
+		 cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
+		 renderer.getCamera().setNearClipDistance(5);
+		 return cameraNode;
+	       }())
 {
   std::clog << "Init Overlay Menu" << std::endl;
 
@@ -16,6 +30,8 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 
   // Background
   bg->setMaterialName("HUD/SelectionMenuBG");
+
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
 
   // Play button
   std::unique_ptr<UIButton> cancel(new UIButton(manager, "Cancel", [&renderer]() {
@@ -39,5 +55,30 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   buttons.emplace_back(std::move(play));
 
   overlay->add2D(bg.get());
+  
+  // Adding heroes
+
+  for (size_t i = 0; i < 4; i++) {
+    heroes.emplace_back(renderer, Skins::Archer::BASE);
+    setHeroDefault(heroes.back(), i);
+  }
   setSelectedButton(0);
+}
+
+void UIOverlaySelection::updateUI(Ogre::Real x) {
+  for (auto &ae : heroes) {
+    ae.updateAnimations(x);
+  }
+}
+
+void UIOverlaySelection::setHeroDefault(AnimatedEntity &ae, size_t i) {
+  static constexpr std::array<Ogre::Real, 4> pos{ 5.5f, 2.f, -1.8f, -5.5f };
+  static constexpr std::array<Vect<2, Ogre::Real>, 4> dir{ Vect<2, Ogre::Real>({-1.f, 0.3f}), {-1.f, 0.1f}, {-1.f, -0.1f}, {-1.f, -0.3f} };
+
+  ae.getEntity().getNode()->setPosition(0.f, -2.f, pos[i]);
+  ae.getEntity().getNode()->setDirection(dir[i][0], 0.f, dir[i][1]);
+  ae.getEntity().getNode()->scale(1.f / 100.f, 1.f / 100.f, 1.f / 100.f);
+  ae.getEntity().getOgre()->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+  ae.setMainAnimation(Animations::Controllable::STAND, 0.1f);
+  ae.updateAnimations(0.1f);
 }

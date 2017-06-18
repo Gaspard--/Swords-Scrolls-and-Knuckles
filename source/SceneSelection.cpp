@@ -9,8 +9,14 @@ SceneSelection::SceneSelection(Renderer &r)
 void SceneSelection::resetSceneCallbacks(void) {
   InputCallbacks::clearAllCallbacks();
   uiSelection.resetUICallbacks();
+  Keyboard::getKeyboard().registerCallback(OIS::KC_UP, [](bool b) {
+    if (!b) {
+
+    }
+  });
 }
 
-bool SceneSelection::update(Game &, Ogre::FrameEvent const &) {
+bool SceneSelection::update(Game &, Ogre::FrameEvent const &fe) {
+  uiSelection.updateUI(fe.timeSinceLastFrame);
   return (true);
 }

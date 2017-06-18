@@ -4,6 +4,7 @@ material HUD/SelectionMenuBG
 	{
 		pass
 		{
+			scene_blend alpha_blend
 			texture_unit
 			{
 				texture SelectionMenuBG.png

@@ -53,6 +53,12 @@ Ogre::SceneNode const *Entity::getNode(void) const
   return (sceneNode);
 }
 
+void Entity::reasignNode(Ogre::SceneNode *node) {
+  sceneNode->detachObject(ogreEntity);
+  node->attachObject(ogreEntity);
+  sceneNode = node;
+}
+
 void Entity::setPosition(float x, float y, float z)
 {
   sceneNode->setPosition(x, y, z);
