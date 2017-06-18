@@ -11,32 +11,36 @@ public:
   {
     bool isSolid;
   };
+
   
 private:  
   Tile tiles[100][100];
-  
-  constexpr Tile &getTile(Vect<2u, unsigned int> pos)
-  {
-    return tiles[pos[0]][pos[1]];
-  }
+  unsigned int seed;
+
 public:
 
   constexpr Terrain()
   : tiles{}
-  {
-    for (Vect<2u, unsigned int> i(0u, 0u); i[1] != getSize()[1]; ++i[1])
-      for (i[0]  = 0u; i[0] != getSize()[0]; ++i[0])
-	getTile(i) = {!(rand() & 7) || !i[0] || !i[1]};
-  }
+    , seed(0u)
+  {};
 
+  void generateLevel(unsigned int seed);
+  
   constexpr Vect<2u, unsigned int> getSize() const
   {
     return {100u, 100u};
   }
-
+  
   constexpr Tile const &getTile(Vect<2u, unsigned int> pos) const
   {
-    if (pos[0] >= 100 || pos[1] >= 100)
+    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
+      return tiles[0][0];
+    return tiles[pos[0]][pos[1]];
+  }
+
+  constexpr Tile &getTile(Vect<2u, unsigned int> pos)
+  {
+    if (pos[0] >= getSize()[0] || pos[1] >= getSize()[1])
       return tiles[0][0];
     return tiles[pos[0]][pos[1]];
   }
