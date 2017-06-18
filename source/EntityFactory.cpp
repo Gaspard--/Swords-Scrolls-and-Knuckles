@@ -38,7 +38,7 @@ AnimatedEntity EntityFactory::spawnArcher(Skins::Skin skin)
     sceneNode->attachObject(light);
     sceneNode->setPosition(0, 150, 0);
   }
- 
+
   return (archer);
 }
 
