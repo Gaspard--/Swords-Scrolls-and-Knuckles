@@ -8,6 +8,7 @@ UIOverlayStart::UIOverlayStart(Renderer &)
   , logo(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "StartLogo"))
   , title(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "StartTitle"))
   , pressTxt(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "StartPress"))
+  , startTime(std::chrono::system_clock::now())
 {
   std::clog << "Init Overlay Start." << std::endl;
 
@@ -34,7 +35,10 @@ void UIOverlayStart::switchBG(void) {
 }
 
 void UIOverlayStart::update(void) {
-  if (std::clock() / CLOCKS_PER_SEC == 3) {
+  std::chrono::time_point<std::chrono::system_clock> time(std::chrono::system_clock::now());
+  int seconds(std::chrono::duration_cast<std::chrono::seconds>(time - startTime).count());
+	
+  if (seconds == 3) {
     switchBG();
   }
   else {
