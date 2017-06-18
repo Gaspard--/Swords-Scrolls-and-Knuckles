@@ -28,18 +28,15 @@ void UIOverlayStart::switchBG(void) {
   bg->setMaterialName("HUD/Black");
   logo->show();
 	
-  initText(title, "PRESENTS", (Ogre::Real)Game::WIDTH / 2.0, 75.0);
-  initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0);
+  initText(title, "PRESENTS", (Ogre::Real)Game::WIDTH / 2.0, 75.0, Ogre::ColourValue::White);
+  initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
 }
 
 void UIOverlayStart::update(void) {
 
   static int timer(150);
   
-	if (timer > 0) {
-		--timer;
-	}
-  
+	--timer;
   if (timer == 0) {
     switchBG();
   } else {
@@ -48,10 +45,11 @@ void UIOverlayStart::update(void) {
 }
 
 void UIOverlayStart::initText(UIOverlayResource<Ogre::TextAreaOverlayElement> &txt,
-    Ogre::DisplayString const &str, Ogre::Real x, Ogre::Real y) {
+    Ogre::DisplayString const &str, Ogre::Real x, Ogre::Real y, Ogre::ColourValue color) {
 
   txt->setFontName("HUD/FontPA");
   txt->setCaption(str);
+	txt->setColour(color);
   txt->setMetricsMode(Ogre::GMM_PIXELS);
   txt->setCharHeight(150);
   txt->setPosition(x, y);
@@ -62,8 +60,21 @@ void UIOverlayStart::updateText(void) {
 
   static int timer(0);
   
+	if (bg->getMaterialName() == "HUD/HurricaneLogo") {
+		return ;
+	}
+	
   ++timer;
   if (timer % 60 > 30) {
-    (pressTxt->isVisible()) ? pressTxt->hide() : pressTxt->show();
-  }
+		if (!pressTxt->isVisible()) {
+		  pressTxt->show();
+			std::clog << "OverlayStart::Showing text." << std::endl;
+      initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
+		}
+  } else {
+		if (pressTxt->isVisible()) {
+		  pressTxt->hide();
+			std::clog << "OverlayStart::Hiding text." << std::endl;
+		}
+	}
 }

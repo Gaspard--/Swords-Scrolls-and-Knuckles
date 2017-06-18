@@ -14,7 +14,7 @@ private:
 	UIOverlayResource<Ogre::TextAreaOverlayElement> pressTxt;
 	
 	void initText(UIOverlayResource<Ogre::TextAreaOverlayElement> &,
-					Ogre::DisplayString const &, Ogre::Real, Ogre::Real);
+					Ogre::DisplayString const &, Ogre::Real, Ogre::Real, Ogre::ColourValue);
 	void updateText(void);
 	void switchBG(void);
 
