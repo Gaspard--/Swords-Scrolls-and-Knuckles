@@ -13,6 +13,8 @@
 #include "PyBindInstance.hpp"
 #include "PyEvaluate.hpp"
 #include "ProjectileList.hpp"
+#include "Action.hpp"
+#include "KeyboardController.hpp"
 
 class LevelScene;
 
@@ -44,6 +46,8 @@ public:
   PyBindInstance pyBindInstance;
   PyEvaluate pyEvaluate;
   ProjectileList projectileList;
+  Action action;
+  Vect<2u, KeyboardController> keyboardControllers;
 
   /**
    * Parameter isn't stored, only used for setup.
