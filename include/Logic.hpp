@@ -40,6 +40,8 @@ private:
 
   void calculateCamera(LevelScene &);
   bool tick();
+  void spawnMobGroup(Terrain::Room &room);
+
 public:
   GameState gameState;
   EntityFactory entityFactory;
