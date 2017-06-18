@@ -1,21 +1,3 @@
-material HUD/ButtonHovered
-{
-	technique
-	{
-		pass
-		{
-			scene_blend alpha_blend
-			
-			texture_unit
-			{
-				colour_op_ex source1 src_manual src_current 120 120 120
-				alpha_op_ex source1 src_manual src_current 0.125
-			}
-		}
-	}
-	
-}
-
 material HUD/StatBG
 {
 	technique
@@ -135,7 +117,7 @@ material HUD/KeyIcon
 		pass
 		{
 			scene_blend alpha_blend
-			
+
 			texture_unit
 			{
 				texture IconKey.png
@@ -151,7 +133,7 @@ material HUD/CoinIcon
 		pass
 		{
 			scene_blend alpha_blend
-			
+
 			texture_unit
 			{
 				texture IconCoin.png
@@ -159,4 +141,3 @@ material HUD/CoinIcon
 		}
 	}
 }
-

@@ -6,6 +6,8 @@
 
 # include "Fixture.hpp"
 
+class SaveState;
+class Enemy;
 class Logic;
 class Projectile;
 
@@ -42,12 +44,15 @@ public:
   {
     return !timeLeft;
   }
-  
+
   constexpr void update(Logic &)
   {
     timeLeft -= !!timeLeft;
     pos += speed;
   }
+
+  void   serialize(SaveState &state) const;
+  void   unserialize(LoadGame &);
 };
 
 class Enemy;

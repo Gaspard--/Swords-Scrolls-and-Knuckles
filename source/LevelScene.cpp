@@ -34,7 +34,6 @@ LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEnt
 
   std::clog << "Loading level scene" << std::endl;
 
-  std::clog << "SIZE BITCH : " << v.size() << std::endl;
   for (auto const &fn : v) {
     players.push_back(std::move(fn(renderer)));
   }

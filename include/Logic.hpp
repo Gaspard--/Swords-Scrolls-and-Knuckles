@@ -12,6 +12,8 @@
 #include "AudioSource.hpp"
 #include "PyBindInstance.hpp"
 #include "PyEvaluate.hpp"
+#include "Action.hpp"
+#include "KeyboardController.hpp"
 
 class LevelScene;
 
@@ -38,6 +40,8 @@ private:
 
   void calculateCamera(LevelScene &);
   bool tick();
+  void spawnMobGroup(Terrain::Room &room);
+
 public:
   GameState gameState;
   EntityFactory entityFactory;
@@ -45,6 +49,8 @@ public:
   PyEvaluate pyEvaluate;
   ProjectileList projectileList;
   SpellList spellList;
+  Action action;
+  Vect<2u, KeyboardController> keyboardControllers;
 
   /**
    * Parameter isn't stored, only used for setup.
