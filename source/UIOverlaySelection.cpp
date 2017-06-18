@@ -7,6 +7,14 @@
 #include "EntityFactory.hpp"
 #include "Game.hpp"
 
+Skins::Skin UIOverlaySelection::HEROES_SKINS[4][2] =
+{
+  { Skins::Archer::BASE, Skins::Archer::HIGH_ELF },
+  { Skins::Mage::BASE, Skins::Mage::CLAUS },
+  { Skins::Warrior::BASE, Skins::Warrior::RED },
+  { Skins::Tank::BASE, Skins::Tank::MAGNI },
+};
+
 UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   : UIOverlay("mainmenu", UIOverlay::Direction::HORIZONTAL)
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SelectBG"))

@@ -22,13 +22,8 @@ private:
 
   static constexpr Ogre::Real const SELECTIONBUTTON_WIDTH = 261.f / Game::WIDTH;
   static constexpr Ogre::Real const SELECTIONBUTTON_HEIGHT = 77.f / Game::HEIGHT;
-  static constexpr Skins::Skin HEROES_SKINS[4][2] = 
-  {
-    { Skins::Archer::BASE, Skins::Archer::HIGH_ELF },
-    { Skins::Mage::BASE, Skins::Mage::CLAUS },
-    { Skins::Warrior::BASE, Skins::Warrior::RED },
-    { Skins::Tank::BASE, Skins::Tank::MAGNI },
-  };
+  static Skins::Skin HEROES_SKINS[4][2];
+
   void setHeroDefault(AnimatedEntity &ae, size_t);
 
 public:
