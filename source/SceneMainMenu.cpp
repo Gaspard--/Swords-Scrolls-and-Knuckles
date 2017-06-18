@@ -6,7 +6,7 @@ SceneMainMenu::SceneMainMenu(Renderer &r)
   : uiMenu(r)
 {}
 
-void SceneMainMenu::resetSceneCallbacks(void) {
+void SceneMainMenu::resetSceneCallbacks(Renderer &) {
   InputCallbacks::clearAllCallbacks();
   uiMenu.resetUICallbacks();
   Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [](bool b) {

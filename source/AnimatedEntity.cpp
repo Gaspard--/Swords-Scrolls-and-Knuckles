@@ -87,14 +87,7 @@ void AnimatedEntity::setMount(AnimatedEntity *m)
 void AnimatedEntity::setMounted(bool b)
 {
   if (entityMount)
-  {
-    if (entityMount->getEntity().getOgre()->isVisible() != b) {
-      for (auto const &n : getEntity().getNode()->getChildIterator()) {
-        n.second->translate(0, 150.f - b * 300.f, 0);
-      }
-      entityMount->getEntity().getOgre()->setVisible(b);
-    }
-  }
+    entityMount->getEntity().getOgre()->setVisible(b);
 }
 
 AnimatedEntity *AnimatedEntity::getMount(void)
