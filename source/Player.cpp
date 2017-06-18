@@ -56,14 +56,14 @@ Player Player::makeWarrior(Vect<2u, double> pos)
 		100u, 0.5, pos);
 }
 
-void  Player::serialize(SaveState &state) const
+void Player::serialize(SaveState &state) const
 {
   state.serialize(id);
   for (auto const &spell : spells)
     state.serialize(spell.timeLeft);
 }
 
-void  Player::unserialize(LoadGame &game)
+void Player::unserialize(LoadGame &game)
 {
   game.unserialize(id);
   for (auto &spell : spells)

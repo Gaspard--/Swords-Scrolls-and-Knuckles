@@ -37,6 +37,9 @@ public:
   // In seconds / 10
   int getSpellTimeleft(size_t i) const;
 
+  void Player::serialize(SaveState &state) const;
+  void Player::unserialize(LoadGame &game);
+
   static Player makeArcher(Vect<2u, double> pos);
   static Player makeMage(Vect<2u, double> pos);
   static Player makeTank(Vect<2u, double> pos);

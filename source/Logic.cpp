@@ -117,15 +117,15 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   for (size_t i = 0; i < vec.size(); i++) {
     gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}, vec[i]));
   }
-  if (gameState.size() > 0)
+  if (gameState.players.size() > 0)
     action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
-  if (gameState.size() > 1)
+  if (gameState.players.size() > 1)
     action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
-  if (gameState.size() > 2 Joystick::getJoysticks()[0])
+  if (gameState.players.size() > 2 && Joystick::getJoysticks()[0])
   {
       action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
   }
-  if (gameState.size() > 3 Joystick::getJoysticks()[1])
+  if (gameState.players.size() > 3 && Joystick::getJoysticks()[1])
   {
       action.joystickControlled[Joystick::getJoysticks()[1].get()] = &gameState.players[3];
   }
@@ -147,7 +147,7 @@ void Logic::spawnMobGroup(Terrain::Room &room)
   for (unsigned int i(0u); i < 5; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0, (double)i * 0.1});
+      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
