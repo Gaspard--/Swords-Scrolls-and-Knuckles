@@ -18,6 +18,7 @@ class Player : public Controllable
 {
 private:
   unsigned int    id;
+  unsigned int gold;
   Vect<3u, Spell> spells;
 
 public:
@@ -25,6 +26,7 @@ public:
   Player(PlayerId id, Vect<3u, Spell> &&spells, PARAMS &&... params)
     : Controllable(std::forward<PARAMS>(params)...)
     , id(static_cast<int>(id))
+    , gold(0u)
     , spells(std::move(spells))
   {}
 
@@ -33,6 +35,8 @@ public:
   Player(Player &&) = default;
 
   void checkSpells(Logic &);
+  void resetCooldowns();
+  void addGold(unsigned int);
   void setAttacking(unsigned int index, bool attacking);
 
   // In seconds / 10

@@ -9,6 +9,17 @@ void Player::checkSpells(Logic &logic)
     spell.update(logic, *this);
 }
 
+void Player::resetCooldowns()
+{
+  for (auto &spell : spells)
+    spell.timeLeft = 0;
+}
+
+void Player::addGold(unsigned int amount)
+{
+  gold += amount;
+}
+
 void Player::setAttacking(unsigned int index, bool attacking)
 {
   spells[index].active = attacking;
@@ -62,6 +73,7 @@ Player Player::makeWarrior(Vect<2u, double> pos)
 void Player::serialize(SaveState &state) const
 {
   state.serialize(id);
+  state.serialize(gold);
   for (auto const &spell : spells)
     state.serialize(spell.timeLeft);
 }
@@ -69,6 +81,7 @@ void Player::serialize(SaveState &state) const
 void Player::unserialize(LoadGame &game)
 {
   game.unserialize(id);
+  game.unserialize(gold);
   for (auto &spell : spells)
     game.unserialize(spell.timeLeft);
 }
