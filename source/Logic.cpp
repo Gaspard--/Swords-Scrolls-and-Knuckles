@@ -32,7 +32,17 @@ bool Logic::tick()
   updateElements(gameState.players);
   updateElements(gameState.enemies);
   for (auto &player : gameState.players)
-    player.checkSpells(*this);
+    {
+      auto &room(gameState.terrain.getRoom(Vect<2u, unsigned int>(player.pos)));
+
+      player.checkSpells(*this);
+      if (!room.mobsSpawned)
+	{
+	  room.mobsSpawned = true;
+	  spawnMobGroup(room);
+	  std::cout << "spawning mobs" << std::endl;
+	}
+    }
   auto const updateProjectile([this](auto &projectiles)
 			      {
 				for (auto &projectile : projectiles)
@@ -105,7 +115,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
   for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
+    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 5.0, (double)i + 5.0}));
   action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
   action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
   if (Joystick::getJoysticks()[0])
@@ -122,6 +132,15 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   //       return entityFactory.spawnEnemy();
   //     }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
   //   }
+}
+
+void Logic::spawnMobGroup(Terrain::Room &room)
+{
+  std::clog << "[Logic] Spawning mobs at : " << room.pos << std::endl;
+  for (unsigned int i(0u); i < 5; ++i)
+    enemies.add([this](){
+	return entityFactory.spawnEnemy();
+      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0, (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
