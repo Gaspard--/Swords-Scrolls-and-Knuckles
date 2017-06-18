@@ -55,6 +55,7 @@ LevelScene::LevelScene(Renderer &renderer)
 
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
     players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
+    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
   }
 
   // obviously horrible & will be replaced.

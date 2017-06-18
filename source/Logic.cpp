@@ -80,9 +80,26 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , entityFactory(renderer)
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
+  , keyboardControllers{
+      std::map<unsigned int, OIS::KeyCode>
+      {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
+      {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
+      {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
+      std::map<unsigned int, OIS::KeyCode>
+      {{KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+      {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
+      {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 {
-  for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
+  for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
     gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i, (double)i}));
+  action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
+  action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
+  if (Joystick::getJoysticks()[0])
+  {
+      action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
+  }
   levelScene.setTerrain(gameState.terrain);
   for (unsigned int i(0u); i < 10; ++i)
     {
