@@ -11,6 +11,7 @@ void    Controllable::serialize(SaveState &state) const
   state.serialize(locked);
   state.serialize(health);
   state.serialize(maxHealth);
+  state.serialize(dePopCounter);
 }
 
 void   Controllable::unserialize(LoadGame &game)
@@ -22,4 +23,5 @@ void   Controllable::unserialize(LoadGame &game)
   game.unserialize(locked);
   game.unserialize(health);
   game.unserialize(maxHealth);
+  game.unserialize(dePopCounter);
 }

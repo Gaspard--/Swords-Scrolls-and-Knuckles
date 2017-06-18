@@ -11,6 +11,7 @@ ProjectileList::ProjectileList()
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback(projectile.speed.normalized() * 0.2, 10);
+      enemy.takeDamage(35);
       projectile.remove();
     },
     [](Projectile &p, Vect<2u, double>){
@@ -20,6 +21,7 @@ ProjectileList::ProjectileList()
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback(projectile.speed.normalized() * 0.2, 10);
+      enemy.takeDamage(35);
       BounceResponse{0.8}(projectile, (enemy.pos - projectile.pos).normalized());
       projectile.type = ProjectileType::ARROW;
     },
@@ -31,6 +33,7 @@ ProjectileList::ProjectileList()
     ProjectileReaction{
     [](Enemy &enemy, Projectile &projectile){
       enemy.knockback((enemy.pos - projectile.pos).normalized() * 0.03, 5);
+      enemy.takeDamage(15);
     },
     [](Projectile &, Vect<2u, double>){
     }};

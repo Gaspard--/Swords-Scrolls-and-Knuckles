@@ -29,10 +29,15 @@ public:
 
   constexpr Projectile(Vect<2u, double> pos, Vect<2u, double> speed,
 		       unsigned int type, double size = 0.2, unsigned int removeIn = ~0u)
-  : Fixture{size, pos, speed}
+  : Fixture{size, pos, speed, true}
     , type(type)
     , timeLeft(removeIn)
   {
+  }
+
+  constexpr bool doCollision() const
+  {
+    return true;
   }
 
   constexpr void remove()

@@ -10,7 +10,7 @@ Entity const &AnimatedEntity::getEntity(void) const
   return (entity);
 }
 
-void AnimatedEntity::setMainAnimation(std::string const &s, Ogre::Real timer)
+void AnimatedEntity::setMainAnimation(std::string const &s, Ogre::Real timer, bool loop)
 {
   Ogre::AnimationState *target = entity.getOgre()->getAnimationState(s);
 
@@ -20,7 +20,7 @@ void AnimatedEntity::setMainAnimation(std::string const &s, Ogre::Real timer)
     blendDuration = timer;
     targetMainAnimation = target;
     targetMainAnimation->setEnabled(true);
-    targetMainAnimation->setLoop(true);
+    targetMainAnimation->setLoop(loop);
     targetMainAnimation->setWeight(0.f);
     targetMainAnimation->setTimePosition(0.f);
   }

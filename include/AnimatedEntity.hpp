@@ -42,7 +42,7 @@ public:
   Entity const &getEntity(void) const;
 
   /// Set the main animation
-  void setMainAnimation(std::string const &s, Ogre::Real blender_duration = 0.1f);
+  void setMainAnimation(std::string const &s, Ogre::Real blender_duration = 0.1f, bool repeat = true);
 
   /// Add a sub animation to this entity
   void addSubAnimation(std::string const &s,  bool reset = true, bool loop = false);
