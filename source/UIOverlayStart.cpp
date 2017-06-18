@@ -28,8 +28,8 @@ void UIOverlayStart::switchBG(void) {
   bg->setMaterialName("HUD/Black");
   logo->show();
 	
-  initText(title, "PRESENTS", (Ogre::Real)Game::WIDTH / 2.0, 75.0, Ogre::ColourValue::White);
-  initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
+  initText(title, "PRESENTS", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 75.0, Ogre::ColourValue::White);
+  initText(pressTxt, "Press space to start", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 925.0, Ogre::ColourValue::Red);
 }
 
 void UIOverlayStart::update(void) {
@@ -58,17 +58,14 @@ void UIOverlayStart::initText(UIOverlayResource<Ogre::TextAreaOverlayElement> &t
 
 void UIOverlayStart::updateText(void) {
 
-  static int timer(0);
-  
 	if (bg->getMaterialName() == "HUD/HurricaneLogo") {
 		return ;
 	}
 	
-  ++timer;
-  if (timer % 60 > 30) {
+  if (std::time(nullptr) % 2 == 0) {
 		if (!pressTxt->isVisible()) {
 		  pressTxt->show();
-      initText(pressTxt, "Press space to start", (Ogre::Real)Game::WIDTH / 2.0, 925.0, Ogre::ColourValue::Red);
+			initText(pressTxt, "Press space to start", static_cast<Ogre::Real>(Game::WIDTH / 2.0), 925.0, Ogre::ColourValue::Red);
 		}
   } else {
 		if (pressTxt->isVisible()) {
