@@ -1,10 +1,11 @@
 #include "UIOverlay.hpp"
 #include "Game.hpp"
 
-UIOverlay::UIOverlay(std::string const &name)
+UIOverlay::UIOverlay(std::string const &name, enum class Direction dir)
   : overlay(Ogre::OverlayManager::getSingleton().create(name))
   , buttons()
   , selectedButton(0)
+  , dir(dir)
 {
   setUIVisible(true);
 }
@@ -67,10 +68,10 @@ void UIOverlay::resetUICallbacks(void) {
       buttons[selectedButton]->getCallback()();
     }
   });
-  Joystick::registerGlobalCallback(joystickState::JS_LDOWN, [this](bool , size_t) {
+  Joystick::registerGlobalCallback(dir == Direction::VERTICAL ? joystickState::JS_LDOWN : joystickState::JS_LLEFT, [this](bool , size_t) {
     setSelectedButton(selectedButton + 1);
   });
-  Joystick::registerGlobalCallback(joystickState::JS_LUP, [this](bool , size_t) {
+  Joystick::registerGlobalCallback(dir == Direction::VERTICAL ? joystickState::JS_LUP : joystickState::JS_LRIGHT, [this](bool , size_t) {
     setSelectedButton(selectedButton - 1);
   }); 
   Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {

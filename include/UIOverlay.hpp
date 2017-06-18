@@ -7,16 +7,23 @@
 # include "UIButton.hpp"
 
 class UIOverlay {
+public:
+  enum class Direction {
+    VERTICAL,
+    HORIZONTAL
+  };
+
 private:
 
 protected:
   UIOverlayResource<Ogre::Overlay> overlay;
   std::vector<std::unique_ptr<UIButton>> buttons;
   size_t selectedButton;
+  enum class Direction dir;
 
 public:
   UIOverlay() = delete;
-  UIOverlay(std::string const &);
+  UIOverlay(std::string const &, enum class Direction = Direction::VERTICAL);
   UIOverlay(UIOverlay const &) = delete;
   UIOverlay(UIOverlay &&) = delete;
   UIOverlay &operator=(UIOverlay const &) = delete;

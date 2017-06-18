@@ -8,7 +8,7 @@
 #include "Game.hpp"
 
 UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
-  : UIOverlay("mainmenu")
+  : UIOverlay("mainmenu", UIOverlay::Direction::HORIZONTAL)
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SelectBG"))
   , selected(0)
   , skins()
