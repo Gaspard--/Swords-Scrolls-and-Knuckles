@@ -64,6 +64,10 @@ bool Logic::tick()
 			    {
 			      return projectile.shouldBeRemoved();
 			    });
+  enemies.removeIf([](auto const &projectile)
+		   {
+		     return projectile.shouldBeRemoved();
+		   });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
@@ -204,7 +208,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
 		    updateControllableEntity(animatedEntity, enemy);
-		    if (enemy.isWalking())
+		    if (enemy.isDead())
+		      animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04, false);
+		    else if (enemy.isWalking())
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 		    else if (enemy.isStun())
 		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);

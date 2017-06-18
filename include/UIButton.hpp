@@ -2,7 +2,6 @@
 # define UIBUTTON_HPP
 
 # include <Overlay/OgreOverlaySystem.h>
-# include <OgrePanelOverlayElement.h>
 # include "Game.hpp"
 # include "UIOverlayResource.hpp"
 # include <Overlay/OgrePanelOverlayElement.h>

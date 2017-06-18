@@ -68,13 +68,18 @@ public:
 
 constexpr void Controllable::update(Logic &)
 {
+  if (isDead())
+    {
+      ++dePopCounter;
+      return ;
+    }
+
   if (!stun)
     {
       speed = speed * 0.9 + input * 0.1;
     }
   else
     {
-      // dir = dir * 0.8 - speed * 0.2;
       --stun;
     }
   if (stun || !locked)
