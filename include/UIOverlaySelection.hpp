@@ -2,6 +2,7 @@
 # define UI_OVERLAY_SELECTION_HPP
 
 # include <memory>
+# include <utility>
 # include <functional>
 # include <vector>
 # include <Overlay/OgrePanelOverlayElement.h>
@@ -16,11 +17,12 @@ private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
   size_t selected;
   std::vector<AnimatedEntity> heroes;
+  std::vector<int> skins;
   Ogre::Node *cameraNode;
 
   static constexpr Ogre::Real const SELECTIONBUTTON_WIDTH = 261.f / Game::WIDTH;
   static constexpr Ogre::Real const SELECTIONBUTTON_HEIGHT = 77.f / Game::HEIGHT;
-  static constexpr char const *HEROES_SKINS[4][2] = 
+  static constexpr Skins::Skin HEROES_SKINS[4][2] = 
   {
     { Skins::Archer::BASE, Skins::Archer::HIGH_ELF },
     { Skins::Mage::BASE, Skins::Mage::CLAUS },

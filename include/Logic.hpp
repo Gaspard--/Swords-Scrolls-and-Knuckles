@@ -49,7 +49,7 @@ public:
   /**
    * Parameter isn't stored, only used for setup.
    */
-  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
+  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<enum class PlayerId> const &);
 
   void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type);
   void run();

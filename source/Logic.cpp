@@ -81,7 +81,7 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<enum class PlayerId> const &vec)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
@@ -93,8 +93,10 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , spellList{}
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
-  for (unsigned int i(0); i != 2; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}));
+  for (size_t i = 0; i < vec.size(); i++) {
+    gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 10.0, (double)i + 10.0}, vec[i]));
+  }
+
   levelScene.setTerrain(gameState.terrain);
   // for (unsigned int i(0u); i < 10; ++i)
   //   {

@@ -3,7 +3,7 @@
 
 namespace Skins
 {
-  using Skin = char const [];
+  using Skin = char const *;
   namespace Archer
   {
     constexpr Skin BASE = "sylvanas.mesh";
@@ -12,12 +12,12 @@ namespace Skins
   namespace Tank
   {
     constexpr Skin BASE = "muradin.mesh";
-    constexpr Skin MAGNI = "muradin.mesh";
+    constexpr Skin MAGNI = "muradin_magni.mesh";
   };
   namespace Mage
   {
     constexpr Skin BASE = "jaina.mesh";
-    constexpr Skin CLAUS = "jaina.mesh";
+    constexpr Skin CLAUS = "jaina_claus.mesh";
   };
   namespace Warrior
   {

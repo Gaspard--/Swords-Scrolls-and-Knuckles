@@ -2,6 +2,7 @@
 # define LEVEL_SCENE_HPP
 
 #include <vector>
+#include <utility>
 #include "UIOverlayHUD.hpp"
 #include "UIOverlayPause.hpp"
 #include "Scene.hpp"
@@ -9,6 +10,7 @@
 #include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
 #include "Music.hpp"
+#include "Player.hpp"
 
 class Terrain;
 
@@ -41,7 +43,9 @@ private:
 
 public:
   LevelScene(void) = delete;
-  LevelScene(Renderer &);
+  LevelScene(Renderer &,
+    std::vector<std::function<AnimatedEntity(Renderer &)>> const &,
+    std::vector<enum class PlayerId> const &);
   virtual ~LevelScene(void);
 
   static void createWallMesh();

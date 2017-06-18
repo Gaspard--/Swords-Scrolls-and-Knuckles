@@ -53,3 +53,16 @@ Player Player::makeWarrior(Vect<2u, double> pos)
 		 Spell{SpellType::ARROW_ULTI, 2400, 480}),
 		100u, 0.5, pos);
 }
+
+Player Player::makePlayer(Vect<2u, double> pos, enum class PlayerId id) {
+  switch (id) {
+  case PlayerId::ARCHER:
+    return (makeArcher(pos));
+  case PlayerId::WARRIOR:
+    return (makeWarrior(pos));
+  case PlayerId::MAGE:
+    return (makeMage(pos));
+  default:
+    return (makeTank(pos));
+  }
+}

@@ -11,6 +11,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   : UIOverlay("mainmenu")
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SelectBG"))
   , selected(0)
+  , skins()
   , cameraNode([&renderer]()
 	       {
 		 auto cameraNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode());
@@ -34,6 +35,14 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
 
+  // Adding heroes
+
+  for (size_t i = 0; i < 4; i++) {
+    skins.emplace_back(0);
+    heroes.emplace_back(renderer, HEROES_SKINS[i][skins[i]]);
+    setHeroDefault(heroes.back(), i);
+  }
+  
   // Play button
   std::unique_ptr<UIButton> cancel(new UIButton(manager, "Cancel", [&renderer]() {
     renderer.switchScene([&renderer]() {
@@ -45,10 +54,47 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   buttons.emplace_back(std::move(cancel));
 
   // Exit button
-  std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [&renderer]() {
-    renderer.switchScene([&renderer]() {
+  std::unique_ptr<UIButton> play(new UIButton(manager, "Play", [this, &renderer]() {
+    auto skins(skins);
+    renderer.switchScene([&renderer, skins]() {
+      std::vector<std::function<AnimatedEntity(Renderer &)>> v;
+      std::vector<enum class PlayerId> classes;
+
+      //std::vector<int> s(skins);
+      for (size_t i = 0; i < skins.size(); i++) {
+	  switch (i) {
+	  case 0:
+	    v.emplace_back([&skins, i](Renderer &renderer) {
+	      EntityFactory ef(renderer);
+	      return (ef.spawnArcher(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	    });
+	    classes.emplace_back(PlayerId::ARCHER);
+	    break;
+	  case 1:
+	    v.emplace_back([&skins, i](Renderer &renderer) {
+	      EntityFactory ef(renderer);
+	      return (ef.spawnMage(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	    });
+	    classes.emplace_back(PlayerId::MAGE);
+	    break;
+	  case 2:
+	    v.emplace_back([&skins, i](Renderer &renderer) {
+	      EntityFactory ef(renderer);
+	      return (ef.spawnWarrior(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	    });
+	    classes.emplace_back(PlayerId::WARRIOR);
+	    break;
+	  default:
+	    v.emplace_back([&skins, i](Renderer &renderer) {
+	      EntityFactory ef(renderer);
+	      return (ef.spawnTank(UIOverlaySelection::HEROES_SKINS[i][skins[i]]));
+	    });
+	    classes.emplace_back(PlayerId::TANK);
+	    break;
+	  }
+	}
       LevelScene::createWallMesh();
-      return static_cast<Scene *>(new LevelScene(renderer));
+      return static_cast<Scene *>(new LevelScene(renderer, v, classes));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));
   play->init("HUD/ButtonSelectionPlay", (1.f - bwidth) / 2.f + posX, posY);
@@ -56,13 +102,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   buttons.emplace_back(std::move(play));
 
   overlay->add2D(bg.get());
-  
-  // Adding heroes
 
-  for (size_t i = 0; i < 4; i++) {
-    heroes.emplace_back(renderer, HEROES_SKINS[i][0]);
-    setHeroDefault(heroes.back(), i);
-  }
   setSelectedButton(0);
 }
 
@@ -85,7 +125,11 @@ void UIOverlaySelection::setHeroDefault(AnimatedEntity &ae, size_t i) {
 }
 
 void UIOverlaySelection::changeSkin(Renderer &r, bool b) {
-  heroes[selected] = AnimatedEntity(r, HEROES_SKINS[selected][b]);
+  skins[selected] += -1 + b * 2;
+  if (skins[selected] < 0)
+    skins[selected] = 2 + skins[selected];
+  skins[selected] %= 2;
+  heroes[selected] = AnimatedEntity(r, HEROES_SKINS[selected][skins[selected]]);
   setHeroDefault(heroes[selected], selected);
 }
 

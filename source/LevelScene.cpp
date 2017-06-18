@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
-LevelScene::LevelScene(Renderer &renderer)
+LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<enum class PlayerId> const &classes)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
@@ -24,7 +24,7 @@ LevelScene::LevelScene(Renderer &renderer)
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
 	       }())
-  , logicThread(*this, renderer, players)
+  , logicThread(*this, renderer, players, classes)
     // , music(Musics::SMALL_WORLD)
 {
   // music.setVolume(0.2f);
@@ -34,18 +34,15 @@ LevelScene::LevelScene(Renderer &renderer)
 
   std::clog << "Loading level scene" << std::endl;
 
-  {
-    EntityFactory ef(renderer);
-
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-    players.push_back(std::move(ef.spawnArcher(Skins::Mage::BASE)));
+  std::clog << "SIZE BITCH : " << v.size() << std::endl;
+  for (auto const &fn : v) {
+    players.push_back(std::move(fn(renderer)));
   }
 
   terrainNode->scale(1.0, 1.0, 1.0);
 
   // Hide pause
   uiPause.setUIVisible(false);
-  // ground.getOgre()->setMaterialName("wall");
 
   std::clog << "End loading level scene" << std::endl;
 }

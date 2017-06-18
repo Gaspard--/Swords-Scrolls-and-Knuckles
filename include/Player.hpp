@@ -41,6 +41,7 @@ public:
   static Player makeMage(Vect<2u, double> pos);
   static Player makeTank(Vect<2u, double> pos);
   static Player makeWarrior(Vect<2u, double> pos);
+  static Player makePlayer(Vect<2u, double> pos, enum class PlayerId);
 };
 
 #endif // !PLAYER_HPP
