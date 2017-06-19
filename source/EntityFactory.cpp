@@ -22,7 +22,7 @@ Entity EntityFactory::spawnProjectile(unsigned int projectileType)
   else if (projectileType == ProjectileType::HEAL)
     entity = Entity(renderer, "heart.mesh");
   else
-    entity = Entity(renderer, "rupee.mesh");
+    entity = Entity(renderer, "rupee_green.mesh");
   entity.getOgre()->setCastShadows(false);
   entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
   return entity;
