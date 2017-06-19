@@ -3,10 +3,13 @@
 
 // UIButton
 
-UIButton::UIButton(Ogre::OverlayManager *manager, Ogre::String const &name, std::function<void(void)> const &cb)
+UIButton::UIButton(Ogre::OverlayManager *manager, Ogre::String const &name, std::function<void(void)> const &cb, Ogre::Real w, Ogre::Real h, Ogre::Real o)
   : panel(manager->createOverlayElement("Panel", name))
   , hoverPanel(manager->createOverlayElement("Panel", panel->getName() + "Hover"))
   , callback(cb)
+  , width(w)
+  , height(h)
+  , offset(o)
 {}
 
 void UIButton::init(
@@ -15,12 +18,12 @@ void UIButton::init(
   Ogre::Real y
 )
 {
-  panel->setDimensions(UIButton::WIDTH, UIButton::HEIGHT);
+  panel->setDimensions(width, height);
   panel->setPosition(x, y);
   panel->setMaterialName(materialName);
   
-  hoverPanel->setDimensions(UIButton::WIDTH - 0.012f * 2.f, UIButton::HEIGHT);
-  hoverPanel->setPosition(0.012f, 0);
+  hoverPanel->setDimensions(width - offset * 2, height);
+  hoverPanel->setPosition(offset, 0);
   hoverPanel->setMaterialName("HUD/ButtonHovered");
   hoverPanel->hide();
   panel->addChild(hoverPanel.get());

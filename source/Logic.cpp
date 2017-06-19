@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include "UIOverlaySelection.hpp"
 #include "Logic.hpp"
 #include "Physics.hpp"
 #include "LevelScene.hpp"
@@ -29,8 +30,19 @@ bool Logic::tick()
 				     });
 				}
 			    });
-  updateElements(gameState.players);
   updateElements(gameState.enemies);
+  for (auto &enemy : gameState.enemies)
+    {
+      if (enemy.shouldBeRemoved())
+	{
+	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 3) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+
+	  enemyProjectiles.add([this, drop](){
+	      return entityFactory.spawnProjectile(drop);
+	    }, enemy.pos, Vect<2u, double>{0.0, 0.0}, drop, 0.5);
+	}
+    }
+  updateElements(gameState.players);
   for (auto &player : gameState.players)
     {
       auto &room(gameState.terrain.getRoom(Vect<2u, unsigned int>(player.pos)));
@@ -43,17 +55,16 @@ bool Logic::tick()
 	  std::cout << "spawning mobs" << std::endl;
 	}
     }
-  auto const updateProjectile([this](auto &projectiles)
-			      {
-				for (auto &projectile : projectiles)
-				  {
-				    projectile.update(*this);
-				    gameState.terrain.correctFixture(projectile, [this](auto &projectile, Vect<2u, double> dir)
-								     {
-								       projectileList[projectile.type].wallResponse(projectile, dir);
-								     });
-				  }
-			      });
+  auto const updateProjectile([this](auto &projectiles) {
+      for (auto &projectile : projectiles)
+	{
+	  projectile.update(*this);
+	  gameState.terrain.correctFixture(projectile,
+					   [this](auto &projectile, Vect<2u, double> dir) {
+					     projectileList[projectile.type].wallResponse(projectile, dir);
+					   });
+	}
+    });
   updateProjectile(gameState.projectiles);
   updateProjectile(gameState.enemyProjectiles);
   projectiles.removeIf([](auto const &projectile)
@@ -64,6 +75,10 @@ bool Logic::tick()
 			    {
 			      return projectile.shouldBeRemoved();
 			    });
+  enemies.removeIf([](auto const &projectile)
+		   {
+		     return projectile.shouldBeRemoved();
+		   });
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
@@ -73,6 +88,15 @@ bool Logic::tick()
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [this](auto &projectile, auto &enemy){
 			   projectileList[projectile.type].hitEnemy(enemy, projectile);
+			 });
+  Physics::collisionTest(gameState.enemyProjectiles.begin(), gameState.enemyProjectiles.end(),
+			 gameState.players.begin(), gameState.players.end(),
+			 [this](auto &enemyProjectile, auto &player){
+			   if (enemyProjectile.type == ProjectileType::COOLDOWN_RESET)
+			     player.resetCooldowns();
+			   else if (enemyProjectile.type == ProjectileType::GOLD)
+			     player.addGold(99);
+			   projectileList[enemyProjectile.type].hitEnemy(player, enemyProjectile);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
       auto const center((a.pos + b.pos) * 0.5);
@@ -91,47 +115,66 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec, std::vector<Gameplays> const &gp)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
   , projectiles(gameState.projectiles, levelScene.projectiles)
-  , enemyProjectiles(gameState.projectiles, levelScene.projectiles)
+  , enemyProjectiles(gameState.enemyProjectiles, levelScene.enemyProjectiles)
   , entityFactory(renderer)
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
   , spellList{}
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
+#if defined OIS_WIN32_PLATFORM
+      { {KBACTION::GO_UP, OIS::KC_W}, {KBACTION::GO_DOWN, OIS::KC_S},
+      {KBACTION::GO_LEFT, OIS::KC_A}, {KBACTION::GO_RIGHT, OIS::KC_D},
+      {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
+      {KBACTION::MOUNT, OIS::KC_Z}},
+#else
       {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
       {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
       {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
-      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
+      {KBACTION::MOUNT, OIS::KC_W}},
+#endif // defined OIS_WIN32_PLATFORM
       std::map<unsigned int, OIS::KeyCode>
-      {{KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+#if defined OIS_WIN32_PLATFORM
+      { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+      {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_SEMICOLON},
+      {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
+      {KBACTION::MOUNT, OIS::KC_DOWN}} }
+#else
+      { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
       {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
-      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
+      {KBACTION::MOUNT, OIS::KC_DOWN}}}
+#endif // defined OIS_WIN32_PLATFORM
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
-  for (unsigned int i(0); i != 3; ++i) // TODO: obviously players should be passed as parameter or something.
-    gameState.players.push_back(Player::makeArcher(Vect<2u, double>{(double)i + 5.0, (double)i + 5.0}));
-  action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
-  action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
-  if (Joystick::getJoysticks()[0])
-  {
-      action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
+  for (size_t i = 0; i < vec.size(); i++) {
+    gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
+  }
+  size_t kb = 0;
+  size_t js = 0;
+  for (size_t i = 0; i < gp.size(); i++) {
+    if (gp[i] == Gameplays::KEYBOARD) {
+      action.keyboardControlled[&keyboardControllers[kb]] = &gameState.players[i];
+      kb++;
+    }
+    else if (gp[i] == Gameplays::JOYSTICK && Joystick::getJoysticks()[js]) {
+      action.joystickControlled[Joystick::getJoysticks()[js].get()] = &gameState.players[i];
+      js++;
+    }
+    else if (gp[i] == Gameplays::IA) {
+      // TODO
+    }
   }
   levelScene.setTerrain(gameState.terrain);
-  // for (unsigned int i(0u); i < 10; ++i)
-  //   {
-  //     enemies.add([this](){
-  //       return entityFactory.spawnEnemy();
-  //     }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
-  //     enemies.add([this](){
-  //       return entityFactory.spawnEnemy();
-  //     }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
-  //   }
 }
 
 void Logic::spawnMobGroup(Terrain::Room &room)
@@ -140,14 +183,14 @@ void Logic::spawnMobGroup(Terrain::Room &room)
   for (unsigned int i(0u); i < 5; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0, (double)i * 0.1});
+      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
-void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type)
+void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size, unsigned int timeLeft)
 {
   projectiles.add([this](){
       return entityFactory.spawnOgreHead();
-    }, pos, speed, type);
+    }, pos, speed, type, size, timeLeft);
 }
 
 void Logic::run()
@@ -189,6 +232,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
       projectiles.updateTarget();
       projectiles.forEach([](Entity &entity, Projectile &projectile)
 			  {
+			    if (projectile.doSpin())
+			      entity.setDirection(Vect<2u, float>((float)std::cos(projectile.timeLeft * 0.01), (float)std::sin(projectile.timeLeft * 0.01)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
@@ -204,7 +249,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
 		    updateControllableEntity(animatedEntity, enemy);
-		    if (enemy.isWalking())
+		    if (enemy.isDead())
+		      animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04f, false);
+		    else if (enemy.isWalking())
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 		    else if (enemy.isStun())
 		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);
@@ -217,8 +264,24 @@ void Logic::updateDisplay(LevelScene &levelScene)
     {
       AnimatedEntity &animatedEntity(playerEntities[i]);
       Player &player(gameState.players[i]);
+      bool otherMainAnimation{false};
 
+      switch (static_cast<PlayerId>(player.getId()))
+	{
+	case PlayerId::ARCHER:
+	  break;
+	case PlayerId::MAGE:
+	  break;
+	case PlayerId::TANK:
+	  break;
+	case PlayerId::WARRIOR:
+	  break;
+	}
+      
       updateControllableEntity(animatedEntity, player);
+      if (player.isMounted() != animatedEntity.isMounted()) {
+	animatedEntity.setMounted(player.isMounted());
+      }
       if (player.isWalking())
 	{
 	  if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())

@@ -27,7 +27,7 @@ material HUD/ButtonPlay
 			}
 		}
 	}
-	
+
 }
 
 material HUD/ButtonOptions
@@ -44,7 +44,7 @@ material HUD/ButtonOptions
 			}
 		}
 	}
-	
+
 }
 
 material HUD/ButtonLoad
@@ -61,7 +61,7 @@ material HUD/ButtonLoad
 			}
 		}
 	}
-	
+
 }
 
 material HUD/ButtonExit
@@ -78,6 +78,5 @@ material HUD/ButtonExit
 			}
 		}
 	}
-	
-}
 
+}

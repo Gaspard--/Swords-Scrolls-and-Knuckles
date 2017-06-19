@@ -6,6 +6,7 @@
 #include <chrono>
 #include <vector>
 
+#include "UIOverlaySelection.hpp"
 #include "GameState.hpp"
 #include "ModVector.hpp"
 #include "EntityFactory.hpp"
@@ -55,9 +56,9 @@ public:
   /**
    * Parameter isn't stored, only used for setup.
    */
-  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities);
+  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &, std::vector<Gameplays> const &);
 
-  void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type);
+  void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size = 0.2, unsigned int timeLeft = ~0u);
   void run();
   void exit();
   void updateDisplay(LevelScene &);
@@ -68,13 +69,18 @@ public:
 
 constexpr void Controllable::update(Logic &)
 {
+  if (isDead())
+    {
+      ++dePopCounter;
+      return ;
+    }
+
   if (!stun)
     {
       speed = speed * 0.9 + input * 0.1;
     }
   else
     {
-      // dir = dir * 0.8 - speed * 0.2;
       --stun;
     }
   if (stun || !locked)

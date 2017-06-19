@@ -162,9 +162,7 @@ bool Game::frameRenderingQueued(Ogre::FrameEvent const &fe) {
     }
   }
   catch (Renderer::SceneSwitcherException const &sse) {
-    std::clog << "GONA SWITCH SCENE !" << std::endl;
     renderer->doSwitchScene(sse);
-    std::clog << "SURVIVED !" << std::endl;
   }
   return (go_on);
 }

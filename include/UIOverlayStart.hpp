@@ -2,6 +2,7 @@
 # define UIOVERLAYSTART_HPP
 
 # include <ctime>
+# include <chrono>
 # include <Overlay/OgreTextAreaOverlayElement.h>
 # include "Game.hpp"
 # include "UIOverlay.hpp"
@@ -12,6 +13,7 @@ private:
 	UIOverlayResource<Ogre::PanelOverlayElement> logo;
 	UIOverlayResource<Ogre::TextAreaOverlayElement> title;
 	UIOverlayResource<Ogre::TextAreaOverlayElement> pressTxt;
+	std::chrono::time_point<std::chrono::system_clock> startTime;
 	
 	void initText(UIOverlayResource<Ogre::TextAreaOverlayElement> &,
 					Ogre::DisplayString const &, Ogre::Real, Ogre::Real, Ogre::ColourValue);

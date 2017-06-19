@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
-LevelScene::LevelScene(Renderer &renderer)
+LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes, std::vector<Gameplays> const &gp)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
@@ -24,27 +24,24 @@ LevelScene::LevelScene(Renderer &renderer)
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
 	       }())
-  , logicThread(*this, renderer, players)
+  , logicThread(*this, renderer, players, classes, gp)
     // , music(Musics::SMALL_WORLD)
 {
   // music.setVolume(0.2f);
   // music.play();
 
+  renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
+
   std::clog << "Loading level scene" << std::endl;
 
-  {
-    EntityFactory ef(renderer);
-
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
-    players.push_back(std::move(ef.spawnArcher(Skins::Archer::BASE)));
+  for (auto const &fn : v) {
+    players.push_back(std::move(fn(renderer)));
   }
 
   terrainNode->scale(1.0, 1.0, 1.0);
 
   // Hide pause
   uiPause.setUIVisible(false);
-  // ground.getOgre()->setMaterialName("wall");
 
   std::clog << "End loading level scene" << std::endl;
 }
@@ -63,16 +60,6 @@ void LevelScene::resetSceneCallbacks(Renderer &r) {
     uiPause.resetUICallbacks();
   else
     {
-      // For demonstration / test purpose. Remove it if needed.
-      auto const setMounted([this](bool b, size_t = 0) {
-	  if (!b && !isInPause())
-	    for (auto &p : players) {
-	      p.setMounted(!p.isMounted());
-	    }
-	});
-      Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, setMounted);
-      Joystick::registerGlobalCallback(joystickState::JS_A, setMounted);
-
       // Go back to menu
       auto const goBackToMenu([this, &r](bool b, size_t = 0) {
 	  if (!b)

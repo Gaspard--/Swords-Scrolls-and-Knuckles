@@ -3,6 +3,7 @@
 
 # include "Fixture.hpp"
 
+class SaveState;
 class Logic;
 
 class Controllable : public Fixture
@@ -18,10 +19,11 @@ private:
 
 public:
   bool invulnerable;
+  unsigned int dePopCounter;
 
   template<class... PARAMS>
   constexpr Controllable(unsigned int health, PARAMS &&... params)
-  : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0.0, 0.0}}
+  : Fixture{std::forward<PARAMS>(params)..., Vect<2u, double>{0.0, 0.0}, true}
     , input{0.0, 0.0}
     , dir{0.0, 1.0}
     , targetDir(dir)
@@ -30,10 +32,27 @@ public:
     , health(health)
     , maxHealth(health)
     , invulnerable(false)
+    , dePopCounter(0u)
   {
   }
 
+  Controllable() = default;
   constexpr void update(Logic &logic);
+
+  constexpr bool isDead() const
+  {
+    return health == 0;
+  }
+
+  constexpr bool shouldBeRemoved() const
+  {
+    return isDead() && dePopCounter > 600u;
+  }
+
+  constexpr bool doCollision() const
+  {
+    return !isDead();
+  }
 
   constexpr void knockback(Vect<2u, double> speed, unsigned int stun)
   {
@@ -43,6 +62,32 @@ public:
 	this->speed = speed;
 	this->stun = stun;
       }
+  }
+
+  constexpr int getMaxHealth(void) const {
+    return maxHealth;
+  }
+
+  constexpr int getHealth(void) const {
+    return health;
+  }
+
+  constexpr void takeDamage(unsigned int damage)
+  {
+    if (!invulnerable)
+      {
+	if (damage < health)
+	  health -= damage;
+	else
+	  health = 0;
+      }
+  }
+
+  void heal(unsigned int amount)
+  {
+    health += amount;
+    if (health > maxHealth)
+      health = maxHealth;
   }
 
   constexpr bool isWalking() const
@@ -89,6 +134,9 @@ public:
   {
     this->dir = dir;
   }
+
+  void   serialize(SaveState &state) const;
+  void   unserialize(LoadGame &);
 };
 
 #endif // !CONTROLLABLE_HPP

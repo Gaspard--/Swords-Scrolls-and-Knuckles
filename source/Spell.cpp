@@ -5,7 +5,7 @@ void Spell::update(Logic &logic, Player &player)
 {
   if (!timeLeft && active)
     timeLeft = cooldown;
-  if ((cooldown - timeLeft) < duration)
+  if (hasEffect())
     logic.spellList[type](logic, player, cooldown - timeLeft);
   timeLeft -= !!timeLeft;
 }
@@ -33,8 +33,9 @@ SpellList::SpellList()
 
   map[SpellType::FROST_WALL] = [](Logic &logic, Player &player, unsigned int time) {
     if (!(time % 20))
-      logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::ICE_PILLAR);
+      logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::ICE_PILLAR, 0.2, 240);
     player.invulnerable = time != 480;
+    player.setMounted(time != 480);
   };
 }
 
