@@ -29,10 +29,13 @@ namespace PyPlugin
       .def("y", &Vect<2u, double>::y)
       .def("normalized", &Vect<2u, double>::normalized)
       .def("length2", &Vect<2u, double>::length2)
+      .def("scalar", &Vect<2u, double>::scalar)
       ;
 
     py::class_<Fixture, Controllable>(m, "Controllable")
       .def("setInput", &Controllable::setInput)
+      .def("getDir", &Controllable::getDir)
+      .def("setDir", &Controllable::setDir)
       .def_readwrite("pos", &Fixture::pos)
       ;
 

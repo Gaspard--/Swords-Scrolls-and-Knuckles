@@ -20,34 +20,53 @@ def mulVec(a, b):
     ay = a.y()
     return (PyPlugin.Vect(ax * b, ay * b))
 
-class pythonModule():
-    def moveEntityFromVec(self, entity, vec, speed):
-        newpos = subVec(vec, entity.pos).normalized()
-        entity.setInput(mulVec(newpos, speed))
+def moveEntityFromVec(entity, vec, speed):
+    newpos = subVec(vec, entity.pos).normalized()
+    entity.setInput(mulVec(newpos, speed))
 
+def chaseVec(entity, vec, evaluater, speed):
+    moveEntityFromVec(entity, vec, speed)
+
+def fleeFromVec(entity, vec, evaluater, speed):
+    moveEntityFromVec(entity, vec, -speed)
+
+def stand(entity):
+	entity.setInput(PyPlugin.Vect(0.0, 0.0))
+
+def shootAtVec(entity, vec, evaluater, speedChase, speedFlee, minRange, maxRange):
+    dist = subVec(vec, entity.pos).length2()
+    direc = subVec(vec, entity.pos).normalized()
+    if (dist < minRange):
+        fleeFromVec(entity, vec, evaluater, speedFlee)
+    elif (dist >= minRange and dist <= maxRange):
+    	entity.setDir(direc)
+    else:
+        chaseVec(entity, vec, evaluater, speedChase)
+
+class pythonModule():
     def chasePlayerAI(self, entity, evaluater):
         vec = evaluater.closestPlayer(entity.pos)
-        self.moveEntityFromVec(entity, vec, 0.01)
+        chaseVec(entity, vec, evaluater, 0.01)
 
     def fleePlayerAI(self, entity, evaluater):
         vec = evaluater.closestPlayer(entity.pos)
-        dist = PyPlugin.Vect(vec.x() - entity.pos.x(), vec.y() - entity.pos.y()).length2()
-        if (dist < 75):
-            self.moveEntityFromVec(entity, vec, -0.015)
-        else:
-            self.standAI(entity, evaluater)
+        fleeFromVec(entity, vec, evaluater, 0.015)
 
     def chaseEnemyAI(self, entity, evaluater):
         vec = evaluater.closestEnemy(entity.pos)
-        self.moveEntityFromVec(entity, vec, 0.01)
+        chaseVec(entity, vec, evaluater, 0.01)
 
     def fleeEnemyAI(self, entity, evaluater):
         vec = evaluater.closestEnemy(entity.pos)
-        dist = PyPlugin.Vect(vec.x() - entity.pos.x(), vec.y() - entity.pos.y()).length2()
-        if (dist < 75):
-            self.moveEntityFromVec(entity, vec, -0.015)
-        else:
-            self.standAI(entity, evaluater)
+        fleeFromVec(entity, vec, evaluater, 0.015)
 
     def standAI(self, entity, evaluater):
-        entity.setInput(PyPlugin.Vect(0.0, 0.0))
+        stand(entity)
+
+    def shootPlayerAI(self, entity, evaluater):
+        vec = evaluater.closestPlayer(entity.pos)
+        shootAtVec(entity, vec, evaluater, 0.02, 0.04, 60, 80)
+
+    def shootEnemyAI(self, entity, evaluater):
+        vec = evaluater.closestEnemy(entity.pos)
+        shootAtVec(entity, vec, evaluater, 0.03, 0.03, 60, 80)

@@ -16,6 +16,8 @@ PyBindInstance::PyBindInstance()
     execAI[AI::CHASEENEMY] = &PyBindInstance::chaseEnemyAI;
     execAI[AI::FLEEENEMY] = &PyBindInstance::fleeEnemyAI;
     execAI[AI::STAND] = &PyBindInstance::standAI;
+    execAI[AI::SHOOTPLAYER] = &PyBindInstance::shootPlayerAI;
+    execAI[AI::SHOOTENEMY] = &PyBindInstance::shootEnemyAI;
   }
   catch (py::error_already_set const &e)
   {
@@ -47,6 +49,16 @@ void PyBindInstance::fleeEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 void PyBindInstance::standAI(Controllable &ctr, PyEvaluate &pyEv)
 {
   pythonModule.attr("standAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::shootPlayerAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("shootPlayerAI")(&ctr, pyEv);
+}
+
+void PyBindInstance::shootEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("shootEnemyAI")(&ctr, pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
