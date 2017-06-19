@@ -74,7 +74,7 @@ constexpr void Controllable::update(Logic &)
       ++dePopCounter;
       return ;
     }
-
+  invulnerable -= !!invulnerable;
   if (!stun)
     {
       speed = speed * 0.9 + input * 0.1;

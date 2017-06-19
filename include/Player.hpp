@@ -40,11 +40,17 @@ public:
   void resetCooldowns();
   void addGold(unsigned int);
   void setAttacking(unsigned int index, bool attacking);
+
+  constexpr Vect<3u, Spell> const &getSpells() const
+  {
+    return (spells);
+  }
+
   void setMounted(bool);
   bool isMounted(void) const;
 
   // In seconds / 10
-  int getSpellTimeleft(size_t i) const;
+  unsigned int getSpellTimeleft(size_t i) const;
   int getId(void) const;
 
   void serialize(SaveState &state) const;
