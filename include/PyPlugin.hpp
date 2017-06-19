@@ -42,6 +42,7 @@ namespace PyPlugin
     py::class_<PyEvaluate>(m, "PyEvaluate")
       .def("closestPlayer", &PyEvaluate::closestPlayer)
       .def("closestEnemy", &PyEvaluate::closestEnemy)
+      .def("followRightWall", &PyEvaluate::followRightWall)
       ;
 
     return m.ptr();
