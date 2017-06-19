@@ -1,15 +1,15 @@
-// rupee_red genrated by blender2ogre 0.6.0
+// Rupee genrated by blender2ogre 0.6.0
 
-material rupee_red 
+material Rupee 
 {
     receive_shadows on 
 
     technique
     {
-        pass rupee_red
+        pass Rupee
         {
-            ambient 1.0 0.033035583794116974 0.0949925035238266 1.0
-            diffuse 0.800000011920929 0.026428467429108427 0.07599400395146017 1.0
+            ambient 0.0 1.0 0.0 1.0
+            diffuse 0.0 0.800000011920929 0.0 1.0
             specular 0.5 0.5 0.5 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
