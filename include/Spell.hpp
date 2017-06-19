@@ -17,6 +17,7 @@ namespace SpellType
   constexpr unsigned int NOT_IMPL{4u};
   constexpr unsigned int FROST_WALL{5u};
 
+  constexpr unsigned int DASH{6u};
 };
 
 struct Spell
@@ -40,12 +41,12 @@ struct Spell
 
   void update(Logic &, Player &);
 
-  constexpr unsigned int startedSince()
+  constexpr unsigned int startedSince() const
   {
     return (cooldown - timeLeft);
   }
 
-  constexpr bool hasEffect()
+  constexpr bool hasEffect() const
   {
     return (startedSince() < duration);
   }

@@ -35,7 +35,9 @@ bool Logic::tick()
     {
       if (enemy.shouldBeRemoved())
 	{
-	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 6) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+	  auto drop((gameState.enemies.size() & 3)
+		    ? ProjectileType::GOLD : (gameState.enemies.size() & 4)
+		    ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
 
 	  enemyProjectiles.add([this, drop](){
 	      return entityFactory.spawnProjectile(drop);
@@ -82,7 +84,8 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 5);
+			   player.knockback((player.pos - enemy.pos).normalized() * 0.15, 5);
+			   player.takeDamage(30);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -179,11 +182,11 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
 
 void Logic::spawnMobGroup(Terrain::Room &room)
 {
-  std::clog << "[Logic] Spawning mobs at : " << room.pos << std::endl;
-  for (unsigned int i(0u); i < 5; ++i)
+  std::clog << "[Logic] Spawning " << room.id / 2u + 5u << " mobs at : " << room.pos << std::endl;
+  for (unsigned int i(0u); i < room.id / 2u + 5u; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
+      }, AI::CHASEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size, unsigned int timeLeft)
@@ -269,6 +272,16 @@ void Logic::updateDisplay(LevelScene &levelScene)
       switch (static_cast<PlayerId>(player.getId()))
 	{
 	case PlayerId::ARCHER:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Archer::JUMP, 0.1f, false);
+	      // animatedEntity.setMainAnimation(Animations::Controllable::Archer::DASH, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
+	  if (player.getSpells()[2].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Archer::SPELL_E, true, false);
 	  break;
 	case PlayerId::MAGE:
 	  break;
@@ -282,29 +295,32 @@ void Logic::updateDisplay(LevelScene &levelScene)
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());
       }
-      if (player.isWalking())
+      if (!otherMainAnimation)
 	{
-	  if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).play();
-	  if (animatedEntity.isMounted())
+	  if (player.isWalking())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
-	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	      if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
+		animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).play();
+	      if (animatedEntity.isMounted())
+		{
+		  animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
+		  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+		}
+	      else
+		animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 	    }
 	  else
-	    animatedEntity.setMainAnimation(Animations::Controllable::WALK);
-	}
-      else
-	{
-	  if (animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).stop();
-	  if (animatedEntity.isMounted())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
-	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	      if (animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
+		animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).stop();
+	      if (animatedEntity.isMounted())
+		{
+		  animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
+		  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+		}
+	      else
+		animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 	    }
-	  else
-	    animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 	}
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
@@ -313,7 +329,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
   calculateCamera(levelScene);
   levelScene.updateUI(gameState.players);
   updatesSinceLastFrame = 0;
-}
+ }
 
 void Logic::calculateCamera(LevelScene &levelScene)
 {
