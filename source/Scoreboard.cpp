@@ -52,12 +52,13 @@ void            Scoreboard::loadScoreboard(std::string const &path)
 
     std::clog << "Loading scoreboard" << std::endl;
   
-    sc.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    sc.exceptions(std::ifstream::badbit);
     do
     {
       PlayerData pd; // Comme Pedrochu
 
-      sc >> pd;
+      if (!(sc >> pd))
+	break;
       std::clog << "Score: " << pd << std::endl;
       if ((int)pd.playerClass >= 0 && (int)pd.playerClass < 4)
 	scoreboard.emplace_back(pd);
