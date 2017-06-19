@@ -277,15 +277,15 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	case PlayerId::WARRIOR:
 	  break;
 	}
-      
+
       updateControllableEntity(animatedEntity, player);
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());
       }
       if (player.isWalking())
 	{
-	  if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).play();
+	  if (!animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+	    animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).play();
 	  if (animatedEntity.isMounted())
 	    {
 	      animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
@@ -296,8 +296,8 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	}
       else
 	{
-	  if (animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).stop();
+	  if (animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+	    animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).stop();
 	  if (animatedEntity.isMounted())
 	    {
 	      animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
