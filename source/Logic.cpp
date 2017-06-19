@@ -35,7 +35,7 @@ bool Logic::tick()
     {
       if (enemy.shouldBeRemoved())
 	{
-	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 3) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 6) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
 
 	  enemyProjectiles.add([this, drop](){
 	      return entityFactory.spawnProjectile(drop);
