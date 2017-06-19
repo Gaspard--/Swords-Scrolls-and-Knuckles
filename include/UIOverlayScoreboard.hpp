@@ -9,6 +9,7 @@ private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
   std::vector<UIOverlayResource<Ogre::PanelOverlayElement>> portraits;
   std::vector<UIOverlayResource<Ogre::TextAreaOverlayElement>> scores;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> noScore;
   Scoreboard scoreboard;
 
 public:

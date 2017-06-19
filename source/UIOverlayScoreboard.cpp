@@ -4,11 +4,25 @@
 UIOverlayScoreboard::UIOverlayScoreboard(Renderer &renderer)
   : UIOverlay("scoreboard")
   , bg(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "ScoreboardBG"))
+  , noScore(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "noScoreText"))
   , scoreboard()
 {
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
 
   bg->setMaterialName("HUD/ScoreboardBG");
+
+  noScore->setFontName("HUD/Font");
+  noScore->setCaption("There is no score available");
+  noScore->setColour(Ogre::ColourValue::White);
+  noScore->setMetricsMode(Ogre::GMM_PIXELS);
+  noScore->setPosition(Game::WIDTH / 2.f, Game::HEIGHT / 2.f);
+  noScore->setCharHeight(80.f);
+  noScore->setAlignment(Ogre::TextAreaOverlayElement::Center);
+
+  if (scoreboard.getScores().size())
+    noScore->hide();
+
+  bg->addChild(noScore.get());
 
   for (size_t i = 0; i < 14 && i < scoreboard.getScores().size(); i++) {
     portraits.emplace_back(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", std::string("Portrait") + std::to_string(i)));
@@ -25,7 +39,7 @@ UIOverlayScoreboard::UIOverlayScoreboard(Renderer &renderer)
     score.setColour(Ogre::ColourValue::White);
     score.setMetricsMode(Ogre::GMM_PIXELS);
     score.setPosition(120.f, 35.f);
-    score.setCharHeight(50.f);
+    score.setCharHeight(64.f);
     score.setAlignment(Ogre::TextAreaOverlayElement::Left);
 
     bg->addChild(portraits.back().get());

@@ -51,8 +51,8 @@ void            Scoreboard::loadScoreboard(std::string const &path)
 
   std::clog << "Loading scoreboard" << std::endl;
   
-  sc.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   try {
+    sc.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     do
     {
       PlayerData pd; // Comme Pedrochu
