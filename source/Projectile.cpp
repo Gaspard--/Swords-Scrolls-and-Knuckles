@@ -52,7 +52,7 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::EXPLOSION] = // TODO
     ProjectileReaction{
     [](Controllable &controllable, Projectile &projectile){
-      controllable.knockback((controllable.pos - projectile.pos).normalized() * 0.1, 5);
+      controllable.knockback((controllable.pos - projectile.pos).normalized() * 0.2, 5);
       controllable.takeDamage(40);
     },
     [](Projectile &, Vect<2u, double>){

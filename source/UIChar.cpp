@@ -133,15 +133,15 @@ void UIChar::updateValues(Player const &p) {
     auto &spell(spells[i]);
     auto &greyBG(spellGreyBG[i]);
     auto &textCD(spellCD[i]);
-
-    int cd(p.getSpellTimeleft(i));
+    
+    unsigned int cd(p.getSpellTimeleft(i));
     spell->show();
     if (cd == 0) {
       greyBG->hide();
     }
     else {
       greyBG->show();
-      textCD->setCaption(std::to_string(cd));
+      textCD->setCaption(std::to_string(cd / 10) + "." + std::to_string(cd % 10));
     }
   }
 }

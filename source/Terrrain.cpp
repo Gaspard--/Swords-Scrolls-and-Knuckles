@@ -40,12 +40,12 @@ void Terrain::generateLevel(unsigned int seed)
 
   std::minstd_rand engine(seed);
   std::uniform_int_distribution<> rangeX(10, getSize()[0] - 10);
-  std::uniform_int_distribution<> rangeY(10, getSize()[1] - 12);
+  std::uniform_int_distribution<> rangeY(10, getSize()[1] - 10);
   std::uniform_int_distribution<> range10(5, 10);
-  std::uniform_int_distribution<> range5(1, 4);
+  std::uniform_int_distribution<> range5(1, 5);
   // std::vector<Vect<2u, unsigned int>> rooms;
 
-  rooms.emplace_back(Vect<2u, unsigned int>{10u, 10u});
+  rooms.emplace_back(Vect<2u, unsigned int>{5u, 5u});
   for (unsigned int i(1); i < 30; ++i)
     rooms.emplace_back(Vect<2u, unsigned int>{static_cast<unsigned int>(rangeX(engine)), static_cast<unsigned int>(rangeY(engine))}, i, false);
   rooms.emplace_back(getSize() - Vect<2u, unsigned int>{5u, 5u}, 30u, false);
@@ -56,7 +56,8 @@ void Terrain::generateLevel(unsigned int seed)
     {
       bool genConnection(true);
 
-      Vect<2u, unsigned int> size(static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u), static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u));
+      Vect<2u, unsigned int> size(static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u),
+				  static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u));
       Vect<2u, unsigned int> relative(static_cast<unsigned int>(range5(engine)), static_cast<unsigned int>(range5(engine)));
 
       for (Vect<2u, unsigned int> i(0u, 0u); i[1] != size[1]; ++i[1])
@@ -73,7 +74,7 @@ void Terrain::generateLevel(unsigned int seed)
 							   return (room.pos - a).length2() < (room.pos - b).length2();
 							 }));
 	  unsigned int firstDir(std::uniform_int_distribution<>(0, 1)(engine));
-	  unsigned int width(std::uniform_int_distribution<>(1, 2)(engine));
+	  unsigned int width(std::uniform_int_distribution<>(2, 3)(engine));
 
 	  for (unsigned int k : {firstDir, 1 - firstDir})
 	    {

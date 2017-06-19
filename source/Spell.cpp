@@ -19,7 +19,6 @@ SpellList::SpellList()
   map[SpellType::JUMP] = [](Logic &, Player &player, unsigned int time) {
     if (!time)
       player.dash(3.0, 30);
-    player.invulnerable = time != 29;
   };
   map[SpellType::ARROW_ULTI] = [](Logic &logic, Player &player, unsigned int time) {
     if (!(time % 20))
@@ -33,10 +32,19 @@ SpellList::SpellList()
 
   map[SpellType::FROST_WALL] = [](Logic &logic, Player &player, unsigned int time) {
     if (!(time % 20))
-      logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::ICE_PILLAR, 0.2, 240);
-    player.invulnerable = time != 480;
+      {
+	logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::ICE_PILLAR, 0.2, 240);
+	player.invulnerable = 20;
+      }
     player.setMounted(time != 480);
   };
+  map[SpellType::DASH] = [](Logic &logic, Player &player, unsigned int time) {
+    if (!time)
+      player.dash(3.0, 30);
+    if (time == 25)
+      logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::EXPLOSION, 2.0, 2);
+  };
+  
 }
 
 std::function<void(Logic &, Player &, unsigned int)> const &SpellList::operator[](unsigned int type) const
