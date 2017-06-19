@@ -132,7 +132,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::GO_LEFT, OIS::KC_A}, {KBACTION::GO_RIGHT, OIS::KC_D},
       {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
       {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
-      {KBACTION::MOUNT, OIS::KC_W}},
+      {KBACTION::MOUNT, OIS::KC_Z}},
 #else
       {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
       {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
@@ -151,7 +151,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
       {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
-      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
       {KBACTION::MOUNT, OIS::KC_DOWN}}}
 #endif // defined OIS_WIN32_PLATFORM
 {

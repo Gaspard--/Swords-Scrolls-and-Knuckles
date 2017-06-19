@@ -42,5 +42,6 @@ void Action::update()
     kbCtrld.second->setAttacking(1u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL2]]);
     kbCtrld.second->setAttacking(2u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL3]]);
     kbCtrld.second->setLocked(Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::LOCK]]);
+    kbCtrld.second->setMounted(Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::MOUNT]]);
   }
 }
