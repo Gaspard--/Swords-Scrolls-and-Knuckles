@@ -5,6 +5,7 @@
 #include "SceneStart.hpp"
 #include "Joystick.hpp"
 #include "PyPlugin.hpp"
+#include "LevelScene.hpp"
 
 // Constructor
 
@@ -34,6 +35,9 @@ Game::Game()
   // Font loading
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
+
+  // Loading wall mesh
+  LevelScene::createWallMesh();
 
   // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
