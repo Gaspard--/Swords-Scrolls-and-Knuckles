@@ -84,6 +84,11 @@ public:
   {
     return dir;
   }
+
+  constexpr void setDir(Vect<2u, double> dir)
+  {
+    this->dir = dir;
+  }
 };
 
 #endif // !CONTROLLABLE_HPP
