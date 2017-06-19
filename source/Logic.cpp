@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include "UIOverlaySelection.hpp"
 #include "Logic.hpp"
 #include "Physics.hpp"
 #include "LevelScene.hpp"
@@ -114,7 +115,7 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec, std::vector<Gameplays> const &gp)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
@@ -126,31 +127,52 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , spellList{}
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
+#if defined OIS_WIN32_PLATFORM
+      { {KBACTION::GO_UP, OIS::KC_W}, {KBACTION::GO_DOWN, OIS::KC_S},
+      {KBACTION::GO_LEFT, OIS::KC_A}, {KBACTION::GO_RIGHT, OIS::KC_D},
+      {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
+      {KBACTION::MOUNT, OIS::KC_Z}},
+#else
       {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
       {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
       {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
-      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
+      {KBACTION::MOUNT, OIS::KC_W}},
+#endif // defined OIS_WIN32_PLATFORM
       std::map<unsigned int, OIS::KeyCode>
-      {{KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+#if defined OIS_WIN32_PLATFORM
+      { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
+      {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_SEMICOLON},
+      {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
+      {KBACTION::MOUNT, OIS::KC_DOWN}} }
+#else
+      { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
       {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
-      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
+      {KBACTION::MOUNT, OIS::KC_DOWN}}}
+#endif // defined OIS_WIN32_PLATFORM
 {
   gameState.terrain.generateLevel(42u); // TODO: something better
   for (size_t i = 0; i < vec.size(); i++) {
     gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
   }
-  if (gameState.players.size() > 0)
-    action.keyboardControlled[&keyboardControllers[0]] = &gameState.players[0];
-  if (gameState.players.size() > 1)
-    action.keyboardControlled[&keyboardControllers[1]] = &gameState.players[1];
-  if (gameState.players.size() > 2 && Joystick::getJoysticks()[0])
-  {
-      action.joystickControlled[Joystick::getJoysticks()[0].get()] = &gameState.players[2];
-  }
-  if (gameState.players.size() > 3 && Joystick::getJoysticks()[1])
-  {
-      action.joystickControlled[Joystick::getJoysticks()[1].get()] = &gameState.players[3];
+  size_t kb = 0;
+  size_t js = 0;
+  for (size_t i = 0; i < gp.size(); i++) {
+    if (gp[i] == Gameplays::KEYBOARD) {
+      action.keyboardControlled[&keyboardControllers[kb]] = &gameState.players[i];
+      kb++;
+    }
+    else if (gp[i] == Gameplays::JOYSTICK && Joystick::getJoysticks()[js]) {
+      action.joystickControlled[Joystick::getJoysticks()[js].get()] = &gameState.players[i];
+      js++;
+    }
+    else if (gp[i] == Gameplays::IA) {
+      // TODO
+    }
   }
   levelScene.setTerrain(gameState.terrain);
   // for (unsigned int i(0u); i < 10; ++i)
@@ -220,7 +242,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
       projectiles.forEach([](Entity &entity, Projectile &projectile)
 			  {
 			    if (projectile.doSpin())
-			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01), std::sin(projectile.timeLeft * 0.01)));
+			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01f), std::sin(projectile.timeLeft * 0.01f)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
@@ -253,6 +275,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
 
       updateControllableEntity(animatedEntity, player);
+      if (player.isMounted() != animatedEntity.isMounted()) {
+	animatedEntity.setMounted(player.isMounted());
+      }
       if (player.isWalking())
 	{
 	  if (!animatedEntity.getEntity().soundMap->at(Sounds::BOYAUX1).isPlaying())

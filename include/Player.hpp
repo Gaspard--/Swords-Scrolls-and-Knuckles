@@ -18,6 +18,7 @@ class Player : public Controllable
 {
 private:
   unsigned int    id;
+  bool mounted;
   unsigned int gold;
   Vect<3u, Spell> spells;
 
@@ -26,6 +27,7 @@ public:
   Player(PlayerId id, Vect<3u, Spell> &&spells, PARAMS &&... params)
     : Controllable(std::forward<PARAMS>(params)...)
     , id(static_cast<int>(id))
+    , mounted(false)
     , gold(0u)
     , spells(std::move(spells))
   {}
@@ -38,6 +40,8 @@ public:
   void resetCooldowns();
   void addGold(unsigned int);
   void setAttacking(unsigned int index, bool attacking);
+  void setMounted(bool);
+  bool isMounted(void) const;
 
   // In seconds / 10
   int getSpellTimeleft(size_t i) const;
@@ -45,6 +49,10 @@ public:
 
   void serialize(SaveState &state) const;
   void unserialize(LoadGame &game);
+
+  constexpr unsigned int getGold(void) const {
+    return (gold);
+  }
 
   static Player makeArcher(Vect<2u, double> pos);
   static Player makeMage(Vect<2u, double> pos);

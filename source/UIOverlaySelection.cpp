@@ -91,10 +91,12 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
     renderer.switchScene([&renderer, skin, gps]() {
       std::vector<std::function<AnimatedEntity(Renderer &)>> v;
       std::vector<PlayerId> classes;
+      std::vector<Gameplays> gameplays;
 
       //std::vector<int> s(skins);
       for (size_t i = 0; i < skin.size(); i++) {
 	if (gps[i] != Gameplays::NONE) {
+	  gameplays.emplace_back(gps[i]);
 	  switch (i) {
 	  case 0:
 	    v.emplace_back([&skin, i](Renderer &renderer) {
@@ -128,7 +130,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	}
       }
       LevelScene::createWallMesh();
-      return static_cast<Scene *>(new LevelScene(renderer, v, classes));
+      return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));
   play->init("HUD/ButtonSelectionPlay", (1.f - bwidth) / 2.f + posX, posY);

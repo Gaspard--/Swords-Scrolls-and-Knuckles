@@ -75,7 +75,7 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
   coinIcon->setPosition(posX + UIChar::COINICON_X_OFFSET, 1.f - UIChar::COINICON_Y_OFFSET);
 
   score->setFontName("HUD/Font");
-  score->setCaption("12345");
+  score->setCaption("");
   score->setColour(Ogre::ColourValue::White);
   score->setMetricsMode(Ogre::GMM_PIXELS);
   score->setPosition(145.f, 214.f);
@@ -126,6 +126,9 @@ UIChar::UIChar(UIOverlayHUD &hud, size_t idx)
 }
 
 void UIChar::updateValues(Player const &p) {
+  float percent(static_cast<Ogre::Real>(p.getHealth()) / static_cast<Ogre::Real>(p.getMaxHealth()));
+  healthBarFull->setDimensions(UIChar::HEALTHBAR_WIDTH * percent, UIChar::HEALTHBAR_HEIGHT);
+  score->setCaption(std::to_string(p.getGold()));
   for (size_t i = 0; i < spells.size(); i++) {
     auto &spell(spells[i]);
     auto &greyBG(spellGreyBG[i]);

@@ -9,7 +9,7 @@
 #include "Entity.hpp"
 #include "AudioSource.hpp"
 
-LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes)
+LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes, std::vector<Gameplays> const &gp)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
   , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
@@ -24,7 +24,7 @@ LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEnt
 		 renderer.getCamera().setNearClipDistance(5);
 		 return cameraNode;
 	       }())
-  , logicThread(*this, renderer, players, classes)
+  , logicThread(*this, renderer, players, classes, gp)
     // , music(Musics::SMALL_WORLD)
 {
   // music.setVolume(0.2f);
@@ -60,16 +60,6 @@ void LevelScene::resetSceneCallbacks(Renderer &r) {
     uiPause.resetUICallbacks();
   else
     {
-      // For demonstration / test purpose. Remove it if needed.
-      auto const setMounted([this](bool b, size_t = 0) {
-	  if (!b && !isInPause())
-	    for (auto &p : players) {
-	      p.setMounted(!p.isMounted());
-	    }
-	});
-      Keyboard::getKeyboard().registerCallback(OIS::KC_SPACE, setMounted);
-      Joystick::registerGlobalCallback(joystickState::JS_A, setMounted);
-
       // Go back to menu
       auto const goBackToMenu([this, &r](bool b, size_t = 0) {
 	  if (!b)

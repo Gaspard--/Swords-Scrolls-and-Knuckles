@@ -6,6 +6,7 @@
 #include <chrono>
 #include <vector>
 
+#include "UIOverlaySelection.hpp"
 #include "GameState.hpp"
 #include "ModVector.hpp"
 #include "EntityFactory.hpp"
@@ -55,7 +56,7 @@ public:
   /**
    * Parameter isn't stored, only used for setup.
    */
-  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &);
+  Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &, std::vector<Gameplays> const &);
 
   void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size = 0.2, unsigned int timeLeft = ~0u);
   void run();
