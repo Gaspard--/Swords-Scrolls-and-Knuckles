@@ -36,7 +36,7 @@ void UIOverlayStart::switchBG(void) {
 
 void UIOverlayStart::update(void) {
   std::chrono::time_point<std::chrono::system_clock> time(std::chrono::system_clock::now());
-  int seconds(std::chrono::duration_cast<std::chrono::seconds>(time - startTime).count());
+  auto seconds(std::chrono::duration_cast<std::chrono::seconds>(time - startTime).count());
 	
   if (seconds == 3) {
     switchBG();

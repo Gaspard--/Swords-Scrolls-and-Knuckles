@@ -15,16 +15,25 @@ std::istream &operator>>(std::istream &stream, PlayerData &data) {
   int id;
 
   stream >> id >> tmp >> data.playerScore;
+  std::cout << "ID: " << id << " TMP: " << tmp << " SCORE: " << data.playerScore << std::endl;
   data.playerClass = static_cast<PlayerId>(id);
   return (stream);
 }
 
 // Scoreboard
 
+Scoreboard::Scoreboard(void) {
+  loadScoreboard();
+  sort();
+}
+
+Scoreboard::~Scoreboard(void) {
+  writeScoreboard();
+}
+
 void Scoreboard::addScore(PlayerId id, int score) {
   scoreboard.emplace_back(id, score);
   sort();
-  writeScoreboard(SCOREBOARD_FILE);
 }
 
 void Scoreboard::writeScoreboard(std::string const &path) {
@@ -41,15 +50,21 @@ void            Scoreboard::loadScoreboard(std::string const &path)
   std::string   buf;
 
   std::clog << "Loading scoreboard" << std::endl;
+  
+  sc.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  try {
+    do
+    {
+      PlayerData pd; // Comme Pedrochu
 
-  while (std::getline(sc, buf))
-  {
-    PlayerData pd; // Comme Pedrochu
-
-    sc >> pd;
-    std::clog << "Score: " << pd << std::endl;
-    scoreboard.emplace_back(pd);
+      sc >> pd;
+      std::clog << "Score: " << pd << std::endl;
+      if ((int)pd.playerClass >= 0 && (int)pd.playerClass < 4)
+	scoreboard.emplace_back(pd);
+    } while (std::getline(sc, buf));
   }
+  catch (std::ios_base::failure const &) {}
+
   std::clog << "Finished loading scoreboard" << std::endl;
 }
 

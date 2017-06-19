@@ -13,9 +13,6 @@
 class UIOverlayMenu : public UIOverlay {
 private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
-  std::vector<UIOverlayResource<Ogre::PanelOverlayElement>> portraits;
-  std::vector<UIOverlayResource<Ogre::TextAreaOverlayElement>> scores;
-  UIOverlayResource<Ogre::TextAreaOverlayElement> scoreboardTxt;
 
 public:
   UIOverlayMenu(void) = delete;

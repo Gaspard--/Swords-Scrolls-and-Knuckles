@@ -47,6 +47,22 @@ material HUD/ButtonOptions
 
 }
 
+material HUD/ButtonScoreboard
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ButtonScoreboard.png
+			}
+		}
+	}
+}
+
 material HUD/ButtonLoad
 {
 	technique

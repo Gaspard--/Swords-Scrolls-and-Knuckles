@@ -1,0 +1,13 @@
+material HUD/ScoreboardBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ScoreBoardBG.png
+			}
+		}
+	}
+}

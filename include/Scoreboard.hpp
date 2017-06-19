@@ -35,8 +35,8 @@ private:
 public:
   static constexpr char const *SCOREBOARD_FILE = "./score";
 
-  Scoreboard(void) = default;
-  ~Scoreboard(void) = default;
+  Scoreboard(void);
+  ~Scoreboard(void);
   Scoreboard(Scoreboard const &) = default;
   Scoreboard(Scoreboard &&) = default;
   Scoreboard &operator=(Scoreboard const &) = default;

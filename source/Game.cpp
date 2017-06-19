@@ -35,8 +35,6 @@ Game::Game()
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
 
-  scoreboard.loadScoreboard();
-
   // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneStart(*renderer)));
@@ -52,7 +50,6 @@ Game::Game()
 
 Game::~Game(void)
 {
-  scoreboard.writeScoreboard();
   if (window != nullptr) {
     Ogre::WindowEventUtilities::removeWindowEventListener(window, this);
     windowClosed(window);
@@ -212,12 +209,4 @@ Renderer &Game::getRenderer(void) {
 
 Renderer const &Game::getRenderer(void) const {
   return (*renderer);
-}
-
-Scoreboard &Game::getScoreboard(void) {
-  return (scoreboard);
-}
-
-Scoreboard const &Game::getScoreboard(void) const {
-  return (scoreboard);
 }
