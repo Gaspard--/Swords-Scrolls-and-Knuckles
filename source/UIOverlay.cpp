@@ -63,27 +63,16 @@ void UIOverlay::mouseMoved(Ogre::Real x, Ogre::Real y) {
 }
 
 void UIOverlay::resetUICallbacks(void) {
-  auto const validateSelection([this](bool b, size_t = 0) {
+  Joystick::registerGlobalCallback(joystickState::JS_A, [this](bool b, size_t) {
     if (!b && buttons.size()) {
       buttons[selectedButton]->getCallback()();
     }
   });
-  Keyboard::getKeyboard().registerCallback(OIS::KC_RETURN, validateSelection);
-  Joystick::registerGlobalCallback(joystickState::JS_A, validateSelection);
-
   Joystick::registerGlobalCallback(dir == Direction::VERTICAL ? joystickState::JS_LDOWN : joystickState::JS_LLEFT, [this](bool , size_t) {
     setSelectedButton(selectedButton + 1);
   });
   Joystick::registerGlobalCallback(dir == Direction::VERTICAL ? joystickState::JS_LUP : joystickState::JS_LRIGHT, [this](bool , size_t) {
     setSelectedButton(selectedButton - 1);
-  }); 
-  Keyboard::getKeyboard().registerCallback(dir == Direction::VERTICAL ? OIS::KC_DOWN : OIS::KC_LEFT, [this](bool b) {
-    if (!b)
-      setSelectedButton(selectedButton + 1);
-  });
-  Keyboard::getKeyboard().registerCallback(dir == Direction::VERTICAL ? OIS::KC_UP : OIS::KC_RIGHT, [this](bool b) {
-    if (!b)
-      setSelectedButton(selectedButton - 1);
   }); 
   Mouse::getMouse().registerMouseMoveCallback([this](Ogre::Real x, Ogre::Real y) {
     mouseMoved(x, y);

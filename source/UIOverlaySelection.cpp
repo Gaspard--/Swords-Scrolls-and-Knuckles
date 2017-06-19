@@ -136,7 +136,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   bg->addChild(play->getPanel());
   buttons.emplace_back(std::move(play));
 
-  setSelectedButton(1);
+  setSelectedButton(0);
 }
 
 void UIOverlaySelection::updateUI(Ogre::Real x) {
