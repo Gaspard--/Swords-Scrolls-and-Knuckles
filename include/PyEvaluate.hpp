@@ -4,10 +4,11 @@
 #include <vector>
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "Terrain.hpp"
 
 struct PyEvaluate
 {
-  PyEvaluate(std::vector<Player> &, std::vector<Enemy> &);
+  PyEvaluate(std::vector<Player> &, std::vector<Enemy> &, Terrain &terrain);
   ~PyEvaluate() = default;
 
   Vect<2u, double> closestPlayer(Vect<2u, double> pos) const;
@@ -15,6 +16,7 @@ struct PyEvaluate
 
   std::vector<Player> &players;
   std::vector<Enemy> &enemies;
+  Terrain &terrain;
 };
 
 #endif // !PYEVALUATE_HPP_

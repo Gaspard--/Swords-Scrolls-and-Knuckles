@@ -122,7 +122,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , enemyProjectiles(gameState.enemyProjectiles, levelScene.enemyProjectiles)
   , entityFactory(renderer)
-  , pyEvaluate(gameState.players, gameState.enemies)
+  , pyEvaluate(gameState.players, gameState.enemies, gameState.terrain)
   , projectileList{}
   , spellList{}
   , keyboardControllers{
@@ -277,7 +277,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	case PlayerId::WARRIOR:
 	  break;
 	}
-      
+
       updateControllableEntity(animatedEntity, player);
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());
