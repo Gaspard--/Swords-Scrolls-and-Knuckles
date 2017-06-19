@@ -36,13 +36,13 @@ Game::Game()
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
 
-  // Loading wall mesh
-  LevelScene::createWallMesh();
-
   // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneStart(*renderer)));
   }));
+
+  // Loading wall mesh
+  LevelScene::createWallMesh();
 
   // Adding the joysticks
   for (size_t i = 0; i < 4; i++)
