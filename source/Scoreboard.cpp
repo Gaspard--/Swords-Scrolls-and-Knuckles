@@ -63,6 +63,7 @@ void            Scoreboard::loadScoreboard(std::string const &path)
     } while (std::getline(sc, buf));
   }
   catch (std::ios_base::failure const &) {}
+  catch (std::system_error const &) {}
 
   std::clog << "Finished loading scoreboard" << std::endl;
 }
