@@ -15,7 +15,6 @@ std::istream &operator>>(std::istream &stream, PlayerData &data) {
   int id;
 
   stream >> id >> tmp >> data.playerScore;
-  std::cout << "ID: " << id << " TMP: " << tmp << " SCORE: " << data.playerScore << std::endl;
   data.playerClass = static_cast<PlayerId>(id);
   return (stream);
 }
