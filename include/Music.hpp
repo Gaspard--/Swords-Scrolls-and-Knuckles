@@ -23,12 +23,15 @@ private:
   ALuint source;
   ALenum format;
   float	loopTime;
+  bool fade;
 
   void unqueuePending(void);
   bool streamFile(ALuint buffer);
+  void initMusic(Musics m, float loopTime);
+  void releaseMusic(void);
 
 public:
-  Music(Musics m, float loopTime=0.);
+  Music(Musics m, float loopTime=0.f);
   ~Music();
 
   Music(Music const &) = delete;
@@ -41,9 +44,12 @@ public:
   */
   void update(void);
 
+  void setMusic(Musics, float loopTime=0.f);
   bool isPlaying(void) const;
   void setLoopTime(float);
   void setVolume(float) const;
+  float getVolume(void) const;
+  void setFade(bool);
 };
 
 #endif /* !MUSIC_HPP */

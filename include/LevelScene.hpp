@@ -40,7 +40,7 @@ private:
   std::vector<Ogre::Light *> lights;
   // Entity ground;
   LogicThread logicThread;
-  // Music music;
+  Music music;
 
 public:
   LevelScene(void) = delete;

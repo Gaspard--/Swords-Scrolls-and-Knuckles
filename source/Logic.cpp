@@ -249,14 +249,23 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
 		    updateControllableEntity(animatedEntity, enemy);
-		    if (enemy.isDead())
-		      animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04f, false);
-		    else if (enemy.isWalking())
+		    if (enemy.isWalking())
+		    {
 		      animatedEntity.setMainAnimation(Animations::Controllable::WALK);
-		    else if (enemy.isStun())
-		      animatedEntity.setMainAnimation(Animations::Controllable::STUN);
+		      if (!animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+		      animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).play();
+		    }
 		    else
-		      animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+		    {
+		      if (enemy.isDead())
+		        animatedEntity.setMainAnimation(Animations::Controllable::Enemy::DEATH, 0.04f, false);
+		      else if (enemy.isStun())
+		        animatedEntity.setMainAnimation(Animations::Controllable::STUN);
+		      else
+		        animatedEntity.setMainAnimation(Animations::Controllable::STAND);
+		      if (animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+			animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).stop();
+		    }
 		    animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
 		  });
 

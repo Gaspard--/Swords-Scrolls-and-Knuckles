@@ -4,23 +4,10 @@
 #include "AudioError.hpp"
 
 Music::Music(Musics m, float loop)
-  : source(AL_NONE), loopTime(loop)
+  : source(AL_NONE), loopTime(loop), fade(false)
 {
-  if (ov_fopen(Audio::getMusicFileName(m), &oggStream) < 0)
-    throw AudioError("Could not open .ogg file");
-  vorbisInfo = ov_info(&oggStream, -1);
-  vorbisComment = ov_comment(&oggStream, -1);
-  format = vorbisInfo->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-  alGenSources(1, &source);
-  Audio::checkError();
   alGenBuffers(2, buffers.data());
-  if (!Audio::checkError(false))
-    {
-      alDeleteSources(1, &source);
-      ov_clear(&oggStream);
-      throw AudioError("Couldn't generate a buffer in Music::Music");
-    }
-
+  setMusic(m, loop);
   alSource3f(source, AL_POSITION, 0., 0., 0.);
   alSource3f(source, AL_VELOCITY, 0., 0., 0.);
   alSource3f(source, AL_DIRECTION, 0., 0., 0.);
@@ -31,17 +18,48 @@ Music::Music(Musics m, float loop)
       alDeleteSources(1, &source);
       ov_clear(&oggStream);
       alDeleteBuffers(1, &buffers[0]);
-      throw AudioError("Couldn't generate a buffer in Music::Music");
+      throw AudioError("Couldn't delete a buffer in Music::Music");
     }
 }
 
 Music::~Music()
 {
+  releaseMusic();
+  alDeleteBuffers(1, &buffers[0]);
+}
+
+void Music::initMusic(Musics music, float loopTime)
+{
+  if (ov_fopen(Audio::getMusicFileName(music), &oggStream) < 0)
+    throw AudioError("Could not open .ogg file");
+  vorbisInfo = ov_info(&oggStream, -1);
+  vorbisComment = ov_comment(&oggStream, -1);
+  format = vorbisInfo->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+  this->loopTime = loopTime;
+  alGenSources(1, &source);
+  if (!Audio::checkError(false))
+    {
+      alDeleteBuffers(2, &source);
+      ov_clear(&oggStream);
+      throw AudioError("Couldn't generate a buffer in Music::Music");
+    }
+}
+
+void Music::releaseMusic(void)
+{
   alSourceStop(source);
   unqueuePending();
-  alDeleteSources(1, &source);
-  alDeleteBuffers(1, &buffers[0]);
   ov_clear(&oggStream);
+  alDeleteSources(1, &source);
+}
+
+void Music::setMusic(Musics music, float loopTime)
+{
+  if (source != AL_NONE)
+    {
+      releaseMusic();
+    }
+  initMusic(music, loopTime);
 }
 
 void Music::play(void)
@@ -63,6 +81,19 @@ void Music::setVolume(float f) const
   Audio::checkError();
 }
 
+float Music::getVolume(void) const
+{
+  ALfloat gain;
+
+  alGetSourcef(source, AL_GAIN, &gain);
+  return gain;
+}
+
+void Music::setFade(bool b)
+{
+  fade = b;
+}
+
 bool Music::isPlaying(void) const
 {
   ALenum state;
@@ -77,6 +108,8 @@ void Music::update(void)
   int processed(AL_NONE);
   bool active(true);
 
+  if (fade)
+    setVolume(getVolume() / 1.1f);
   alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
   if (processed)
     {

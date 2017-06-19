@@ -30,6 +30,7 @@ enum class Musics
 {
   NONE,
   SMALL_WORLD,
+  FIND_YOU,
   SIZE,
 };
 
@@ -53,6 +54,7 @@ private:
 {{
   nullptr,
   "resources/musics/small_world.ogg",
+  "resources/musics/FindYou.ogg",
 }};
 
 public:

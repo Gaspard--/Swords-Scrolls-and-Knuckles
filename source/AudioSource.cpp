@@ -29,9 +29,7 @@ void AudioSource::init()
 void AudioSource::setSound(Sounds sound)
 {
   if (id == AL_NONE)
-    {
-      init();
-    }
+    init();
   if (buffer)
     {
       alSourcei(id, AL_BUFFER, AL_NONE);

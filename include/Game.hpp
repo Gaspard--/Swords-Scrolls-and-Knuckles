@@ -16,13 +16,14 @@
 # include "Renderer.hpp"
 # include "Keyboard.hpp"
 # include "Mouse.hpp"
+# include "Music.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {
     /// Ogre config plugins & resource path
     static constexpr char const *PLUGINS_CONFIG_PATH = "resources/cfg/plugins.cfg";
     static constexpr char const *RESOURCES_CONFIG_PATH = "resources/cfg/resources.cfg";
-	
+
     /// Root Ogre instance.
     Ogre::Root root;
     Ogre::RenderWindow *window;
@@ -51,13 +52,15 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     Game &operator=(Game const &) = delete;
     Game &operator=(Game &&) = delete;
     ~Game(void);
-	
+
 	// Size of window
 	static constexpr int const HEIGHT = 1080;
 	static constexpr int const WIDTH = 1920;
 
     /// Run the game
     void run(void);
+
+    Music music;
 
     /// Return the root instance
     Ogre::Root &getRoot(void);

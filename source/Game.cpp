@@ -12,7 +12,10 @@ Game::Game()
   : root(Game::PLUGINS_CONFIG_PATH)
   , window(nullptr)
   , inputManager(nullptr)
+  , music(Musics::SMALL_WORLD)
 {
+  music.play();
+  music.setVolume(0.05f);
   setupResources();
   setupRenderSystem();
 
