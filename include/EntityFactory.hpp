@@ -1,6 +1,7 @@
 #ifndef ENTITY_FACTORY_HPP
 # define ENTITY_FACTORY_HPP
 
+# include <utility>
 # include "Skins.hpp"
 
 class Renderer;
