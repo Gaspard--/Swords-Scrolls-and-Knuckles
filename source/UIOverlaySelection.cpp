@@ -129,7 +129,6 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	  }
 	}
       }
-      LevelScene::createWallMesh();
       return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));
