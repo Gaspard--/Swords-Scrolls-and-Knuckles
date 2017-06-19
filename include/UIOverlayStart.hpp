@@ -10,8 +10,6 @@
 class UIOverlayStart : public UIOverlay {
 private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
-	UIOverlayResource<Ogre::PanelOverlayElement> logo;
-	UIOverlayResource<Ogre::TextAreaOverlayElement> title;
 	UIOverlayResource<Ogre::TextAreaOverlayElement> pressTxt;
 	std::chrono::time_point<std::chrono::system_clock> startTime;
 	

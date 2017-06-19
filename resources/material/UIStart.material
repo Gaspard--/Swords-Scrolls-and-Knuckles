@@ -22,7 +22,7 @@ material HUD/GameLogo
             
             texture_unit
             {
-                texture LogoGame.png
+                texture StartScreen.png
             }
         }
     }
