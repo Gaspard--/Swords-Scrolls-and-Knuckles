@@ -20,7 +20,6 @@ public:
   SceneMainMenu(Renderer &);
   virtual ~SceneMainMenu(void) = default;
 
-  virtual bool update(Game &, Ogre::FrameEvent const &) override;
   virtual void resetSceneCallbacks(Renderer &);
 };
 

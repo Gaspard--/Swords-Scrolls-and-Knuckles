@@ -15,7 +15,3 @@ void SceneMainMenu::resetSceneCallbacks(Renderer &) {
     }
   });
 }
-
-bool SceneMainMenu::update(Game &, Ogre::FrameEvent const &) {
-  return (true);
-}
