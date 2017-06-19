@@ -18,7 +18,7 @@ private:
   unsigned int maxHealth;
 
 public:
-  bool invulnerable;
+  unsigned int invulnerable;
   unsigned int dePopCounter;
 
   template<class... PARAMS>
@@ -80,6 +80,7 @@ public:
 	  health -= damage;
 	else
 	  health = 0;
+	invulnerable = damage;
       }
   }
 
@@ -112,6 +113,7 @@ public:
   {
     this->speed = input * speed;
     this->stun = time;
+    this->invulnerable = time;
   }
 
   // setter only.
