@@ -46,7 +46,7 @@ public:
   
   constexpr bool shouldBeRemoved() const
   {
-    return isDead() && dePopCounter > 1200u;
+    return isDead() && dePopCounter > 600u;
   }
   
   constexpr bool doCollision() const

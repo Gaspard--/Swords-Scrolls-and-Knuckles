@@ -17,7 +17,7 @@ enum class PlayerId
 class Player : public Controllable
 {
 private:
-  unsigned int    id;
+  unsigned int id;
   bool mounted;
   unsigned int gold;
   Vect<3u, Spell> spells;

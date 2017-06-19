@@ -175,15 +175,6 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
     }
   }
   levelScene.setTerrain(gameState.terrain);
-  // for (unsigned int i(0u); i < 10; ++i)
-  //   {
-  //     enemies.add([this](){
-  //       return entityFactory.spawnEnemy();
-  //     }, AI::CHASEPLAYER, 100u, 0.5, Vect<2u, double>{7.5, 7.5 + (double)i});
-  //     enemies.add([this](){
-  //       return entityFactory.spawnEnemy();
-  //     }, AI::FLEEPLAYER, 100u, 0.5, Vect<2u, double>{3.0, 3.0 + (double)i});
-  //   }
 }
 
 void Logic::spawnMobGroup(Terrain::Room &room)
@@ -242,7 +233,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
       projectiles.forEach([](Entity &entity, Projectile &projectile)
 			  {
 			    if (projectile.doSpin())
-			      entity.setDirection(Vect<2u, float>(std::cos(projectile.timeLeft * 0.01f), std::sin(projectile.timeLeft * 0.01f)));
+			      entity.setDirection(Vect<2u, float>((float)std::cos(projectile.timeLeft * 0.01), (float)std::sin(projectile.timeLeft * 0.01)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
@@ -273,7 +264,20 @@ void Logic::updateDisplay(LevelScene &levelScene)
     {
       AnimatedEntity &animatedEntity(playerEntities[i]);
       Player &player(gameState.players[i]);
+      bool otherMainAnimation{false};
 
+      switch (static_cast<PlayerId>(player.getId()))
+	{
+	case PlayerId::ARCHER:
+	  break;
+	case PlayerId::MAGE:
+	  break;
+	case PlayerId::TANK:
+	  break;
+	case PlayerId::WARRIOR:
+	  break;
+	}
+      
       updateControllableEntity(animatedEntity, player);
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());
