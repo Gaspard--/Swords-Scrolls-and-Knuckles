@@ -16,6 +16,7 @@
 # include "Renderer.hpp"
 # include "Keyboard.hpp"
 # include "Mouse.hpp"
+# include "Scoreboard.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {
@@ -36,6 +37,9 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 
     /// Instanciate a Joystick, return true if successful.
     bool addJoystick(size_t);
+
+    /// Scoreboard
+    Scoreboard scoreboard;
 
   protected:
     /// Ogre::FrameListener
@@ -70,6 +74,10 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     /// Return the renderer instance
     Renderer &getRenderer(void);
     Renderer const &getRenderer(void) const;
+
+    /// Return the scoreboard
+    Scoreboard &getScoreboard(void);
+    Scoreboard const &getScoreboard(void) const;
 
     class SetupException : public std::runtime_error {
       public:

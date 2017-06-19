@@ -7,30 +7,50 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include "Player.hpp"
 
 struct PlayerData
 {
-  bool            isScore;
-  std::string     playerName;
-  std::string     playerClass;
-  int             playerScore;
+  PlayerId        playerClass;
+  unsigned int    playerScore;
 
-  PlayerData(std::string);
+  constexpr PlayerData(void)
+    : playerClass(PlayerId::ARCHER)
+    , playerScore(0)
+  {}
+
+  constexpr PlayerData(PlayerId cl, unsigned int score)
+    : playerClass(cl)
+    , playerScore(score)
+  {}
+
   ~PlayerData() = default;
 };
 
 class Scoreboard
 {
 private:
-  std::vector<std::vector<PlayerData>> scoreboard;
+  std::vector<PlayerData> scoreboard;
 
 public:
+  static constexpr char const *SCOREBOARD_FILE = "./score";
+
+  Scoreboard(void) = default;
+  ~Scoreboard(void) = default;
+  Scoreboard(Scoreboard const &) = default;
+  Scoreboard(Scoreboard &&) = default;
+  Scoreboard &operator=(Scoreboard const &) = default;
+  Scoreboard &operator=(Scoreboard &&) = default;
+
   void  sort(void);
-  void  loadDataFromFile(std::string);
-  void  dumpInfo(std::string);
+  void  loadScoreboard(std::string const & = SCOREBOARD_FILE);
+  void  writeScoreboard(std::string const & = SCOREBOARD_FILE);
+  void  addScore(PlayerId, int score);
+  std::vector<PlayerData> const &getScores(void) const;
 };
 
 std::ostream                &operator<<(std::ostream &, PlayerData const &);
+std::istream                &operator>>(std::istream &, PlayerData &);
 std::vector<PlayerData>     lineToPlayerInfo(std::string);
 
 #endif

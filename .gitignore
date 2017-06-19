@@ -55,3 +55,7 @@ Win32
 *~
 .#*
 *#
+
+# Score file
+score
+score.txt

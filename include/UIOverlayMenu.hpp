@@ -1,6 +1,7 @@
 #ifndef UIOVERLAYMENU_HPP
 # define UIOVERLAYMENU_HPP
 
+# include <vector>
 # include <memory>
 # include <functional>
 # include <unordered_map>
@@ -12,6 +13,9 @@
 class UIOverlayMenu : public UIOverlay {
 private:
   UIOverlayResource<Ogre::PanelOverlayElement> bg;
+  std::vector<UIOverlayResource<Ogre::PanelOverlayElement>> portraits;
+  std::vector<UIOverlayResource<Ogre::TextAreaOverlayElement>> scores;
+  UIOverlayResource<Ogre::TextAreaOverlayElement> scoreboardTxt;
 
 public:
   UIOverlayMenu(void) = delete;
