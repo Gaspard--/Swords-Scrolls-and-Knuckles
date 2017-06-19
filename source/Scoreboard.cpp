@@ -1,3 +1,4 @@
+#include <ios>
 #include <iostream>
 #include <fstream>
 #include "Scoreboard.hpp"
@@ -45,12 +46,12 @@ void Scoreboard::writeScoreboard(std::string const &path) {
 
 void            Scoreboard::loadScoreboard(std::string const &path)
 {
-  std::ifstream sc(path);
-  std::string   buf;
-
-  std::clog << "Loading scoreboard" << std::endl;
-  
   try {
+    std::ifstream sc(path);
+    std::string   buf;
+
+    std::clog << "Loading scoreboard" << std::endl;
+  
     sc.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     do
     {
@@ -63,7 +64,6 @@ void            Scoreboard::loadScoreboard(std::string const &path)
     } while (std::getline(sc, buf));
   }
   catch (std::ios_base::failure const &) {}
-  catch (std::system_error const &) {}
 
   std::clog << "Finished loading scoreboard" << std::endl;
 }
