@@ -30,15 +30,25 @@ struct Spell
   Spell() = default;
 
   constexpr Spell(unsigned int type, unsigned int cooldown,
-	unsigned int duration = 1, unsigned int timeLeft = 0)
+		  unsigned int duration = 1, unsigned int timeLeft = 0)
   : type(type)
-      , cooldown(cooldown)
-      , duration(duration)
-      , timeLeft(timeLeft)
-      , active(false)
+    , cooldown(cooldown)
+    , duration(duration)
+    , timeLeft(timeLeft)
+    , active(false)
   {}
 
   void update(Logic &, Player &);
+
+  constexpr unsigned int startedSince()
+  {
+    return (cooldown - timeLeft);
+  }
+
+  constexpr bool hasEffect()
+  {
+    return (startedSince() < duration);
+  }
 };
 
 class SpellList
