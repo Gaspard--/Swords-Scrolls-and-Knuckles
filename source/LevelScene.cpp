@@ -1,6 +1,7 @@
 #include <OgreEntity.h>
 #include <OgreLight.h>
 #include <OgreSceneNode.h>
+#include <OgreStaticGeometry.h>
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
@@ -12,7 +13,8 @@
 LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes, std::vector<Gameplays> const &gp)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
-  , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
+  , staticGeometry(renderer.getSceneManager().createStaticGeometry("Terrain"))
+  , terrainNode(renderer.getSceneManager().createSceneNode())
   , inPause(false)
   , cameraNode([&renderer]()
 	       {
@@ -77,31 +79,30 @@ void LevelScene::resetSceneCallbacks(Renderer &r) {
 }
 void LevelScene::setTerrain(Terrain const &terrain)
 {
+  staticGeometry->reset();
+  staticGeometry->setCastShadows(true);
   for (unsigned int i(0); i < terrain.getSize()[0]; ++i)
     {
       for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
-	{
-	      
+	{ 
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
-	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
-	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
-
+	      Ogre::Entity* wall(terrainNode->getCreator()->createEntity("WallMesh"));
+	      
 	      wall->setCastShadows(true);
-	      wallNode->attachObject(wall);
-	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      staticGeometry->addEntity(wall, Ogre::Vector3{static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j)});
 	    }
 	  else
 	    {
-	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
-	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
+	      Ogre::Entity* ground(terrainNode->getCreator()->createEntity("GroundMesh"));
 
 	      ground->setCastShadows(true);
-	      wallNode->attachObject(ground);
-	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      staticGeometry->addEntity(ground, Ogre::Vector3{static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j)});
 	    }
 	}
     }
+  staticGeometry->addSceneNode(terrainNode);
+  staticGeometry->build();
 }
 
 void LevelScene::createGroundMesh()

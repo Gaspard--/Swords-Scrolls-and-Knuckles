@@ -11,7 +11,7 @@ Renderer::Renderer(Game &game)
 
   viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) /
-		  Ogre::Real(viewport->getActualHeight()));
+			 Ogre::Real(viewport->getActualHeight()));
 }
 
 Ogre::SceneManager &Renderer::getSceneManager(void)
