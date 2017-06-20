@@ -13,7 +13,6 @@ Game::Game()
   : root(Game::PLUGINS_CONFIG_PATH)
   , window(nullptr)
   , inputManager(nullptr)
-  , musicThread(Musics::FIND_YOU)
 {
   setupResources();
   setupRenderSystem();

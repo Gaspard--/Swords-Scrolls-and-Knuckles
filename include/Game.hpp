@@ -16,7 +16,6 @@
 # include "Renderer.hpp"
 # include "Keyboard.hpp"
 # include "Mouse.hpp"
-# include "MusicThread.hpp"
 # include "Scoreboard.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
@@ -62,8 +61,6 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 
     /// Run the game
     void run(void);
-
-    MusicThread musicThread;
 
     /// Return the root instance
     Ogre::Root &getRoot(void);

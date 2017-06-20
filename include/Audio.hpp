@@ -23,6 +23,9 @@ enum class Sounds
   BOYAUX1,
   EUUUH1,
   FOOTSTEPS,
+  METROID_DOOR,
+  HEALTH_PICKUP,
+  COIN,
   SIZE
 };
 
@@ -49,6 +52,9 @@ private:
   "resources/sounds/boyaux1.wav",
   "resources/sounds/euuuh1.wav",
   "resources/sounds/footsteps.wav",
+  "resources/sounds/metroid_door.wav",
+  "resources/sounds/health_pickup.wav",
+  "resources/sounds/coin.wav",
 }};
   static constexpr std::array<char const *, static_cast<size_t>(Musics::SIZE)> const musicFilenames
 {{

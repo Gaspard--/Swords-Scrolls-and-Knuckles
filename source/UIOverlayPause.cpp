@@ -1,3 +1,4 @@
+#include "MusicThread.hpp"
 #include "UIOverlayPause.hpp"
 #include "SceneMainMenu.hpp"
 #include "LevelScene.hpp"
@@ -44,6 +45,12 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", [&renderer]() {
     renderer.switchScene([&renderer]() {
+      std::cout << "BH:locking to change musing" << std::endl;
+      std::lock_guard<std::mutex> guard(MusicThread::getInstance().mutex);
+
+      MusicThread::getInstance()->setMusic(Musics::FIND_YOU);
+      MusicThread::getInstance()->play();
+      std::cout << "BH: unlocking" << std::endl;
       return new SceneMainMenu(renderer);
     });
   }));

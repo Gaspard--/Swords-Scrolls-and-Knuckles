@@ -13,9 +13,6 @@ private:
   Music music;
   std::thread thread;
 
-public:
-  std::mutex mutex;
-
   template<class... PARAMS>
   MusicThread(PARAMS &&... params)
     : go(true)
@@ -37,12 +34,19 @@ public:
       })
   {}
 
+  static MusicThread instance;
+
+public:
+  std::mutex mutex;
+
   ~MusicThread();
 
   Music *operator->();
   Music const *operator->() const;
   Music &operator*();
   Music const &operator*() const;
+
+  static MusicThread &getInstance(void);
 };
 
 #endif /* !MUSICTHREAD_HPP */

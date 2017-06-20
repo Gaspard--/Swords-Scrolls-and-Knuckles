@@ -50,6 +50,7 @@ public:
   void setVolume(float) const;
   float getVolume(void) const;
   void setFade(bool);
+  void fadeTo(Musics);
 };
 
 #endif /* !MUSIC_HPP */

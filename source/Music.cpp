@@ -8,6 +8,13 @@ Music::Music(Musics m, float loop)
 {
   alGenBuffers(2, buffers.data());
   setMusic(m, loop);
+  alGenSources(1, &source);
+  if (!Audio::checkError(false))
+    {
+      alDeleteBuffers(2, &source);
+      ov_clear(&oggStream);
+      throw AudioError("Couldn't generate a source in Music::Music");
+    }
   alSource3f(source, AL_POSITION, 0., 0., 0.);
   alSource3f(source, AL_VELOCITY, 0., 0., 0.);
   alSource3f(source, AL_DIRECTION, 0., 0., 0.);
@@ -26,6 +33,7 @@ Music::~Music()
 {
   releaseMusic();
   alDeleteBuffers(1, &buffers[0]);
+  alDeleteSources(1, &source);
 }
 
 void Music::initMusic(Musics music, float loopTime)
@@ -36,13 +44,6 @@ void Music::initMusic(Musics music, float loopTime)
   vorbisComment = ov_comment(&oggStream, -1);
   format = vorbisInfo->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
   this->loopTime = loopTime;
-  alGenSources(1, &source);
-  if (!Audio::checkError(false))
-    {
-      alDeleteBuffers(2, &source);
-      ov_clear(&oggStream);
-      throw AudioError("Couldn't generate a buffer in Music::Music");
-    }
 }
 
 void Music::releaseMusic(void)
@@ -50,7 +51,6 @@ void Music::releaseMusic(void)
   alSourceStop(source);
   unqueuePending();
   ov_clear(&oggStream);
-  alDeleteSources(1, &source);
 }
 
 void Music::setMusic(Musics music, float loopTime)
