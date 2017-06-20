@@ -1,0 +1,62 @@
+material HUD/GameOverBG
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture GameOver.png
+			}
+		}
+	}
+}
+
+
+material HUD/GOExit
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ExitGOButton.png
+			}
+		}
+	}
+}
+
+material HUD/GOScore
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture ScoreGOButton.png
+			}
+		}
+	}
+}
+
+material HUD/GOTryAgain
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture TryAgainGOButton.png
+			}
+		}
+	}
+}

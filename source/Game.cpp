@@ -7,6 +7,8 @@
 #include "PyPlugin.hpp"
 #include "LevelScene.hpp"
 
+#include "SceneGameOver.hpp"
+
 // Constructor
 
 Game::Game()
@@ -38,7 +40,8 @@ Game::Game()
 
   // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
-    return (static_cast<Scene *>(new SceneStart(*renderer)));
+    // return (static_cast<Scene *>(new SceneStart(*renderer)));
+		return (static_cast<Scene *>(new SceneGameOver(*renderer)));
   }));
 
   // Loading wall mesh
