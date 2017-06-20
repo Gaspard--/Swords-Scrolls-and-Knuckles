@@ -19,6 +19,7 @@ struct PyEvaluate
   std::vector<Player> &players;
   std::vector<Enemy> &enemies;
   Terrain &terrain;
+  bool attack;
 };
 
 #endif // !PYEVALUATE_HPP_

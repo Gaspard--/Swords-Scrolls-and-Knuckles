@@ -3,7 +3,7 @@
 
 PyEvaluate::PyEvaluate(std::vector<Player> &players,
     std::vector<Enemy> &enemies, Terrain &terrain)
-: players(players), enemies(enemies), terrain(terrain)
+: players(players), enemies(enemies), terrain(terrain), attack(false)
 {
 }
 
