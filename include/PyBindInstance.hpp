@@ -21,6 +21,13 @@ namespace AI
   constexpr unsigned int CHASEENEMY = 3u;
   constexpr unsigned int FLEEENEMY = 4u;
   constexpr unsigned int STAND = 5u;
+  constexpr unsigned int SHOOTPLAYER = 6u;
+  constexpr unsigned int SHOOTENEMY = 7u;
+  constexpr unsigned int FOLLOWRIGHTWALL = 8u;
+  constexpr unsigned int LEADERCONTACTAI = 9u;
+  constexpr unsigned int LEADERDISTANCEAI = 10u;
+  constexpr unsigned int COMPANIONCONTACTAI = 11u;
+  constexpr unsigned int COMPANIONDISTANCEAI = 12u;
 };
 
 class	PyBindInstance
@@ -38,6 +45,13 @@ public:
     void chaseEnemyAI(Controllable &, PyEvaluate &);
     void fleeEnemyAI(Controllable &, PyEvaluate &);
     void standAI(Controllable &, PyEvaluate &);
+    void shootPlayerAI(Controllable &, PyEvaluate &);
+    void shootEnemyAI(Controllable &, PyEvaluate &);
+    void followRightWallAI(Controllable &, PyEvaluate &);
+    void leaderContactAI(Controllable &, PyEvaluate &);
+    void leaderDistanceAI(Controllable &, PyEvaluate &);
+    void companionContactAI(Controllable &, PyEvaluate &);
+    void companionDistanceAI(Controllable &, PyEvaluate &);
     std::map<unsigned int, std::function<void(PyBindInstance *, Controllable &, PyEvaluate &)>> execAI;
 
 private:

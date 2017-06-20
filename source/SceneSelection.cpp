@@ -1,4 +1,5 @@
 #include "SceneSelection.hpp"
+#include "SceneMainMenu.hpp"
 #include "Game.hpp"
 #include "Mouse.hpp"
 
@@ -51,6 +52,13 @@ void SceneSelection::resetSceneCallbacks(Renderer &r) {
   Joystick::registerGlobalCallback(joystickState::JS_RDOWN, changeGameplayDown);
   Joystick::registerGlobalCallback(joystickState::JS_RLEFT, changeSelectionDown);
   Joystick::registerGlobalCallback(joystickState::JS_RRIGHT, changeSelectionUp);
+  Keyboard::getKeyboard().registerCallback(OIS::KC_ESCAPE, [&r](bool b) {
+    if (!b) {
+      r.switchScene([&r]() {
+        return static_cast<Scene *>(new SceneMainMenu(r));
+      });
+    }
+  });
 }
 
 bool SceneSelection::update(Game &, Ogre::FrameEvent const &fe) {

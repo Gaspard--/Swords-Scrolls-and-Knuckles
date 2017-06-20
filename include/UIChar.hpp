@@ -58,6 +58,8 @@ public:
   static constexpr float PORTRAITBG_HEIGHT = 129.f / Game::HEIGHT;
   static constexpr float PORTRAIT_X_OFFSET = 22.f / Game::WIDTH;
   static constexpr float PORTRAIT_Y_OFFSET = 54.f / Game::HEIGHT;
+  
+  static char const *PORTRAITS_HUD[];
 
   UIChar(UIOverlayHUD &, size_t id);
   UIChar(UIChar const &) = delete;

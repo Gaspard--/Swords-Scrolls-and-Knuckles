@@ -5,6 +5,7 @@
 #include "SceneStart.hpp"
 #include "Joystick.hpp"
 #include "PyPlugin.hpp"
+#include "LevelScene.hpp"
 
 // Constructor
 
@@ -40,6 +41,9 @@ Game::Game()
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneStart(*renderer)));
   }));
+
+  // Loading wall mesh
+  LevelScene::createWallMesh();
 
   // Adding the joysticks
   for (size_t i = 0; i < 4; i++)

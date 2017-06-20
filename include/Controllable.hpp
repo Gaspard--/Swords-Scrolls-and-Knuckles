@@ -18,7 +18,7 @@ private:
   unsigned int maxHealth;
 
 public:
-  bool invulnerable;
+  unsigned int invulnerable;
   unsigned int dePopCounter;
 
   template<class... PARAMS>
@@ -43,12 +43,12 @@ public:
   {
     return health == 0;
   }
-  
+
   constexpr bool shouldBeRemoved() const
   {
     return isDead() && dePopCounter > 600u;
   }
-  
+
   constexpr bool doCollision() const
   {
     return !isDead();
@@ -80,6 +80,7 @@ public:
 	  health -= damage;
 	else
 	  health = 0;
+	invulnerable = 10;
       }
   }
 
@@ -112,6 +113,7 @@ public:
   {
     this->speed = input * speed;
     this->stun = time;
+    this->invulnerable = time;
   }
 
   // setter only.
@@ -128,6 +130,11 @@ public:
   constexpr Vect<2u, double> getDir() const
   {
     return dir;
+  }
+
+  constexpr void setDir(Vect<2u, double> dir)
+  {
+    this->dir = dir;
   }
 
   void   serialize(SaveState &state) const;

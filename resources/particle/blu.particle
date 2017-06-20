@@ -1,0 +1,40 @@
+// A sparkly purple fountain
+particle_system blu
+{
+    // material wall
+    particle_width 0.3
+    particle_height 0.3
+    cull_each false
+    quota 5
+    billboard_type oriented_self
+
+    emitter Point
+    {
+	width 1
+	height 0
+	depth 1
+        angle 30
+        emission_rate 10
+        time_to_live 0.5
+        direction 0 1 0
+        velocity_min 6.0
+        velocity_max 10.0
+        colour_range_start 0.5 1.0 1.0
+        colour_range_end 0.0 0.0 1.0
+    }
+
+    // // Gravity
+    // affector LinearForce
+    // {
+    //     force_vector 0 -3.5 0
+    //     force_application add
+    // }
+
+    // Fader
+    affector ColourFader
+    {
+    	red -1.0
+        green -1.0
+        blue -1.0
+    }
+}

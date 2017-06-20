@@ -1,3 +1,4 @@
+#include <OgreParticleSystem.h>
 #include <algorithm>
 #include <iostream>
 #include "UIOverlaySelection.hpp"
@@ -35,7 +36,13 @@ bool Logic::tick()
     {
       if (enemy.shouldBeRemoved())
 	{
-	  auto drop((updatesSinceLastFrame & 1) ? ProjectileType::GOLD : (updatesSinceLastFrame & 3) ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+	  int dropSeed(std::uniform_int_distribution<>(0, 15)(randEngine));
+
+	  auto drop((dropSeed == 0) ? ProjectileType::COOLDOWN_RESET :
+		    (dropSeed == 1) ? ProjectileType::GOLD50 :
+		    (dropSeed <= 3) ? ProjectileType::GOLD20 :
+		    (dropSeed <= 6) ? ProjectileType::GOLD5 :
+		    (dropSeed <= 10) ? ProjectileType::HEAL :  ProjectileType::GOLD);
 
 	  enemyProjectiles.add([this, drop](){
 	      return entityFactory.spawnProjectile(drop);
@@ -50,7 +57,6 @@ bool Logic::tick()
       player.checkSpells(*this);
       if (!room.mobsSpawned)
 	{
-	  room.mobsSpawned = true;
 	  spawnMobGroup(room);
 	  std::cout << "spawning mobs" << std::endl;
 	}
@@ -63,6 +69,14 @@ bool Logic::tick()
 					   [this](auto &projectile, Vect<2u, double> dir) {
 					     projectileList[projectile.type].wallResponse(projectile, dir);
 					   });
+	  if (projectile.type == ProjectileType::EXPLOSION)
+	    particleSpawns.emplace_back(projectile.pos, "explosion");
+	  else if (projectile.type == ProjectileType::HIT1
+		   || ((projectile.type == ProjectileType::ARROW
+			|| projectile.type == ProjectileType::BOUNCY_ARROW
+			|| projectile.type == ProjectileType::ICE_PILLAR)
+		       ))
+	    particleSpawns.emplace_back(projectile.pos, "blu");
 	}
     });
   updateProjectile(gameState.projectiles);
@@ -82,7 +96,8 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
 			 [](auto &player, auto &enemy){
-			   player.knockback((player.pos - enemy.pos).normalized() * 0.1, 5);
+			   player.knockback((player.pos - enemy.pos).normalized() * 0.15, 5);
+			   player.takeDamage(30);
 			 });
   Physics::collisionTest(gameState.projectiles.begin(), gameState.projectiles.end(),
 			 gameState.enemies.begin(), gameState.enemies.end(),
@@ -94,8 +109,9 @@ bool Logic::tick()
 			 [this](auto &enemyProjectile, auto &player){
 			   if (enemyProjectile.type == ProjectileType::COOLDOWN_RESET)
 			     player.resetCooldowns();
-			   else if (enemyProjectile.type == ProjectileType::GOLD)
-			     player.addGold(99);
+			   else if (enemyProjectile.type >= ProjectileType::GOLD
+				    && enemyProjectile.type <= ProjectileType::GOLD50)
+			     player.addGold(Vect<4u, unsigned int>(1u, 5u, 20u, 50u)[enemyProjectile.type - ProjectileType::GOLD]);
 			   projectileList[enemyProjectile.type].hitEnemy(player, enemyProjectile);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
@@ -108,10 +124,23 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
+  {
+    if (enemy.ai)
     {
-      if (enemy.ai)
-	pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
     }
+  }
+  for (auto &player : gameState.players)
+  {
+    unsigned int ai(player.getAI());
+
+    if (ai)
+    {
+      pyBindInstance.execAI[ai](&pyBindInstance, player, pyEvaluate);
+      player.setAttacking(0u, pyEvaluate.attack);
+      player.setAttacking(2u, pyEvaluate.attack);
+    }
+  }
   return stop;
 }
 
@@ -122,9 +151,10 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , enemyProjectiles(gameState.enemyProjectiles, levelScene.enemyProjectiles)
   , entityFactory(renderer)
-  , pyEvaluate(gameState.players, gameState.enemies)
+  , pyEvaluate(gameState.players, gameState.enemies, gameState.terrain)
   , projectileList{}
   , spellList{}
+  , randEngine(42u)
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
 #if defined OIS_WIN32_PLATFORM
@@ -155,7 +185,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::MOUNT, OIS::KC_DOWN}}}
 #endif // defined OIS_WIN32_PLATFORM
 {
-  gameState.terrain.generateLevel(42u); // TODO: something better
+  gameState.terrain.generateLevel(420u); // TODO: something better
   for (size_t i = 0; i < vec.size(); i++) {
     gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
   }
@@ -171,7 +201,27 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       js++;
     }
     else if (gp[i] == Gameplays::IA) {
-      // TODO
+      PlayerId id(static_cast<PlayerId>(gameState.players[i].getId()));
+
+      for (auto &player : gameState.players)
+      {
+        unsigned int ai(player.getAI());
+
+        if (ai == 0 || ai == AI::LEADERCONTACTAI || ai == AI::LEADERDISTANCEAI)
+        {
+          if (id == PlayerId::ARCHER || id == PlayerId::MAGE)
+            gameState.players[i].setAI(AI::COMPANIONDISTANCEAI);
+          else if (id == PlayerId::TANK || id == PlayerId::WARRIOR)
+            gameState.players[i].setAI(AI::COMPANIONCONTACTAI);
+        }
+      }
+      if (!gameState.players[i].getAI())
+      {
+        if (id == PlayerId::ARCHER || id == PlayerId::MAGE)
+          gameState.players[i].setAI(AI::LEADERDISTANCEAI);
+        else if (id == PlayerId::TANK || id == PlayerId::WARRIOR)
+          gameState.players[i].setAI(AI::LEADERCONTACTAI);
+      }
     }
   }
   levelScene.setTerrain(gameState.terrain);
@@ -179,11 +229,12 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
 
 void Logic::spawnMobGroup(Terrain::Room &room)
 {
-  std::clog << "[Logic] Spawning mobs at : " << room.pos << std::endl;
-  for (unsigned int i(0u); i < 5; ++i)
+  room.mobsSpawned = true;
+  std::clog << "[Logic] Spawning " << room.id / 2u + 5u << " mobs at : " << room.pos << std::endl;
+  for (unsigned int i(0u); i < room.id / 2u + 5u; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::FLEEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
+      }, AI::CHASEPLAYER, 100u * gameState.players.size(), 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size, unsigned int timeLeft)
@@ -228,17 +279,43 @@ void Logic::updateDisplay(LevelScene &levelScene)
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   enemies.updateTarget();
-  auto const updateProjectileEntities([this](auto &projectiles){
+  auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
       projectiles.updateTarget();
-      projectiles.forEach([](Entity &entity, Projectile &projectile)
+      projectiles.forEach([this](Entity &entity, Projectile &projectile)
 			  {
+			    double angle(projectile.timeLeft * 0.01);
+
 			    if (projectile.doSpin())
-			      entity.setDirection(Vect<2u, float>((float)std::cos(projectile.timeLeft * 0.01), (float)std::sin(projectile.timeLeft * 0.01)));
+			      entity.setDirection(Vect<2u, Ogre::Real>((Ogre::Real)std::cos(angle), (Ogre::Real)std::sin(angle)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
   updateProjectileEntities(projectiles);
   updateProjectileEntities(enemyProjectiles);
+
+  for (auto &&pair : particleSpawns)
+    {
+      particleEffects.emplace_back(30, entityFactory.createParticleSystem(pair.second));
+      particleEffects.back().second.setPosition(static_cast<Ogre::Real>(pair.first[0]), 0.f, static_cast<Ogre::Real>(pair.first[1]));
+    }
+  particleSpawns.clear();
+  for (auto &effect : particleEffects)
+    {
+      if (effect.first > updatesSinceLastFrame)
+	effect.first -= updatesSinceLastFrame;
+      else
+	effect.first = 0;
+      if (effect.first < 10)
+	effect.second.getOgre()->setEmitting(false);
+      // if (!effect.first)
+      // 	effect.second = ParticleEffect{}; // Pre-erase just in case.
+    }
+  particleEffects.erase(std::remove_if(particleEffects.begin(), particleEffects.end(), [](auto const &p)
+				       {
+					 return !p.first;
+				       }), particleEffects.end());
+
+
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
       animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]),
@@ -275,45 +352,115 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
       bool otherMainAnimation{false};
 
+      updateControllableEntity(animatedEntity, player);
+
       switch (static_cast<PlayerId>(player.getId()))
 	{
 	case PlayerId::ARCHER:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Archer::JUMP, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
+	  if (player.getSpells()[2].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_C, true);
+	  if (player.getSpells()[2].hasEffect())
+	    {
+	      Ogre::Real scale;
+
+	      if (player.getSpells()[2].startedSince() < 60)
+		{
+		  scale = (1.0f + player.getSpells()[2].startedSince() / 60.0f) / 150.0f;
+		  otherMainAnimation = true;
+		}
+	      else if (player.getSpells()[2].startedSince() > 420)
+		scale = (1.0f + (480.0f - player.getSpells()[2].startedSince()) / 60.0f) / 150.0f;
+	      else
+		scale = 2.0f / 150.0f;
+	      animatedEntity.getEntity().getNode()->setScale(scale, scale, scale);
+	    }
 	  break;
 	case PlayerId::MAGE:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
+	  if (player.getSpells()[1].hasEffect())
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
+	  if (player.getSpells()[2].hasEffect() != animatedEntity.isMounted()) {
+	    animatedEntity.setMounted(player.isMounted());
+	  }
 	  break;
 	case PlayerId::TANK:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Tank::JUMP, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
+	  if (player.getSpells()[3].hasEffect())
+	    {
+	      animatedEntity.addSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD, 0.0f, true);
+	    }
 	  break;
 	case PlayerId::WARRIOR:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::JUMP, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
+	  if (player.getSpells()[2].hasEffect())
+	    {
+	      double angle(-player.getSpells()[2].startedSince() * 0.1);
+
+	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
+	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
+	      otherMainAnimation = true;
+	      Ogre::Real scale;
+
+	      if (player.getSpells()[2].startedSince() < 60)
+		{
+		  scale = (1.0f + player.getSpells()[2].startedSince() / 60.0f) / 150.0f;
+		  otherMainAnimation = true;
+		}
+	      else if (player.getSpells()[2].startedSince() > 420)
+		scale = (1.0f + (480.0f - player.getSpells()[2].startedSince()) / 60.0f) / 150.0f;
+	      else
+		scale = 2.0f / 150.0f;
+	      animatedEntity.getEntity().getNode()->setScale(scale, scale, scale);
+	    }
 	  break;
 	}
 
-      updateControllableEntity(animatedEntity, player);
-      if (player.isMounted() != animatedEntity.isMounted()) {
-	animatedEntity.setMounted(player.isMounted());
-      }
-      if (player.isWalking())
+      if (!otherMainAnimation)
 	{
-	  if (!animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).play();
-	  if (animatedEntity.isMounted())
+	  if (player.isWalking())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
-	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+	      if (!animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+		animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).play();
+	      if (animatedEntity.isMounted())
+		{
+		  animatedEntity.setMainAnimation(Animations::Controllable::Player::WALK_RIDE);
+		  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::WALK);
+		}
+	      else
+		animatedEntity.setMainAnimation(Animations::Controllable::WALK);
 	    }
 	  else
-	    animatedEntity.setMainAnimation(Animations::Controllable::WALK);
-	}
-      else
-	{
-	  if (animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
-	    animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).stop();
-	  if (animatedEntity.isMounted())
 	    {
-	      animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
-	      animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+	      if (animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).isPlaying())
+		animatedEntity.getEntity().soundMap->at(Sounds::FOOTSTEPS).stop();
+	      if (animatedEntity.isMounted())
+		{
+		  animatedEntity.setMainAnimation(Animations::Controllable::Player::STAND_RIDE);
+		  animatedEntity.getMount()->setMainAnimation(Animations::Controllable::STAND);
+		}
+	      else
+		animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 	    }
-	  else
-	    animatedEntity.setMainAnimation(Animations::Controllable::STAND);
 	}
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }

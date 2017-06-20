@@ -17,7 +17,7 @@ namespace Animations
       constexpr char const STAND_RIDE[] = "Stand_Ride";
       constexpr char const ATTACK[] = "Attack";
     }
-    constexpr char const TAUNT[] = "Taun";
+    constexpr char const TAUNT[] = "Taunt";
 
     // Archer-only animations will go here
     namespace Archer
@@ -26,7 +26,7 @@ namespace Animations
       constexpr char const SPELL_B[] = "Spell_B"; 
       constexpr char const SPELL_C[] = "Spell_C";
       constexpr char const SPELL_CHANNEL[] = "Spell_Channel";
-      constexpr char const SPELL_D[] = "Spell_D";
+      constexpr char const DASH[] = "Spell_D";
       constexpr char const SPELL_E[] = "Spell_E";
       constexpr char const SPELL_FORWARD[] = "Spell_Forward";
       constexpr char const SPELL_OMNI[] = "Spell_Omni";
@@ -36,10 +36,10 @@ namespace Animations
     {
       constexpr char const SPELL_A[] = "Spell_A";
       constexpr char const SPELL_B[] = "Spell_B";
-      constexpr char const SPELL_C[] = "Spell_C";
+      constexpr char const JUMP[] = "Spell_C";
       constexpr char const SPELL_CHANNEL[] = "Spell_Channel";
       constexpr char const SPELL_D[] = "Spell_D";
-      constexpr char const SPELL_E[] = "Spell_E";
+      constexpr char const HAMMER_DOWN[] = "Spell_E";
       constexpr char const SPELL_FORWARD[] = "Spell_Forward";
       constexpr char const SPELL_OMNI[] = "Spell_Omni";
     };
@@ -48,7 +48,7 @@ namespace Animations
     {
       constexpr char const SPELL_A[] = "Spell_A";
       constexpr char const SPELL_B[] = "Spell_B";
-      constexpr char const SPELL_C[] = "Spell_C";
+      constexpr char const JUMP[] = "Spell_C";
       constexpr char const SPELL_CHANNEL[] = "Spell_Channel";
       constexpr char const SPELL_D[] = "Spell_D";
       constexpr char const SPELL_E[] = "Spell_E";

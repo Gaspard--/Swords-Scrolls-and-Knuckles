@@ -17,6 +17,7 @@
 # include "Keyboard.hpp"
 # include "Mouse.hpp"
 # include "MusicThread.hpp"
+# include "Scoreboard.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {

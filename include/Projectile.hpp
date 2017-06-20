@@ -20,7 +20,12 @@ namespace ProjectileType
   static constexpr unsigned int const COOLDOWN_RESET{4};
   static constexpr unsigned int const HEAL{5};
   static constexpr unsigned int const GOLD{6};
-  static constexpr unsigned int const EXPLOSION{7};
+  static constexpr unsigned int const GOLD5{7};
+  static constexpr unsigned int const GOLD20{8};
+  static constexpr unsigned int const GOLD50{9};
+  static constexpr unsigned int const EXPLOSION{10};
+  static constexpr unsigned int const HIT1{11};
+  static constexpr unsigned int const HIT2{12};
 };
 
 class Projectile : public Fixture
@@ -37,6 +42,13 @@ public:
     , type(type)
     , timeLeft(removeIn)
   {
+  }
+
+  constexpr bool doTerrainCollision()
+  {
+    return type != ProjectileType::EXPLOSION
+      && type != ProjectileType::HIT1
+      && type != ProjectileType::HIT2;
   }
 
   constexpr bool doCollision() const
@@ -63,7 +75,7 @@ public:
   constexpr bool doSpin()
   {
     return (type == ProjectileType::FIRE_BALL
-	    || type == ProjectileType::GOLD
+	    || (type >= ProjectileType::GOLD && type <= ProjectileType::GOLD50)
 	    || type == ProjectileType::HEAL
 	    || type == ProjectileType::COOLDOWN_RESET);
   }

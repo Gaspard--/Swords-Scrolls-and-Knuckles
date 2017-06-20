@@ -6,7 +6,7 @@
 # include <functional>
 # include <vector>
 # include <Overlay/OgrePanelOverlayElement.h>
-# include <OgreTextAreaOverlayElement.h>
+# include <Overlay/OgreTextAreaOverlayElement.h>
 # include "UIOverlayResource.hpp"
 # include "AnimatedEntity.hpp"
 # include "Renderer.hpp"

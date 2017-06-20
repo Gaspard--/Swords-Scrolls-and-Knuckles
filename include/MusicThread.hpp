@@ -23,6 +23,8 @@ public:
     , thread([this]() {
 	       {
 		 std::lock_guard<std::mutex> guard(mutex);
+
+		 music.setVolume(0.02f);
 		 music.play();
 	       }
 	     while ([this]() {

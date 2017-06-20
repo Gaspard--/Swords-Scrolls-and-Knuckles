@@ -29,16 +29,23 @@ namespace PyPlugin
       .def("y", &Vect<2u, double>::y)
       .def("normalized", &Vect<2u, double>::normalized)
       .def("length2", &Vect<2u, double>::length2)
+      .def("scalar", &Vect<2u, double>::scalar)
+      .def("equals", &Vect<2u, double>::equals)
       ;
 
     py::class_<Fixture, Controllable>(m, "Controllable")
       .def("setInput", &Controllable::setInput)
+      .def("getDir", &Controllable::getDir)
+      .def("setDir", &Controllable::setDir)
       .def_readwrite("pos", &Fixture::pos)
       ;
 
     py::class_<PyEvaluate>(m, "PyEvaluate")
       .def("closestPlayer", &PyEvaluate::closestPlayer)
       .def("closestEnemy", &PyEvaluate::closestEnemy)
+      .def("furtherPlayer", &PyEvaluate::furtherPlayer)
+      .def("followRightWall", &PyEvaluate::followRightWall)
+      .def_readwrite("attack", &PyEvaluate::attack)
       ;
 
     return m.ptr();

@@ -63,7 +63,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 
     Ogre::TextAreaOverlayElement &gp(*gameplaysTxt.back().get());
     gp.setFontName("HUD/Font");
-    gp.setColour(Ogre::ColourValue::White);
+    gp.setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
     gp.setMetricsMode(Ogre::GMM_PIXELS);
     gp.setPosition(250.f + 473.f * i, 190.f);
     gp.setCharHeight(30.f);
@@ -129,7 +129,6 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	  }
 	}
       }
-      LevelScene::createWallMesh();
       return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));
@@ -137,7 +136,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   bg->addChild(play->getPanel());
   buttons.emplace_back(std::move(play));
 
-  setSelectedButton(0);
+  setSelectedButton(1);
 }
 
 void UIOverlaySelection::updateUI(Ogre::Real x) {
@@ -170,13 +169,13 @@ void UIOverlaySelection::changeSkin(Renderer &r, bool b) {
 }
 
 void UIOverlaySelection::changeSelection(bool b) {
-  gameplaysTxt[selected]->setColour(Ogre::ColourValue::White);
+  gameplaysTxt[selected]->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
   int i = static_cast<int>(selected) - 1 + b * 2;
   if (i < 0)
     i = heroes.size() + i;
   i %= heroes.size();
   selected = static_cast<size_t>(i);
-  gameplaysTxt[selected]->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
+  gameplaysTxt[selected]->setColour(Ogre::ColourValue::White);
 }
 
 void UIOverlaySelection::renderGameplayName(size_t i) {

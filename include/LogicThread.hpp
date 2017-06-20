@@ -8,11 +8,12 @@ class LogicThread
 private:
   Logic logic;
   std::thread thread;
+
 public:
   template<class... PARAMS>
   LogicThread(PARAMS &&... params)
     : logic(std::forward<PARAMS>(params)...)
-    , thread([this](){
+    , thread([this]() {
 	logic.run();
       })
   {}
