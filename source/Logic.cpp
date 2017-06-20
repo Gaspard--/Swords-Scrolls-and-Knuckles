@@ -35,9 +35,13 @@ bool Logic::tick()
     {
       if (enemy.shouldBeRemoved())
 	{
-	  auto drop((gameState.enemies.size() & 3)
-		    ? ProjectileType::GOLD : (gameState.enemies.size() & 4)
-		    ? ProjectileType::HEAL : ProjectileType::COOLDOWN_RESET);
+	  int dropSeed(std::uniform_int_distribution<>(0, 15)(randEngine));
+
+	  auto drop((dropSeed == 0) ? ProjectileType::COOLDOWN_RESET :
+		    (dropSeed == 1) ? ProjectileType::GOLD50 :
+		    (dropSeed <= 3) ? ProjectileType::GOLD20 :
+		    (dropSeed <= 6) ? ProjectileType::GOLD5 :
+		    (dropSeed <= 10) ? ProjectileType::HEAL :  ProjectileType::GOLD);
 
 	  enemyProjectiles.add([this, drop](){
 	      return entityFactory.spawnProjectile(drop);
@@ -52,7 +56,6 @@ bool Logic::tick()
       player.checkSpells(*this);
       if (!room.mobsSpawned)
 	{
-	  room.mobsSpawned = true;
 	  spawnMobGroup(room);
 	  std::cout << "spawning mobs" << std::endl;
 	}
@@ -97,8 +100,9 @@ bool Logic::tick()
 			 [this](auto &enemyProjectile, auto &player){
 			   if (enemyProjectile.type == ProjectileType::COOLDOWN_RESET)
 			     player.resetCooldowns();
-			   else if (enemyProjectile.type == ProjectileType::GOLD)
-			     player.addGold(99);
+			   else if (enemyProjectile.type >= ProjectileType::GOLD
+				    && enemyProjectile.type <= ProjectileType::GOLD50)
+			     player.addGold(Vect<4u, unsigned int>(1u, 5u, 20u, 50u)[enemyProjectile.type - ProjectileType::GOLD]);
 			   projectileList[enemyProjectile.type].hitEnemy(player, enemyProjectile);
 			 });
   constexpr auto const correctOverlap([](auto &a, auto &b){
@@ -128,6 +132,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , pyEvaluate(gameState.players, gameState.enemies)
   , projectileList{}
   , spellList{}
+  , randEngine(42u)
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
 #if defined OIS_WIN32_PLATFORM
@@ -182,11 +187,12 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
 
 void Logic::spawnMobGroup(Terrain::Room &room)
 {
+  room.mobsSpawned = true;
   std::clog << "[Logic] Spawning " << room.id / 2u + 5u << " mobs at : " << room.pos << std::endl;
   for (unsigned int i(0u); i < room.id / 2u + 5u; ++i)
     enemies.add([this](){
 	return entityFactory.spawnEnemy();
-      }, AI::CHASEPLAYER, 100u, 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
+      }, AI::CHASEPLAYER, 100u * gameState.players.size(), 0.5, room.pos + Vect<2u, double>{0., (double)i * 0.1});
 }
 
 void Logic::spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size, unsigned int timeLeft)
@@ -277,7 +283,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	  if (player.getSpells()[1].hasEffect())
 	    {
 	      animatedEntity.setMainAnimation(Animations::Controllable::Archer::JUMP, 0.1f, false);
-	      // animatedEntity.setMainAnimation(Animations::Controllable::Archer::DASH, 0.1f, false);
 	      otherMainAnimation = true;
 	    }
 	  if (player.getSpells()[2].startedSince() <= updatesSinceLastFrame)
@@ -286,8 +291,22 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	case PlayerId::MAGE:
 	  break;
 	case PlayerId::TANK:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Tank::JUMP, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
 	  break;
 	case PlayerId::WARRIOR:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	  if (player.getSpells()[1].hasEffect())
+	    {
+	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::JUMP, 0.1f, false);
+	      otherMainAnimation = true;
+	    }
 	  break;
 	}
       

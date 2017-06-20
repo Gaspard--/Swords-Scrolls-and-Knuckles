@@ -62,7 +62,7 @@ Player Player::makeTank(Vect<2u, double> pos)
 {
   return Player(PlayerId::TANK,
 		Vect<3u, Spell>
-		(Spell{SpellType::ARROW_SHOT, 60, 10},
+		(Spell{SpellType::HIT2, 200, 200},
 		 Spell{SpellType::DASH, 480, 30},
 		 Spell{SpellType::ARROW_ULTI, 2400, 480}),
 		600u, 0.5, pos);
@@ -72,7 +72,7 @@ Player Player::makeWarrior(Vect<2u, double> pos)
 {
   return Player(PlayerId::WARRIOR,
 		Vect<3u, Spell>
-		(Spell{SpellType::ARROW_SHOT, 60, 10},
+		(Spell{SpellType::HIT1, 60, 60},
 		 Spell{SpellType::DASH, 480, 30},
 		 Spell{SpellType::ARROW_ULTI, 2400, 480}),
 		600u, 0.5, pos);

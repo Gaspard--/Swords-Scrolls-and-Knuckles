@@ -79,6 +79,47 @@ ProjectileList::ProjectileList()
     },
     [](Projectile &, Vect<2u, double>){
     }};
+  map[(unsigned int)ProjectileType::GOLD5] =
+    ProjectileReaction{
+    [](Controllable &controllable, Projectile &projectile){
+      projectile.remove();
+    },
+    [](Projectile &, Vect<2u, double>){
+    }};
+  map[(unsigned int)ProjectileType::GOLD20] =
+    ProjectileReaction{
+    [](Controllable &controllable, Projectile &projectile){
+      projectile.remove();
+    },
+    [](Projectile &, Vect<2u, double>){
+    }};
+  map[(unsigned int)ProjectileType::GOLD50] =
+    ProjectileReaction{
+    [](Controllable &controllable, Projectile &projectile){
+      projectile.remove();
+    },
+    [](Projectile &, Vect<2u, double>){
+    }};
+  map[(unsigned int)ProjectileType::HIT1] =
+    ProjectileReaction{
+    [](Controllable &controllable, Projectile &projectile){
+      controllable.knockback(projectile.speed, 10);
+      controllable.takeDamage(35);
+      projectile.remove();
+    },
+    [](Projectile &p, Vect<2u, double>){
+      p.remove();
+    }};
+  map[(unsigned int)ProjectileType::HIT2] =
+    ProjectileReaction{
+    [](Controllable &controllable, Projectile &projectile){
+      controllable.knockback(projectile.speed, 30);
+      controllable.takeDamage(105);
+      projectile.remove();
+    },
+    [](Projectile &p, Vect<2u, double>){
+      p.remove();
+    }};
 }
 
 ProjectileReaction const &ProjectileList::operator[](unsigned int n) const

@@ -47,6 +47,8 @@ public:
   template<class RESPONSE, class FIXTURE>
   void correctFixture(FIXTURE &fixture, RESPONSE &&response)
   {
+    if (!fixture.doTerrainCollision())
+      return ;
     Vect<2u, Vect<2u, double>> const extremes{(fixture.pos - Vect<2u, double>{fixture.radius, fixture.radius}),
 	(fixture.pos + Vect<2u, double>{fixture.radius, fixture.radius})};
     Vect<2u, Vect<2u, unsigned>> const roundedExtremes(extremes);
