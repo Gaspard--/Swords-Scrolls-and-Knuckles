@@ -23,11 +23,11 @@ ProjectileList::ProjectileList()
       controllable.knockback(projectile.speed.normalized() * 0.2, 10);
       controllable.takeDamage(35);
       BounceResponse{0.8}(projectile, (controllable.pos - projectile.pos).normalized());
-      projectile.type = ProjectileType::ARROW;
+      //      projectile.type = ProjectileType::ARROW;
     },
     [](Projectile &projectile, Vect<2u, double> v){
       BounceResponse{0.8}(projectile, v);
-      projectile.type = ProjectileType::ARROW;
+      // projectile.type = ProjectileType::ARROW;
     }};
   map[(unsigned int)ProjectileType::ICE_PILLAR] =
     ProjectileReaction{
