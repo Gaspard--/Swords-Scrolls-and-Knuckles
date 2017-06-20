@@ -81,3 +81,22 @@ class pythonModule():
     def followRightWallAI(self, entity, evaluater):
         evaluater.attack = False
         followRightWall(entity, evaluater, 0.1)
+
+    def leaderContactAI(self, entity, evaluater):
+        evaluater.attack = False
+        vec = evaluater.closestEnemy(entity.pos)
+        if (vec.equals(entity.pos)):
+            followRightWall(entity, evaluater, self.heroSpeed)
+        else:
+            chaseVec(entity, vec, evaluater, self.heroSpeed)
+            evaluater.attack = True
+
+    def leaderDistanceAI(self, entity, evaluater):
+        evaluater.attack = False
+        vec = evaluater.closestEnemy(entity.pos)
+        if (vec.equals(entity.pos)):
+            followRightWall(entity, evaluater, self.heroSpeed)
+        else:
+            shootAtVec(entity, vec, evaluater, self.heroSpeed, self.heroSpeed, 30, 60)
+            evaluater.attack = True
+

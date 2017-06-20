@@ -18,6 +18,9 @@ PyBindInstance::PyBindInstance()
     execAI[AI::STAND] = &PyBindInstance::standAI;
     execAI[AI::SHOOTPLAYER] = &PyBindInstance::shootPlayerAI;
     execAI[AI::SHOOTENEMY] = &PyBindInstance::shootEnemyAI;
+    execAI[AI::FOLLOWRIGHTWALL] = &PyBindInstance::followRightWallAI;
+    execAI[AI::LEADERCONTACTAI] = &PyBindInstance::leaderContactAI;
+    execAI[AI::LEADERDISTANCEAI] = &PyBindInstance::leaderDistanceAI;
   }
   catch (py::error_already_set const &e)
   {
@@ -65,6 +68,14 @@ void PyBindInstance::followRightWallAI(Controllable &ctr, PyEvaluate &pyEv)
   pythonModule.attr("followRightWallAI")(&ctr, &pyEv);
 }
 
+void PyBindInstance::leaderContactAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("leaderContactAI")(&ctr, &pyEv);
+}
+
+void PyBindInstance::leaderDistanceAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("leaderDistanceAI")(&ctr, &pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
