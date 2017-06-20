@@ -43,7 +43,14 @@ def shootAtVec(entity, vec, evaluater, speedChase, speedFlee, minRange, maxRange
     else:
         chaseVec(entity, vec, evaluater, speedChase)
 
+def followRightWall(entity, evaluater, speed):
+    vec = evaluater.followRightWall(entity.pos)
+    moveEntityFromVec(entity, vec, speed)
+
 class pythonModule():
+    def __init__(self):
+        self.heroSpeed = 0.03
+
     def chasePlayerAI(self, entity, evaluater):
         vec = evaluater.closestPlayer(entity.pos)
         chaseVec(entity, vec, evaluater, 0.01)
@@ -70,3 +77,7 @@ class pythonModule():
     def shootEnemyAI(self, entity, evaluater):
         vec = evaluater.closestEnemy(entity.pos)
         shootAtVec(entity, vec, evaluater, 0.03, 0.03, 60, 80)
+
+    def followRightWallAI(self, entity, evaluater):
+        evaluater.attack = False
+        followRightWall(entity, evaluater, 0.1)

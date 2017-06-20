@@ -59,6 +59,12 @@ void PyBindInstance::shootPlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 void PyBindInstance::shootEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 {
   pythonModule.attr("shootEnemyAI")(&ctr, pyEv);
+
+void PyBindInstance::followRightWallAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("followRightWallAI")(&ctr, &pyEv);
+}
+
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)
