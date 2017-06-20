@@ -10,7 +10,6 @@
 #include "Entity.hpp"
 #include "AnimatedEntity.hpp"
 #include "LogicThread.hpp"
-#include "Music.hpp"
 #include "Player.hpp"
 
 class Terrain;
@@ -40,7 +39,6 @@ private:
   std::vector<Ogre::Light *> lights;
   // Entity ground;
   LogicThread logicThread;
-  Music music;
 
 public:
   LevelScene(void) = delete;

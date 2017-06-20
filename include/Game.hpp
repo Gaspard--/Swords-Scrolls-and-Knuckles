@@ -16,7 +16,7 @@
 # include "Renderer.hpp"
 # include "Keyboard.hpp"
 # include "Mouse.hpp"
-# include "Music.hpp"
+# include "MusicThread.hpp"
 
 class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 {
@@ -37,6 +37,8 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
 
     /// Instanciate a Joystick, return true if successful.
     bool addJoystick(size_t);
+
+
 
   protected:
     /// Ogre::FrameListener
@@ -60,7 +62,7 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     /// Run the game
     void run(void);
 
-    Music music;
+    MusicThread musicThread;
 
     /// Return the root instance
     Ogre::Root &getRoot(void);

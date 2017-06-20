@@ -25,11 +25,7 @@ LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEnt
 		 return cameraNode;
 	       }())
   , logicThread(*this, renderer, players, classes, gp)
-  , music(Musics::SMALL_WORLD)
 {
-  music.setVolume(0.02f);
-  music.play();
-
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
 
   std::clog << "Loading level scene" << std::endl;
@@ -215,7 +211,6 @@ bool LevelScene::update(Game &, Ogre::FrameEvent const &)
   if (!isInPause()) {
     logicThread->updateDisplay(*this);
   }
-  music.update();
   return true;
 }
 

@@ -4,7 +4,7 @@
 #include "OgreVector3.h"
 
 AudioSource::AudioSource()
-     :  id(AL_NONE), buffer(AL_NONE)
+  :  id(AL_NONE), buffer(AL_NONE)
 {
 }
 
