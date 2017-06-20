@@ -7,6 +7,11 @@ void Spell::update(Logic &logic, Player &player)
     timeLeft = cooldown;
   if (hasEffect())
     logic.spellList[type](logic, player, cooldown - timeLeft);
+  else if (reset)
+    {
+      reset = false;
+      timeLeft = 0;
+    }
   timeLeft -= !!timeLeft;
 }
 
@@ -74,7 +79,25 @@ SpellList::SpellList()
   };
   map[SpellType::SPIN] = [](Logic &logic, Player &player, unsigned int time) {
     player.invulnerable = 1;
+        if (time < 60)
+      {
+	player.radius = 0.5 * (1.0 + time / 60.0);
+      }
+    else if (time > 420)
+      {
+	player.radius = 0.5 * (1.0 + (480.0 - time) / 60.0);
+      }
+    else
+      player.radius = 1.0;
+    if (time == 239)
+      player.radius = 0.5;
     logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::EXPLOSION, player.radius, 2);
+  };
+  map[SpellType::CHOOCHOO] = [](Logic &logic, Player &player, unsigned int time) {
+    player.invulnerable = 1;
+    if (time % 50)
+      logic.spawnProjectile(player.getPos() + player.getDir().normalized() * 0.5, player.getDir().normalized() * 0.2, ProjectileType::HIT1, 1.5, 2);
+    player.speed += player.getDir().normalized() * 0.005;
   };
   
 }
