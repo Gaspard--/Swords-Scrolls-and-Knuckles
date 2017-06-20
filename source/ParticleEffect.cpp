@@ -21,7 +21,6 @@ ParticleEffect &ParticleEffect::operator=(ParticleEffect &&e)
 {
   if (sceneNode)
     {
-      std::cout << "[Particles] destroying particle effect!" << std::endl;
       sceneNode->getCreator()->destroyParticleSystem(ogreParticleEffect);
       sceneNode->getCreator()->destroySceneNode(sceneNode);
     }
@@ -36,7 +35,6 @@ ParticleEffect::~ParticleEffect()
 {
   if (sceneNode)
     {
-      std::cout << "[Particles] destroying particle effect!" << std::endl;
       sceneNode->getCreator()->destroyParticleSystem(ogreParticleEffect);
       sceneNode->getCreator()->destroySceneNode(sceneNode);
     }

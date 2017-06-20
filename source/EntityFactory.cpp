@@ -68,9 +68,9 @@ AnimatedEntity EntityFactory::spawnHero(Skins::Skin skin)
     auto sceneNode(hero.getEntity().getNode()->createChildSceneNode());
 
     light->setType(Ogre::Light::LT_POINT);
-    light->setDiffuseColour(1.f, 0.5f, 0.0f);
-    light->setSpecularColour(1.0f, 1.0f, 1.0f);
-    light->setAttenuation(25, 0.5f, 0.05f, 0.0f);
+    light->setDiffuseColour(2.0f, 1.5f, 1.0f);
+    light->setSpecularColour(1.0f, 0.5f, 0.5f);
+    light->setAttenuation(25, 0.3f, 0.05f, 0.0f);
     sceneNode->attachObject(light);
     sceneNode->setPosition(0, 150, 0);
   }

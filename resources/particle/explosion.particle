@@ -1,12 +1,13 @@
 // A sparkly purple fountain
 particle_system explosion
 {
-    // material wall
+    material wall
     particle_width 0.3
     particle_height 0.3
     cull_each false
-    quota 120
-    billboard_type oriented_self
+    quota 30
+    billboard_type point
+    //oriented_self
 
     // Area emitter
     emitter Ellipsoid
@@ -21,14 +22,11 @@ particle_system explosion
         velocity_min 6.0
         velocity_max 10.0
         colour_range_start 1 0.5 0
-        colour_range_end 1 0. 0
+        colour_range_end 1 0.0 0
     }
 
     emitter Point
     {
-	width 1
-	height 0
-	depth 1
         angle 60
         emission_rate 120
         time_to_live 0.5
