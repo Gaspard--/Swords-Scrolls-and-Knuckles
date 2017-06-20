@@ -15,7 +15,7 @@ Entity EntityFactory::spawnOgreHead(void)
 
 Entity EntityFactory::spawnProjectile(unsigned int projectileType)
 {
-  Entity entity(renderer, "ogrehead.mesh");
+  Entity entity;
 
   if (projectileType == ProjectileType::COOLDOWN_RESET)
     {
@@ -37,6 +37,10 @@ Entity EntityFactory::spawnProjectile(unsigned int projectileType)
 	}
       entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
     }
+  else if (projectileType != ProjectileType::EXPLOSION &&
+	   projectileType != ProjectileType::HIT1 &&
+	   projectileType != ProjectileType::HIT2)
+    entity = Entity(renderer, "ogrehead.mesh");
   if (entity.getOgre())
     entity.getOgre()->setCastShadows(false);
   return entity;

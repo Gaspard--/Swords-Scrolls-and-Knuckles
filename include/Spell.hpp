@@ -21,6 +21,7 @@ namespace SpellType
   constexpr unsigned int HIT1{7u};
   constexpr unsigned int HIT2{8u};
   constexpr unsigned int SPIN{9u};
+  constexpr unsigned int CHOOCHOO{10u};
 
 };
 
@@ -31,6 +32,7 @@ struct Spell
   unsigned int duration;
   unsigned int timeLeft;
   bool active;
+  bool reset;
 
   Spell() = default;
 
@@ -41,6 +43,7 @@ struct Spell
     , duration(duration)
     , timeLeft(timeLeft)
     , active(false)
+    , reset(false)
   {}
 
   void update(Logic &, Player &);

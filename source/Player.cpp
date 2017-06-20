@@ -12,7 +12,7 @@ void Player::checkSpells(Logic &logic)
 void Player::resetCooldowns()
 {
   for (auto &spell : spells)
-    spell.timeLeft = 0;
+    spell.reset = true;
 }
 
 void Player::addGold(unsigned int amount)
@@ -55,7 +55,9 @@ Player Player::makeArcher(Vect<2u, double> pos)
 }
 
 unsigned int Player::getSpellTimeleft(size_t i) const {
-  return (spells[i].timeLeft / 12);
+  if (!spells[i].reset)
+    return (spells[i].timeLeft / 12);
+  return (0);
 }
 
 Player Player::makeMage(Vect<2u, double> pos)
@@ -75,7 +77,7 @@ Player Player::makeTank(Vect<2u, double> pos)
 		Vect<3u, Spell>
 		(Spell{SpellType::HIT2, 200, 200},
 		 Spell{SpellType::DASH, 480, 30},
-		 Spell{SpellType::DASH, 2400, 480}),
+		 Spell{SpellType::CHOOCHOO, 2400, 180}),
 		600u, 0.5, pos);
 }
 

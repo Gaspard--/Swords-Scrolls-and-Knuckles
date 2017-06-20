@@ -1,3 +1,4 @@
+#include <OgreParticleSystem.h>
 #include <algorithm>
 #include <iostream>
 #include "UIOverlaySelection.hpp"
@@ -270,12 +271,14 @@ void Logic::updateDisplay(LevelScene &levelScene)
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   enemies.updateTarget();
-  auto const updateProjectileEntities([this](auto &projectiles){
+  auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
       projectiles.updateTarget();
-      projectiles.forEach([](Entity &entity, Projectile &projectile)
+      projectiles.forEach([&levelScene](Entity &entity, Projectile &projectile)
 			  {
+			    double angle(projectile.timeLeft * 0.01);
+
 			    if (projectile.doSpin())
-			      entity.setDirection(Vect<2u, float>((float)std::cos(projectile.timeLeft * 0.01), (float)std::sin(projectile.timeLeft * 0.01)));
+			      entity.setDirection(Vect<2u, Ogre::Real>((Ogre::Real)std::cos(angle), (Ogre::Real)std::sin(angle)));
 			    entity.setPosition(static_cast<Ogre::Real>(projectile.pos[0]), 0.f, static_cast<Ogre::Real>(projectile.pos[1]));
 			  });
     });
@@ -329,7 +332,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	      if (player.getSpells()[2].startedSince() < 60)
 		{
 		  scale = (1.0f + player.getSpells()[2].startedSince() / 60.0f) / 150.0f;
-		  animatedEntity.setMainAnimation(Animations::Controllable::Archer::SPELL_E);
 		  otherMainAnimation = true;
 		}
 	      else if (player.getSpells()[2].startedSince() > 420)
@@ -344,7 +346,9 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
 	  if (player.getSpells()[1].hasEffect())
 	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
-	  
+	  if (player.getSpells()[2].hasEffect() != animatedEntity.isMounted()) {
+	    animatedEntity.setMounted(player.isMounted());
+	  }
 	  break;
 	case PlayerId::TANK:
 	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
@@ -353,6 +357,10 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    {
 	      animatedEntity.setMainAnimation(Animations::Controllable::Tank::JUMP, 0.1f, false);
 	      otherMainAnimation = true;
+	    }
+	  if (player.getSpells()[3].hasEffect())
+	    {
+	      animatedEntity.addSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD, 0.0f, true);
 	    }
 	  break;
 	case PlayerId::WARRIOR:
@@ -370,13 +378,22 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
 	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
 	      otherMainAnimation = true;
+	      Ogre::Real scale;
+
+	      if (player.getSpells()[2].startedSince() < 60)
+		{
+		  scale = (1.0f + player.getSpells()[2].startedSince() / 60.0f) / 150.0f;
+		  otherMainAnimation = true;
+		}
+	      else if (player.getSpells()[2].startedSince() > 420)
+		scale = (1.0f + (480.0f - player.getSpells()[2].startedSince()) / 60.0f) / 150.0f;
+	      else
+		scale = 2.0f / 150.0f;
+	      animatedEntity.getEntity().getNode()->setScale(scale, scale, scale);
 	    }
 	  break;
 	}
 
-      if (player.isMounted() != animatedEntity.isMounted()) {
-	animatedEntity.setMounted(player.isMounted());
-      }
       if (!otherMainAnimation)
 	{
 	  if (player.isWalking())
