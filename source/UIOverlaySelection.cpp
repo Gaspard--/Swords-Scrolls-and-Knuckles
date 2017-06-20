@@ -39,7 +39,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
   return cameraNode;
 }())
 {
-  std::clog << "Init Overlay Menu" << std::endl;
+  std::clog << "Init Selection Menu" << std::endl;
 
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
   constexpr Ogre::Real bwidth(UIOverlaySelection::SELECTIONBUTTON_WIDTH);
