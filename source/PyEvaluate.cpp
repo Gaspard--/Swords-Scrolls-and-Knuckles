@@ -29,10 +29,21 @@ Vect<2u, double> PyEvaluate::closestEnemy(Vect<2u, double> pos) const
   return (it == enemies.end() ? pos : (*it).pos);
 }
 
-#include <iostream>
+Vect<2u, double> PyEvaluate::furtherPlayer(Vect<2u, double> pos) const
+{
+  auto it (std::max_element(players.begin(), players.end(),
+    [pos](Player const &a, Player const &b)
+      {
+        return ((pos - a.pos).length2() < (pos - b.pos).length2() && (pos - a.pos).length2() != 0);
+      }));
+
+  return (it == players.end() ? pos : (*it).pos);
+}
+
 Vect<2u, double> PyEvaluate::followRightWall(Vect<2u, double> pos) const
 {
   bool walls[9];
+  bool table[4];
 
   for (int i(0), j(0); j < 3; i++)
   {

@@ -12,6 +12,7 @@ struct PyEvaluate
   ~PyEvaluate() = default;
 
   Vect<2u, double> closestPlayer(Vect<2u, double> pos) const;
+  Vect<2u, double> furtherPlayer(Vect<2u, double> pos) const;
   Vect<2u, double> closestEnemy(Vect<2u, double> pos) const;
   Vect<2u, double> followRightWall(Vect<2u, double> pos) const;
 
