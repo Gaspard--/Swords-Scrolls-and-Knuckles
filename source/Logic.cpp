@@ -111,10 +111,23 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
+  {
+    if (enemy.ai)
     {
-      if (enemy.ai)
-	pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
     }
+  }
+  for (auto &player : gameState.players)
+  {
+    unsigned int ai(player.getAI());
+
+    if (ai)
+    {
+      pyBindInstance.execAI[ai](&pyBindInstance, player, pyEvaluate);
+      player.setAttacking(0u, pyEvaluate.attack);
+      player.setAttacking(2u, pyEvaluate.attack);
+    }
+  }
   return stop;
 }
 
