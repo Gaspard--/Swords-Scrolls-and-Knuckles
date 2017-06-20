@@ -13,20 +13,20 @@ void Spell::update(Logic &logic, Player &player)
 SpellList::SpellList()
 {
   map[SpellType::ARROW_SHOT] = [](Logic &logic, Player &player, unsigned int time) {
-    if (time == 9)
-      logic.spawnProjectile(player.getPos(), player.getDir().normalized() * 0.12, ProjectileType::ARROW);
+    if (time == 40)
+      logic.spawnProjectile(player.getPos(), player.getDir().normalized() * 0.12, ProjectileType::BOUNCY_ARROW);
   };
   map[SpellType::JUMP] = [](Logic &, Player &player, unsigned int time) {
     if (!time)
-      player.dash(3.0, 30);
+      player.dash(6.0 * player.radius, 30);
   };
-  map[SpellType::ARROW_ULTI] = [](Logic &logic, Player &player, unsigned int time) {
-    if (!(time % 20))
-      logic.spawnProjectile(player.getPos(), player.getDir().normalized() * 0.15, ProjectileType::BOUNCY_ARROW);
+  map[SpellType::FIRE_ULTI] = [](Logic &logic, Player &player, unsigned int time) {
+    if (time >= 40 && !(time % 10))
+      logic.spawnProjectile(player.getPos() + player.getDir().normalized() * (time - 30) / 10.0, {0.0, 0.0}, ProjectileType::EXPLOSION, 1.0, 2);
   };
 
   map[SpellType::FIRE_BALL] = [](Logic &logic, Player &player, unsigned int time) {
-    if (time == 9)
+    if (time == 40)
       logic.spawnProjectile(player.getPos(), player.getDir().normalized() * 0.08, ProjectileType::FIRE_BALL);
   };
 
@@ -55,6 +55,26 @@ SpellList::SpellList()
       {
 	logic.spawnProjectile(player.getPos() + player.getDir().normalized() * 0.5, player.getDir().normalized() * 0.4, ProjectileType::HIT2, 1.5, 2);
       }
+  };
+  map[SpellType::GROW] = [](Logic &logic, Player &player, unsigned int time) {
+    player.invulnerable = 1;
+    if (time < 60)
+      {
+	player.radius = 0.5 * (1.0 + time / 60.0);
+      }
+    else if (time > 420)
+      {
+	player.radius = 0.5 * (1.0 + (480.0 - time) / 60.0);
+      }
+    else
+      player.radius = 1.0;
+    if (time == 239)
+      player.radius = 0.5;
+    logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::EXPLOSION, player.radius, 2);
+  };
+  map[SpellType::SPIN] = [](Logic &logic, Player &player, unsigned int time) {
+    player.invulnerable = 1;
+    logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::EXPLOSION, player.radius, 2);
   };
   
 }

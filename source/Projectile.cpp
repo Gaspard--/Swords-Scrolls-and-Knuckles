@@ -39,7 +39,7 @@ ProjectileList::ProjectileList()
     }};
   map[(unsigned int)ProjectileType::FIRE_BALL] = // TODO
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.timeLeft = 2;
       projectile.type = ProjectileType::EXPLOSION;
       projectile.radius = 2.0;
@@ -59,7 +59,7 @@ ProjectileList::ProjectileList()
     }};
   map[(unsigned int)ProjectileType::COOLDOWN_RESET] =
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
@@ -74,28 +74,28 @@ ProjectileList::ProjectileList()
     }};
   map[(unsigned int)ProjectileType::GOLD] =
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
     }};
   map[(unsigned int)ProjectileType::GOLD5] =
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
     }};
   map[(unsigned int)ProjectileType::GOLD20] =
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
     }};
   map[(unsigned int)ProjectileType::GOLD50] =
     ProjectileReaction{
-    [](Controllable &controllable, Projectile &projectile){
+    [](Controllable &, Projectile &projectile){
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){

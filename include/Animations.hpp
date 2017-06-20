@@ -17,7 +17,7 @@ namespace Animations
       constexpr char const STAND_RIDE[] = "Stand_Ride";
       constexpr char const ATTACK[] = "Attack";
     }
-    constexpr char const TAUNT[] = "Taun";
+    constexpr char const TAUNT[] = "Taunt";
 
     // Archer-only animations will go here
     namespace Archer

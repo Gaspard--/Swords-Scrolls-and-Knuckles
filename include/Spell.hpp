@@ -11,15 +11,17 @@ namespace SpellType
 {
   constexpr unsigned int ARROW_SHOT{0u};
   constexpr unsigned int JUMP{1u};
-  constexpr unsigned int ARROW_ULTI{2u};
+  constexpr unsigned int GROW{2u};
 
-  constexpr unsigned int FIRE_BALL{3u};
-  constexpr unsigned int NOT_IMPL{4u};
+  constexpr unsigned int FIRE_ULTI{3u};
+  constexpr unsigned int FIRE_BALL{4u};
   constexpr unsigned int FROST_WALL{5u};
 
   constexpr unsigned int DASH{6u};
   constexpr unsigned int HIT1{7u};
   constexpr unsigned int HIT2{8u};
+  constexpr unsigned int SPIN{9u};
+
 };
 
 struct Spell
