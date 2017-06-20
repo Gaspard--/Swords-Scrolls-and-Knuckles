@@ -44,21 +44,35 @@ Vect<2u, double> PyEvaluate::followRightWall(Vect<2u, double> pos) const
         j += 1;
     }
   }
-  if (walls[5] && !walls[7])
-    return (pos + Vect<2u, double>{0.0, 1.0});
-  else if (walls[7] && !walls[3])
-    return (pos + Vect<2u, double>{-1.0, 0.0});
-  else if (walls[3] && !walls[1])
-    return (pos + Vect<2u, double>{0.0, -1.0});
-  else if (walls[1] && !walls[5])
-    return (pos + Vect<2u, double>{1.0, 0.0});
-  else if (walls[8] && !walls[7])
-    return (pos + Vect<2u, double>{0.0, 1.0});
-  else if (walls[6] && !walls[3])
-    return (pos + Vect<2u, double>{-1.0, 0.0});
-  else if (walls[0] && !walls[1])
-    return (pos + Vect<2u, double>{0.0, -1.0});
-  else if (walls[2] && !walls[5])
-    return (pos + Vect<2u, double>{1.0, 0.0});
-  return (pos + Vect<2u, double>{1.0, 0.0});
+  if ((table[0] = (walls[5] && !walls[7])) ||
+      (table[1] = (walls[7] && !walls[3])) ||
+      (walls[3] && !walls[1]))
+  {
+    if (table[0])
+      return (pos + Vect<2u, double>{0.0, 1.0});
+    else if (table[1])
+      return (pos + Vect<2u, double>{-1.0, 0.0});
+    else
+      return (pos + Vect<2u, double>{0.0, -1.0});
+  }
+  else if ((table[2] = (walls[1] && !walls[5])) ||
+           (table[3] = (walls[2] && !walls[5])) ||
+           (walls[8] && !walls[7]))
+  {
+    if (table[2])
+      return (pos + Vect<2u, double>{1.0, 0.0});
+    else if (table[3])
+      return (pos + Vect<2u, double>{1.0, 0.0});
+    else
+      return (pos + Vect<2u, double>{0.0, 1.0});
+  }
+  else
+  {
+    if (walls[6] && !walls[3])
+      return (pos + Vect<2u, double>{-1.0, 0.0});
+    else if (walls[0] && !walls[1])
+      return (pos + Vect<2u, double>{0.0, -1.0});
+    else
+      return (pos + Vect<2u, double>{1.0, 0.0});
+  }
 }
