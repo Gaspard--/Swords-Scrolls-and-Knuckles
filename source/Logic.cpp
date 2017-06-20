@@ -373,7 +373,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    }
 	  if (player.getSpells()[2].hasEffect())
 	    {
-	      double angle(-player.getSpells()[2].startedSince() * 0.1);
+	      double angle(-(player.getSpells()[2].startedSince() * 0.1));
 
 	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
 	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
