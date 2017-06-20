@@ -20,6 +20,16 @@ void Player::addGold(unsigned int amount)
   gold += amount;
 }
 
+void Player::setAI(unsigned int ai)
+{
+  this->ai = ai;
+}
+
+unsigned int Player::getAI(void) const
+{
+  return (ai);
+}
+
 void Player::setMounted(bool b) {
   mounted = b;
 }

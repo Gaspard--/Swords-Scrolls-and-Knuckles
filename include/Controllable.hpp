@@ -43,12 +43,12 @@ public:
   {
     return health == 0;
   }
-  
+
   constexpr bool shouldBeRemoved() const
   {
     return isDead() && dePopCounter > 600u;
   }
-  
+
   constexpr bool doCollision() const
   {
     return !isDead();
@@ -130,6 +130,11 @@ public:
   constexpr Vect<2u, double> getDir() const
   {
     return dir;
+  }
+
+  constexpr void setDir(Vect<2u, double> dir)
+  {
+    this->dir = dir;
   }
 
   void   serialize(SaveState &state) const;

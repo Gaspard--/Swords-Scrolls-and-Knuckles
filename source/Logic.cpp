@@ -115,10 +115,23 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
+  {
+    if (enemy.ai)
     {
-      if (enemy.ai)
-	pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
     }
+  }
+  for (auto &player : gameState.players)
+  {
+    unsigned int ai(player.getAI());
+
+    if (ai)
+    {
+      pyBindInstance.execAI[ai](&pyBindInstance, player, pyEvaluate);
+      player.setAttacking(0u, pyEvaluate.attack);
+      player.setAttacking(2u, pyEvaluate.attack);
+    }
+  }
   return stop;
 }
 
@@ -129,7 +142,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , projectiles(gameState.projectiles, levelScene.projectiles)
   , enemyProjectiles(gameState.enemyProjectiles, levelScene.enemyProjectiles)
   , entityFactory(renderer)
-  , pyEvaluate(gameState.players, gameState.enemies)
+  , pyEvaluate(gameState.players, gameState.enemies, gameState.terrain)
   , projectileList{}
   , spellList{}
   , randEngine(42u)
@@ -179,7 +192,27 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       js++;
     }
     else if (gp[i] == Gameplays::IA) {
-      // TODO
+      PlayerId id(static_cast<PlayerId>(gameState.players[i].getId()));
+
+      for (auto &player : gameState.players)
+      {
+        unsigned int ai(player.getAI());
+
+        if (ai == 0 || ai == AI::LEADERCONTACTAI || ai == AI::LEADERDISTANCEAI)
+        {
+          if (id == PlayerId::ARCHER || id == PlayerId::MAGE)
+            gameState.players[i].setAI(AI::COMPANIONDISTANCEAI);
+          else if (id == PlayerId::TANK || id == PlayerId::WARRIOR)
+            gameState.players[i].setAI(AI::COMPANIONCONTACTAI);
+        }
+      }
+      if (!gameState.players[i].getAI())
+      {
+        if (id == PlayerId::ARCHER || id == PlayerId::MAGE)
+          gameState.players[i].setAI(AI::LEADERDISTANCEAI);
+        else if (id == PlayerId::TANK || id == PlayerId::WARRIOR)
+          gameState.players[i].setAI(AI::LEADERCONTACTAI);
+      }
     }
   }
   levelScene.setTerrain(gameState.terrain);
@@ -309,7 +342,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    }
 	  break;
 	}
-      
+
       updateControllableEntity(animatedEntity, player);
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());

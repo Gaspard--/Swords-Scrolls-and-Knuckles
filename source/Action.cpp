@@ -37,7 +37,7 @@ void Action::update()
       input += {0.0, 1.0};
     if (Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::GO_RIGHT]])
       input += {1.0, 0.0};
-    kbCtrld.second->setInput(input * 0.03 * (1.f + kbCtrld.second->isMounted()));
+    kbCtrld.second->setInput(input.normalized() * 0.03 * (1.f + kbCtrld.second->isMounted()));
     kbCtrld.second->setAttacking(0u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL1]]);
     kbCtrld.second->setAttacking(1u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL2]]);
     kbCtrld.second->setAttacking(2u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL3]]);
