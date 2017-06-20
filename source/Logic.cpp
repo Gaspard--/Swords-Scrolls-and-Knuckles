@@ -1,6 +1,7 @@
 #include <OgreParticleSystem.h>
 #include <algorithm>
 #include <iostream>
+#include "SceneGameOver.hpp"
 #include "UIOverlaySelection.hpp"
 #include "Logic.hpp"
 #include "Physics.hpp"
@@ -148,10 +149,13 @@ bool Logic::tick()
 			       {
 				 return !player.isDead();
 			       }));
-	  
+
 	  if (it == gameState.players.end())
 	    {
-	      // TODO : upload scores.
+	      Scoreboard sb;
+	      for (auto const &player : gameState.players) {
+		sb.addScore(static_cast<PlayerId>(player.getId()), player.getGold());
+	      }
 	      stop = true;
 	    }
 	  else
@@ -296,13 +300,15 @@ void Logic::exit()
   std::clog << "[Logic] stoping thread" << std::endl;
 }
 
-void Logic::updateDisplay(LevelScene &levelScene)
+void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
   if (stop)
     {
-      // TODO: GameOver.
+      renderer.switchScene([&renderer]() {
+        return new SceneGameOver(renderer);
+      });
     }
   enemies.updateTarget();
   auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
@@ -437,7 +443,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    }
 	  if (player.getSpells()[2].hasEffect())
 	    {
-	      double angle(-player.getSpells()[2].startedSince() * 0.1);
+	      double angle(-(player.getSpells()[2].startedSince() * 0.1));
 
 	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
 	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
@@ -486,7 +492,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	}
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
-
   action.update();
   calculateCamera(levelScene);
   levelScene.updateUI(gameState.players);
