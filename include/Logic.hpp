@@ -16,6 +16,7 @@
 #include "PyEvaluate.hpp"
 #include "Action.hpp"
 #include "KeyboardController.hpp"
+#include "ParticleEffect.hpp"
 
 class LevelScene;
 
@@ -39,7 +40,9 @@ private:
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
   ModVector<decltype(GameState::enemyProjectiles)::value_type, Entity> enemyProjectiles;
-  
+
+  std::vector<std::pair<Vect<2u, double>, std::string>> particleSpawns;
+  std::vector<std::pair<unsigned int, ParticleEffect>> particleEffects;
 
   void calculateCamera(LevelScene &);
   bool tick();

@@ -1,6 +1,7 @@
 #include <OgreEntity.h>
 #include <OgreLight.h>
 #include <OgreSceneNode.h>
+#include <OgreStaticGeometry.h>
 #include <OgrePlane.h>
 #include <OgreMeshManager.h>
 #include <OgreManualObject.h>
@@ -81,12 +82,12 @@ void LevelScene::setTerrain(Terrain const &terrain)
     {
       for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
 	{
-	      
+	               
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
 	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
 	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
-
+		
 	      wall->setCastShadows(true);
 	      wallNode->attachObject(wall);
 	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
@@ -95,8 +96,8 @@ void LevelScene::setTerrain(Terrain const &terrain)
 	    {
 	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
 	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
-
-	      ground->setCastShadows(true);
+ 
+	      ground->setCastShadows(false);
 	      wallNode->attachObject(ground);
 	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
 	    }
@@ -116,10 +117,10 @@ void LevelScene::createGroundMesh()
     Vect<3u, double> right{ 1.0, 0.0, 0.0 };
 
     for (Vect<2u, double> const &coef : {
-  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
-  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
       {
-  	Vect<3u, double> const pos((right * coef[0] + up * coef[1]) * dim);
+	Vect<3u, double> const pos((right * coef[0] + up * coef[1]) * dim);
 
 	obj.position(
 		     static_cast<Ogre::Real>(pos[0]),

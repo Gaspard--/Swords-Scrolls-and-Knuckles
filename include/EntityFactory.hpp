@@ -6,6 +6,7 @@
 class Renderer;
 class Entity;
 class AnimatedEntity;
+class ParticleEffect;
 
 class EntityFactory
 {
@@ -20,6 +21,7 @@ public:
   Entity spawnOgreHead(void);
   Entity spawnProjectile(unsigned int porjectileType);
   AnimatedEntity spawnHero(Skins::Skin);
+  
 
   template<typename... Args>
   auto spawnArcher(Args&&... args) -> decltype(spawnHero(std::forward<Args>(args)...)) {
@@ -42,6 +44,7 @@ public:
   }
 
   AnimatedEntity spawnEnemy();
+  ParticleEffect createParticleSystem(std::string temp);
 };
 
 #endif

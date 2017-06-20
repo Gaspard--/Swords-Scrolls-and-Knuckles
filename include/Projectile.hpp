@@ -46,7 +46,8 @@ public:
 
   constexpr bool doTerrainCollision()
   {
-    return type != ProjectileType::EXPLOSION && type != ProjectileType::HIT1
+    return type != ProjectileType::EXPLOSION
+      && type != ProjectileType::HIT1
       && type != ProjectileType::HIT2;
   }
 
