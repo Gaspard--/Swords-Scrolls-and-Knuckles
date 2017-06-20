@@ -18,6 +18,8 @@ namespace SpellType
   constexpr unsigned int FROST_WALL{5u};
 
   constexpr unsigned int DASH{6u};
+  constexpr unsigned int HIT1{7u};
+  constexpr unsigned int HIT2{8u};
 };
 
 struct Spell

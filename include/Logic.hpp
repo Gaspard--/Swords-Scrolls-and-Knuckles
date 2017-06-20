@@ -5,6 +5,7 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <random>
 
 #include "UIOverlaySelection.hpp"
 #include "GameState.hpp"
@@ -38,6 +39,7 @@ private:
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;
   ModVector<decltype(GameState::projectiles)::value_type, Entity> projectiles;
   ModVector<decltype(GameState::enemyProjectiles)::value_type, Entity> enemyProjectiles;
+  
 
   void calculateCamera(LevelScene &);
   bool tick();
@@ -50,6 +52,8 @@ public:
   PyEvaluate pyEvaluate;
   ProjectileList projectileList;
   SpellList spellList;
+  std::minstd_rand randEngine;
+
   Action action;
   Vect<2u, KeyboardController> keyboardControllers;
 

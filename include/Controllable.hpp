@@ -80,7 +80,7 @@ public:
 	  health -= damage;
 	else
 	  health = 0;
-	invulnerable = damage;
+	invulnerable = 10;
       }
   }
 

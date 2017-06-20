@@ -12,6 +12,11 @@ struct Fixture
   Vect<2u, double> pos;
   Vect<2u, double> speed;
   bool collision;
+
+  constexpr bool doTerrainCollision()
+  {
+    return true;
+  }
   
   constexpr double getRadius() const
   {

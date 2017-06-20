@@ -1,7 +1,7 @@
 #include "UIOverlayHUD.hpp"
 #include "UIChar.hpp"
 
-static char const *PORTRAITS_HUD[] =
+char const *UIChar::PORTRAITS_HUD[] =
 {
   "HUD/PortraitSylvanas",
   "HUD/PortraitJaina",

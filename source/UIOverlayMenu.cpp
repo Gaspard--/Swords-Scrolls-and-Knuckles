@@ -1,6 +1,8 @@
 #include "SceneSelection.hpp"
+#include "SceneScoreboard.hpp"
 #include "Game.hpp"
 #include "UIOverlayMenu.hpp"
+#include "UIChar.hpp"
 
 UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   : UIOverlay("mainmenu")
@@ -11,8 +13,8 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
   int i(0);
   Ogre::Real posX(0.075f);
-  Ogre::Real offset(0.35f);
-  Ogre::Real mult(1.6f);
+  Ogre::Real offset(0.30f);
+  Ogre::Real mult(1.4f);
 
   // Background
   bg->setMaterialName("HUD/MainMenuBG");
@@ -27,17 +29,25 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   bg->addChild(play->getPanel());
   buttons.emplace_back(std::move(play));
 
-  // Exit button
+  // Load button
   std::unique_ptr<UIButton> load(new UIButton(manager, "Load", []() {
-    throw Game::GameQuitException();
   }));
   load->init("HUD/ButtonLoad", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(load->getPanel());
   buttons.emplace_back(std::move(load));
 
-  // Exit button
+  // Score button
+  std::unique_ptr<UIButton> score(new UIButton(manager, "Score", [&renderer]() {
+    renderer.switchScene([&renderer]() {
+      return static_cast<Scene *>(new SceneScoreboard(renderer));
+    });
+  }));
+  score->init("HUD/ButtonScoreboard", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
+  bg->addChild(score->getPanel());
+  buttons.emplace_back(std::move(score));
+
+  // Options button
   std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
-    throw Game::GameQuitException();
   }));
   options->init("HUD/ButtonOptions", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(options->getPanel());
