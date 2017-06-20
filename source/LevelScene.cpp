@@ -13,8 +13,7 @@
 LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEntity(Renderer &)>> const &v, std::vector<PlayerId> const &classes, std::vector<Gameplays> const &gp)
   : uiHUD(renderer)
   , uiPause(*this, renderer)
-  , staticGeometry(renderer.getSceneManager().createStaticGeometry("Terrain"))
-  , terrainNode(renderer.getSceneManager().createSceneNode())
+  , terrainNode(renderer.getSceneManager().getRootSceneNode()->createChildSceneNode())
   , inPause(false)
   , cameraNode([&renderer]()
 	       {
@@ -79,30 +78,31 @@ void LevelScene::resetSceneCallbacks(Renderer &r) {
 }
 void LevelScene::setTerrain(Terrain const &terrain)
 {
-  staticGeometry->reset();
-  staticGeometry->setCastShadows(true);
   for (unsigned int i(0); i < terrain.getSize()[0]; ++i)
     {
       for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
-	{ 
+	{
+	               
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
-	      Ogre::Entity* wall(terrainNode->getCreator()->createEntity("WallMesh"));
-	      
+	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
+	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
+		
 	      wall->setCastShadows(true);
-	      staticGeometry->addEntity(wall, Ogre::Vector3{static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j)});
+	      wallNode->attachObject(wall);
+	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
 	    }
 	  else
 	    {
-	      Ogre::Entity* ground(terrainNode->getCreator()->createEntity("GroundMesh"));
-
-	      ground->setCastShadows(true);
-	      staticGeometry->addEntity(ground, Ogre::Vector3{static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j)});
+	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
+	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
+ 
+	      ground->setCastShadows(false);
+	      wallNode->attachObject(ground);
+	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
 	    }
 	}
     }
-  staticGeometry->addSceneNode(terrainNode);
-  staticGeometry->build();
 }
 
 void LevelScene::createGroundMesh()
@@ -117,10 +117,10 @@ void LevelScene::createGroundMesh()
     Vect<3u, double> right{ 1.0, 0.0, 0.0 };
 
     for (Vect<2u, double> const &coef : {
-  	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
-  	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
+	Vect<2u, double>(0.0, 0.0), Vect<2u, double>(1.0, 0.0),
+	  Vect<2u, double>(0.0, 1.0), Vect<2u, double>(1.0, 1.0)})
       {
-  	Vect<3u, double> const pos((right * coef[0] + up * coef[1]) * dim);
+	Vect<3u, double> const pos((right * coef[0] + up * coef[1]) * dim);
 
 	obj.position(
 		     static_cast<Ogre::Real>(pos[0]),

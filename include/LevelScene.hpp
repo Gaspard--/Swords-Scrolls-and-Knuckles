@@ -26,7 +26,6 @@ class LevelScene : public Scene
 private:
   UIOverlayHUD uiHUD;
   UIOverlayPause uiPause;
-  Ogre::StaticGeometry *staticGeometry;
   Ogre::SceneNode *terrainNode;
   bool inPause;
 

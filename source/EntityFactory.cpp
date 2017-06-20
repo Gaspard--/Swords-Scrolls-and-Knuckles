@@ -68,9 +68,9 @@ AnimatedEntity EntityFactory::spawnHero(Skins::Skin skin)
     auto sceneNode(hero.getEntity().getNode()->createChildSceneNode());
 
     light->setType(Ogre::Light::LT_POINT);
-    light->setDiffuseColour(1.f, 1.f, 1.f);
+    light->setDiffuseColour(1.f, 0.5f, 0.0f);
     light->setSpecularColour(1.0f, 1.0f, 1.0f);
-    light->setAttenuation(100, 0.5f, 0.001f, 0.0f);
+    light->setAttenuation(25, 0.5f, 0.05f, 0.0f);
     sceneNode->attachObject(light);
     sceneNode->setPosition(0, 150, 0);
   }
@@ -89,7 +89,6 @@ AnimatedEntity EntityFactory::spawnEnemy()
 ParticleEffect EntityFactory::createParticleSystem(std::string temp)
 {
   static unsigned int count = 0;
-
   ParticleEffect particleEffect(renderer, temp, std::string("system") + std::to_string(++count));
 
   particleEffect.getOgre()->setCastShadows(false);

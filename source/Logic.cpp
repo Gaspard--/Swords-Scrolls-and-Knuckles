@@ -72,9 +72,10 @@ bool Logic::tick()
 	  if (projectile.type == ProjectileType::EXPLOSION)
 	    particleSpawns.emplace_back(projectile.pos, "explosion");
 	  else if (projectile.type == ProjectileType::HIT1
-		   || projectile.type == ProjectileType::ARROW
-		   || projectile.type == ProjectileType::BOUNCY_ARROW
-		   || projectile.type == ProjectileType::ICE_PILLAR)
+		   || ((projectile.type == ProjectileType::ARROW
+			|| projectile.type == ProjectileType::BOUNCY_ARROW
+			|| projectile.type == ProjectileType::ICE_PILLAR)
+		       ))
 	    particleSpawns.emplace_back(projectile.pos, "blu");
 	}
     });

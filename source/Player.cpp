@@ -47,7 +47,7 @@ Player Player::makeArcher(Vect<2u, double> pos)
 {
   return Player(PlayerId::ARCHER,
 		Vect<3u, Spell>
-		(Spell{SpellType::ARROW_SHOT, 60, 50},
+		(Spell{SpellType::ARROW_SHOT, 100, 95},
 		 Spell{SpellType::JUMP, 240, 30},
 		 Spell{SpellType::GROW, 2400, 480} // TODO
 		 ),
@@ -76,7 +76,7 @@ Player Player::makeTank(Vect<2u, double> pos)
   return Player(PlayerId::TANK,
 		Vect<3u, Spell>
 		(Spell{SpellType::HIT2, 200, 200},
-		 Spell{SpellType::DASH, 480, 30},
+		 Spell{SpellType::DASH, 480, 40},
 		 Spell{SpellType::CHOOCHOO, 2400, 180}),
 		600u, 0.5, pos);
 }
@@ -86,7 +86,7 @@ Player Player::makeWarrior(Vect<2u, double> pos)
   return Player(PlayerId::WARRIOR,
 		Vect<3u, Spell>
 		(Spell{SpellType::HIT1, 60, 60},
-		 Spell{SpellType::DASH, 480, 30},
+		 Spell{SpellType::DASH, 480, 40},
 		 Spell{SpellType::SPIN, 2400, 480}),
 		600u, 0.5, pos);
 }
