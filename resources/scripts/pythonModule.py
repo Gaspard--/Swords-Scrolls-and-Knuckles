@@ -52,31 +52,38 @@ class pythonModule():
         self.heroSpeed = 0.03
 
     def chasePlayerAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestPlayer(entity.pos)
         chaseVec(entity, vec, evaluater, 0.01)
 
     def fleePlayerAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestPlayer(entity.pos)
         fleeFromVec(entity, vec, evaluater, 0.015)
 
     def chaseEnemyAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestEnemy(entity.pos)
         chaseVec(entity, vec, evaluater, 0.01)
 
     def fleeEnemyAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestEnemy(entity.pos)
         fleeFromVec(entity, vec, evaluater, 0.015)
 
     def standAI(self, entity, evaluater):
+        evaluater.attack = False
         stand(entity)
 
     def shootPlayerAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestPlayer(entity.pos)
         shootAtVec(entity, vec, evaluater, 0.02, 0.04, 60, 80)
 
     def shootEnemyAI(self, entity, evaluater):
+        evaluater.attack = False
         vec = evaluater.closestEnemy(entity.pos)
-        shootAtVec(entity, vec, evaluater, 0.03, 0.03, 60, 80)
+        shootAtVec(entity, vec, evaluater, self.heroSpeed, self.heroSpeed, 30, 60)
 
     def followRightWallAI(self, entity, evaluater):
         evaluater.attack = False

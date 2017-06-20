@@ -33,37 +33,38 @@ PyBindInstance::PyBindInstance()
 
 void PyBindInstance::chasePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("chasePlayerAI")(&ctr, pyEv);
+  pythonModule.attr("chasePlayerAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::fleePlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("fleePlayerAI")(&ctr, pyEv);
+  pythonModule.attr("fleePlayerAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::chaseEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("chaseEnemyAI")(&ctr, pyEv);
+  pythonModule.attr("chaseEnemyAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::fleeEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("fleeEnemyAI")(&ctr, pyEv);
+  pythonModule.attr("fleeEnemyAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::standAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("standAI")(&ctr, pyEv);
+  pythonModule.attr("standAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::shootPlayerAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("shootPlayerAI")(&ctr, pyEv);
+  pythonModule.attr("shootPlayerAI")(&ctr, &pyEv);
 }
 
 void PyBindInstance::shootEnemyAI(Controllable &ctr, PyEvaluate &pyEv)
 {
-  pythonModule.attr("shootEnemyAI")(&ctr, pyEv);
+  pythonModule.attr("shootEnemyAI")(&ctr, &pyEv);
+}
 
 void PyBindInstance::followRightWallAI(Controllable &ctr, PyEvaluate &pyEv)
 {
