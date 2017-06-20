@@ -21,6 +21,8 @@ PyBindInstance::PyBindInstance()
     execAI[AI::FOLLOWRIGHTWALL] = &PyBindInstance::followRightWallAI;
     execAI[AI::LEADERCONTACTAI] = &PyBindInstance::leaderContactAI;
     execAI[AI::LEADERDISTANCEAI] = &PyBindInstance::leaderDistanceAI;
+    execAI[AI::COMPANIONCONTACTAI] = &PyBindInstance::companionContactAI;
+    execAI[AI::COMPANIONDISTANCEAI] = &PyBindInstance::companionDistanceAI;
   }
   catch (py::error_already_set const &e)
   {
@@ -76,6 +78,16 @@ void PyBindInstance::leaderContactAI(Controllable &ctr, PyEvaluate &pyEv)
 void PyBindInstance::leaderDistanceAI(Controllable &ctr, PyEvaluate &pyEv)
 {
   pythonModule.attr("leaderDistanceAI")(&ctr, &pyEv);
+}
+
+void PyBindInstance::companionContactAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("companionContactAI")(&ctr, &pyEv);
+}
+
+void PyBindInstance::companionDistanceAI(Controllable &ctr, PyEvaluate &pyEv)
+{
+  pythonModule.attr("companionDistanceAI")(&ctr, &pyEv);
 }
 
 py::object    PyBindInstance::import(const std::string &mod, const std::string &path, py::object &glb)

@@ -100,3 +100,30 @@ class pythonModule():
             shootAtVec(entity, vec, evaluater, self.heroSpeed, self.heroSpeed, 30, 60)
             evaluater.attack = True
 
+    def companionContactAI(self, entity, evaluater):
+        evaluater.attack = False
+        leader = evaluater.furtherPlayer(entity.pos)
+        enemy = evaluater.closestEnemy(entity.pos)
+        distLeader = subVec(entity.pos, leader)
+        distEnemy = subVec(entity.pos, enemy)
+        if (distEnemy.length2() > 1 and distEnemy.length2() < 100):
+            chaseVec(entity, enemy, evaluater, self.heroSpeed)
+            evaluater.attack = True
+        elif (distLeader.length2() > 1 and distLeader.length2() < 100):
+            chaseVec(entity, leader, evaluater, self.heroSpeed)
+        else:
+            followRightWall(entity, evaluater, self.heroSpeed)
+
+    def companionDistanceAI(self, entity, evaluater):
+        evaluater.attack = False
+        leader = evaluater.furtherPlayer(entity.pos)
+        enemy = evaluater.closestEnemy(entity.pos)
+        distLeader = subVec(entity.pos, leader)
+        distEnemy = subVec(entity.pos, enemy)
+        if (distEnemy.length2() > 1 and distEnemy.length2() < 100):
+            shootAtVec(entity, enemy, evaluater, self.heroSpeed, self.heroSpeed, 30, 60)
+            evaluater.attack = True
+        elif (distLeader.length2() > 1 and distLeader.length2() < 100):
+            chaseVec(entity, leader, evaluater, self.heroSpeed)
+        else:
+            followRightWall(entity, evaluater, self.heroSpeed)
