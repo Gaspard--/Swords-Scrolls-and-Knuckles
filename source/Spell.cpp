@@ -44,6 +44,18 @@ SpellList::SpellList()
     if (time == 25)
       logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::EXPLOSION, 2.0, 2);
   };
+  map[SpellType::HIT1] = [](Logic &logic, Player &player, unsigned int time) {
+    if (time == 50)
+      {
+	logic.spawnProjectile(player.getPos() + player.getDir().normalized() * 0.5, player.getDir().normalized() * 0.2, ProjectileType::HIT1, 1.5, 2);
+      }
+  };
+  map[SpellType::HIT2] = [](Logic &logic, Player &player, unsigned int time) {
+    if (time == 180)
+      {
+	logic.spawnProjectile(player.getPos() + player.getDir().normalized() * 0.5, player.getDir().normalized() * 0.4, ProjectileType::HIT2, 1.5, 2);
+      }
+  };
   
 }
 

@@ -18,13 +18,27 @@ Entity EntityFactory::spawnProjectile(unsigned int projectileType)
   Entity entity(renderer, "ogrehead.mesh");
 
   if (projectileType == ProjectileType::COOLDOWN_RESET)
-    entity = Entity(renderer, "feather.mesh");
-  else if (projectileType == ProjectileType::HEAL)
-    entity = Entity(renderer, "heart.mesh");
-  else
-    entity = Entity(renderer, "rupee_green.mesh");
-  entity.getOgre()->setCastShadows(false);
-  entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+    {
+      entity = Entity(renderer, "feather.mesh");
+      entity.getNode()->setScale(1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f);
+    }
+  else if (projectileType >= ProjectileType::HEAL && projectileType <= ProjectileType::GOLD50)
+    {
+      if (projectileType == ProjectileType::HEAL)
+	entity = Entity(renderer, "heart.mesh");
+      else
+	{
+	  entity = Entity(renderer, Vect<4u, std::string>{
+	      "rupee_green.mesh",
+		"rupee_blue.mesh",
+		"rupee_red.mesh",
+		"rupee_purple.mesh",
+		}[projectileType - ProjectileType::GOLD]);
+	}
+      entity.getNode()->setScale(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+    }
+  if (entity.getOgre())
+    entity.getOgre()->setCastShadows(false);
   return entity;
 }
 

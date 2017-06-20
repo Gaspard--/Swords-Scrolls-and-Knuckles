@@ -48,9 +48,9 @@ namespace Animations
     {
       constexpr char const SPELL_A[] = "Spell_A";
       constexpr char const SPELL_B[] = "Spell_B";
-      constexpr char const SPELL_C[] = "Spell_C";
+      constexpr char const JUMP[] = "Spell_C";
       constexpr char const SPELL_CHANNEL[] = "Spell_Channel";
-      constexpr char const JUMP[] = "Spell_D";
+      constexpr char const SPELL_D[] = "Spell_D";
       constexpr char const SPELL_E[] = "Spell_E";
       constexpr char const SPELL_FORWARD[] = "Spell_Forward";
       constexpr char const SPELL_OMNI[] = "Spell_Omni";
