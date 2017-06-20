@@ -7,11 +7,12 @@ Renderer::Renderer(Game &game)
   , viewport(game.getWindow().addViewport(camera))
 {
   scenemgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+  scenemgr->setShadowIndexBufferSize(1024);
   scenemgr->addRenderQueueListener(new Ogre::OverlaySystem());
 
-  viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
+  // viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) /
-		  Ogre::Real(viewport->getActualHeight()));
+			 Ogre::Real(viewport->getActualHeight()));
 }
 
 Ogre::SceneManager &Renderer::getSceneManager(void)

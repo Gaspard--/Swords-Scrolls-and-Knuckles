@@ -69,6 +69,14 @@ bool Logic::tick()
 					   [this](auto &projectile, Vect<2u, double> dir) {
 					     projectileList[projectile.type].wallResponse(projectile, dir);
 					   });
+	  if (projectile.type == ProjectileType::EXPLOSION)
+	    particleSpawns.emplace_back(projectile.pos, "explosion");
+	  else if (projectile.type == ProjectileType::HIT1
+		   || ((projectile.type == ProjectileType::ARROW
+			|| projectile.type == ProjectileType::BOUNCY_ARROW
+			|| projectile.type == ProjectileType::ICE_PILLAR)
+		       ))
+	    particleSpawns.emplace_back(projectile.pos, "blu");
 	}
     });
   updateProjectile(gameState.projectiles);
@@ -273,7 +281,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
   enemies.updateTarget();
   auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
       projectiles.updateTarget();
-      projectiles.forEach([&levelScene](Entity &entity, Projectile &projectile)
+      projectiles.forEach([this](Entity &entity, Projectile &projectile)
 			  {
 			    double angle(projectile.timeLeft * 0.01);
 
@@ -284,6 +292,30 @@ void Logic::updateDisplay(LevelScene &levelScene)
     });
   updateProjectileEntities(projectiles);
   updateProjectileEntities(enemyProjectiles);
+
+  for (auto &&pair : particleSpawns)
+    {
+      particleEffects.emplace_back(30, entityFactory.createParticleSystem(pair.second));
+      particleEffects.back().second.setPosition(static_cast<Ogre::Real>(pair.first[0]), 0.f, static_cast<Ogre::Real>(pair.first[1]));	
+    }
+  particleSpawns.clear();
+  for (auto &effect : particleEffects)
+    {
+      if (effect.first > updatesSinceLastFrame)
+	effect.first -= updatesSinceLastFrame;
+      else
+	effect.first = 0;
+      if (effect.first < 10)
+	effect.second.getOgre()->setEmitting(false);
+      // if (!effect.first)
+      // 	effect.second = ParticleEffect{}; // Pre-erase just in case.
+    }
+  particleEffects.erase(std::remove_if(particleEffects.begin(), particleEffects.end(), [](auto const &p)
+				       {
+					 return !p.first;
+				       }), particleEffects.end());
+
+
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
       animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]),
@@ -428,7 +460,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
   calculateCamera(levelScene);
   levelScene.updateUI(gameState.players);
   updatesSinceLastFrame = 0;
- }
+}
 
 void Logic::calculateCamera(LevelScene &levelScene)
 {
