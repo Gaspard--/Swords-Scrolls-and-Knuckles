@@ -176,7 +176,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::MOUNT, OIS::KC_DOWN}}}
 #endif // defined OIS_WIN32_PLATFORM
 {
-  gameState.terrain.generateLevel(42u); // TODO: something better
+  gameState.terrain.generateLevel(420u); // TODO: something better
   for (size_t i = 0; i < vec.size(); i++) {
     gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
   }
@@ -308,20 +308,43 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
       bool otherMainAnimation{false};
 
+      updateControllableEntity(animatedEntity, player);
+
       switch (static_cast<PlayerId>(player.getId()))
 	{
 	case PlayerId::ARCHER:
 	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
-	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true, false);
+	    animatedEntity.addSubAnimation(Animations::Controllable::Player::ATTACK, true);
 	  if (player.getSpells()[1].hasEffect())
 	    {
 	      animatedEntity.setMainAnimation(Animations::Controllable::Archer::JUMP, 0.1f, false);
 	      otherMainAnimation = true;
 	    }
 	  if (player.getSpells()[2].startedSince() <= updatesSinceLastFrame)
-	    animatedEntity.addSubAnimation(Animations::Controllable::Archer::SPELL_E, true, false);
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_C, true);
+	  if (player.getSpells()[2].hasEffect())
+	    {
+	      Ogre::Real scale;
+
+	      if (player.getSpells()[2].startedSince() < 60)
+		{
+		  scale = (1.0f + player.getSpells()[2].startedSince() / 60.0f) / 150.0f;
+		  animatedEntity.setMainAnimation(Animations::Controllable::Archer::SPELL_E);
+		  otherMainAnimation = true;
+		}
+	      else if (player.getSpells()[2].startedSince() > 420)
+		scale = (1.0f + (480.0f - player.getSpells()[2].startedSince()) / 60.0f) / 150.0f;
+	      else
+		scale = 2.0f / 150.0f;
+	      animatedEntity.getEntity().getNode()->setScale(scale, scale, scale);
+	    }
 	  break;
 	case PlayerId::MAGE:
+	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
+	  if (player.getSpells()[1].hasEffect())
+	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
+	  
 	  break;
 	case PlayerId::TANK:
 	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
@@ -340,10 +363,17 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::JUMP, 0.1f, false);
 	      otherMainAnimation = true;
 	    }
+	  if (player.getSpells()[2].hasEffect())
+	    {
+	      double angle(-player.getSpells()[2].startedSince() * 0.1);
+
+	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
+	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
+	      otherMainAnimation = true;
+	    }
 	  break;
 	}
 
-      updateControllableEntity(animatedEntity, player);
       if (player.isMounted() != animatedEntity.isMounted()) {
 	animatedEntity.setMounted(player.isMounted());
       }
