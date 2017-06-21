@@ -51,7 +51,6 @@ SpellList::SpellList()
 	logic.spawnProjectile(player.getPos(), {0.0, 0.0}, ProjectileType::ICE_PILLAR, 0.2, 240);
 	player.invulnerable = 20;
       }
-    player.setMounted(time != 480);
   };
   map[SpellType::DASH] = [](Logic &logic, Player &player, unsigned int time) {
     if (!time)

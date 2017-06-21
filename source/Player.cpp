@@ -30,14 +30,6 @@ unsigned int Player::getAI(void) const
   return (ai);
 }
 
-void Player::setMounted(bool b) {
-  mounted = b;
-}
-
-bool Player::isMounted(void) const {
-  return (mounted);
-}
-
 void Player::setAttacking(unsigned int index, bool attacking)
 {
   spells[index].active = attacking;

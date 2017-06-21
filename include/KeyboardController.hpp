@@ -13,7 +13,6 @@ namespace KBACTION
     constexpr unsigned int SPELL2 = 6u;
     constexpr unsigned int SPELL3 = 7u;
     constexpr unsigned int LOCK = 8u;
-    constexpr unsigned int MOUNT = 9u;
 }
 
 class KeyboardController

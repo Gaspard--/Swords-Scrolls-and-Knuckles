@@ -19,7 +19,6 @@ class Player : public Controllable
 private:
   unsigned int id;
   unsigned int ai;
-  bool mounted;
   unsigned int gold;
   Vect<3u, Spell> spells;
 
@@ -29,7 +28,6 @@ public:
     : Controllable(std::forward<PARAMS>(params)...)
     , id(static_cast<int>(id))
     , ai(0)
-    , mounted(false)
     , gold(0u)
     , spells(std::move(spells))
   {}
@@ -50,9 +48,6 @@ public:
 
   void setAI(unsigned int ai);
   unsigned int getAI(void) const;
-
-  void setMounted(bool);
-  bool isMounted(void) const;
 
   // In seconds / 10
   unsigned int getSpellTimeleft(size_t i) const;

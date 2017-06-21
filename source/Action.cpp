@@ -15,8 +15,6 @@ void Action::update()
     if (input.length2() <= 0.20f * 0.20f) // Joystick axes are never really at 0
       input = { 0.f, 0.f };
     jsCtrld.second->setInput(input * 0.03 * (1.f + jsCtrld.second->getSpells()[2].hasEffect()));
-    try { jsCtrld.second->setMounted((*jsCtrld.first)[joystickState::JS_Y]); }
-    catch (std::out_of_range const &) {}
     try { jsCtrld.second->setAttacking(0u, (*jsCtrld.first)[joystickState::JS_X]); }
     catch (std::out_of_range const &) {}
     try { jsCtrld.second->setAttacking(1u, (*jsCtrld.first)[joystickState::JS_A]); }
@@ -42,6 +40,5 @@ void Action::update()
     kbCtrld.second->setAttacking(1u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL2]]);
     kbCtrld.second->setAttacking(2u, Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::SPELL3]]);
     kbCtrld.second->setLocked(Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::LOCK]]);
-    kbCtrld.second->setMounted(Keyboard::getKeys()[kbCtrld.first->keymap[KBACTION::MOUNT]]);
   }
 }
