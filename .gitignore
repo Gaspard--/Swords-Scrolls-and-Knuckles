@@ -50,6 +50,7 @@ Release
 ssk.dir
 Win32
 .vs
+Installer
 
 # emacs backup files and locks
 *~
@@ -59,3 +60,4 @@ Win32
 # Score file
 score
 score.txt
+/Swords Scrolls Knuckles/
