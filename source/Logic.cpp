@@ -186,7 +186,7 @@ bool Logic::tick()
 			{
 			  return true;
 			});
-      
+
       for (size_t i(0u); i < gameState.players.size(); ++i) {
 	gameState.players[i].pos = Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0};
       }
@@ -535,6 +535,7 @@ void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
   calculateCamera(levelScene);
   levelScene.updateUI(gameState.players);
   updatesSinceLastFrame = 0;
+  AudioSource::removeFinishedIndeSounds();
 }
 
 void Logic::calculateCamera(LevelScene &levelScene)
