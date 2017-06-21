@@ -35,6 +35,7 @@ private:
   std::chrono::time_point<Clock> lastUpdate;
   unsigned int updatesSinceLastFrame;
   bool stop;
+  bool reloadTerrain;
 
   std::vector<AnimatedEntity> &playerEntities;
   ModVector<decltype(GameState::enemies)::value_type, AnimatedEntity> enemies;

@@ -10,9 +10,6 @@ particle_system blu
 
     emitter Point
     {
-	width 1
-	height 0
-	depth 1
         angle 30
         emission_rate 10
         time_to_live 0.5

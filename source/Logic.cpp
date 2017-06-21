@@ -167,6 +167,32 @@ bool Logic::tick()
 	    }
 	}
     }
+  if (std::all_of(gameState.players.begin(), gameState.players.end(), [this](auto const &player)
+		  {
+		    auto &room(gameState.terrain.getRoom(Vect<2u, unsigned int>(player.pos)));
+
+		    return room.id == 30;
+		  }))
+    {
+      enemies.removeIf([](auto const &)
+			{
+			  return true;
+			});
+      projectiles.removeIf([](auto const &)
+			{
+			  return true;
+			});
+      enemyProjectiles.removeIf([](auto const &)
+			{
+			  return true;
+			});
+      
+      for (size_t i(0u); i < gameState.players.size(); ++i) {
+	gameState.players[i].pos = Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0};
+      }
+      gameState.terrain.generateLevel(std::uniform_int_distribution<>(0, 0xFFFFFFFF)(randEngine));
+      reloadTerrain = true;
+    }
   return stop;
 }
 
@@ -181,7 +207,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
   , pyEvaluate(gameState.players, gameState.enemies, gameState.terrain)
   , projectileList{}
   , spellList{}
-  , randEngine(42u)
+  , randEngine(Clock().now().time_since_epoch().count())
   , keyboardControllers{
       std::map<unsigned int, OIS::KeyCode>
 #if defined OIS_WIN32_PLATFORM
@@ -208,7 +234,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 #endif // defined OIS_WIN32_PLATFORM
 {
-  gameState.terrain.generateLevel(420u); // TODO: something better
+  gameState.terrain.generateLevel(std::uniform_int_distribution<>(0, 0xFFFFFFFF)(randEngine));
   for (size_t i = 0; i < vec.size(); i++) {
     gameState.players.push_back(Player::makePlayer(Vect<2u, double>{(double)i + 8.0, (double)(i % 2) + 8.0}, vec[i]));
   }
@@ -247,7 +273,7 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       }
     }
   }
-  levelScene.setTerrain(gameState.terrain);
+  reloadTerrain = true;
 }
 
 void Logic::spawnMobGroup(Terrain::Room &room)
@@ -306,6 +332,11 @@ void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
       renderer.switchScene([&renderer]() {
         return new SceneGameOver(renderer);
       });
+    }
+  if (reloadTerrain)
+    {
+      levelScene.setTerrain(gameState.terrain);
+      reloadTerrain = false;
     }
   enemies.updateTarget();
   auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
