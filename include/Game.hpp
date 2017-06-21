@@ -45,6 +45,8 @@ class Game : public Ogre::WindowEventListener, public Ogre::FrameListener
     // Ogre::WindowEventListener
     virtual void windowClosed(Ogre::RenderWindow* rw) override;
 
+    // Ogre::WindowEventListener
+    virtual void windowResized(Ogre::RenderWindow* rw) override;
   public:
     Game();
     Game(Game const &) = delete;

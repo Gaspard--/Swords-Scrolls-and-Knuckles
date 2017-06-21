@@ -1,3 +1,4 @@
+#include "SceneOptions.hpp"
 #include "SceneSelection.hpp"
 #include "SceneScoreboard.hpp"
 #include "Game.hpp"
@@ -12,9 +13,9 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
 
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
   int i(0);
-  Ogre::Real posX(0.075f);
-  Ogre::Real offset(0.30f);
-  Ogre::Real mult(1.4f);
+  constexpr Ogre::Real posX(0.075f);
+  constexpr Ogre::Real offset(0.30f);
+  constexpr Ogre::Real mult(1.4f);
 
   // Background
   bg->setMaterialName("HUD/MainMenuBG");
@@ -47,7 +48,10 @@ UIOverlayMenu::UIOverlayMenu(Renderer &renderer)
   buttons.emplace_back(std::move(score));
 
   // Options button
-  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", []() {
+  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", [&renderer]() {
+    renderer.switchScene([&renderer]() {
+      return static_cast<Scene *>(new SceneOptions(renderer));
+    });
   }));
   options->init("HUD/ButtonOptions", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(options->getPanel());

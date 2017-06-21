@@ -60,7 +60,7 @@ void Terrain::generateLevel(unsigned int seed)
 				  static_cast<unsigned int>((range10(engine) + range10(engine)) / 2u));
       Vect<2u, unsigned int> relative(static_cast<unsigned int>(range5(engine)), static_cast<unsigned int>(range5(engine)));
       if (!room.id)
-	size = {10, 10};
+	size = {10u, 10u};
 
       for (Vect<2u, unsigned int> i(0u, 0u); i[1] != size[1]; ++i[1])
 	for (i[0] = 0u; i[0] != size[0]; ++i[0])
