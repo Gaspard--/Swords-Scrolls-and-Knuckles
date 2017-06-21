@@ -1,6 +1,7 @@
 #ifndef ENTITY_FACTORY_HPP
 # define ENTITY_FACTORY_HPP
 
+# include <utility>
 # include "Skins.hpp"
 
 class Renderer;
@@ -21,7 +22,7 @@ public:
   Entity spawnOgreHead(void);
   Entity spawnProjectile(unsigned int porjectileType);
   AnimatedEntity spawnHero(Skins::Skin);
-  
+
 
   template<typename... Args>
   auto spawnArcher(Args&&... args) -> decltype(spawnHero(std::forward<Args>(args)...)) {

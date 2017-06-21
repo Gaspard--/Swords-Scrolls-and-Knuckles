@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include <Overlay/OgreTextAreaOverlayElement.h>
 #include "Player.hpp"
 
 struct PlayerData

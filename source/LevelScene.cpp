@@ -26,11 +26,7 @@ LevelScene::LevelScene(Renderer &renderer, std::vector<std::function<AnimatedEnt
 		 return cameraNode;
 	       }())
   , logicThread(*this, renderer, players, classes, gp)
-    // , music(Musics::SMALL_WORLD)
 {
-  // music.setVolume(0.2f);
-  // music.play();
-
   renderer.getSceneManager().setAmbientLight(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
 
   std::clog << "Loading level scene" << std::endl;
@@ -82,12 +78,11 @@ void LevelScene::setTerrain(Terrain const &terrain)
     {
       for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
 	{
-	               
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
 	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
 	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
-		
+
 	      wall->setCastShadows(true);
 	      wallNode->attachObject(wall);
 	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
@@ -96,7 +91,7 @@ void LevelScene::setTerrain(Terrain const &terrain)
 	    {
 	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
 	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
- 
+
 	      ground->setCastShadows(false);
 	      wallNode->attachObject(ground);
 	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
@@ -216,7 +211,6 @@ bool LevelScene::update(Game &g, Ogre::FrameEvent const &)
   if (!isInPause()) {
     logicThread->updateDisplay(g.getRenderer(), *this);
   }
-  // music.update();
   return true;
 }
 

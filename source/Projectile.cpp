@@ -1,6 +1,7 @@
 #include "Projectile.hpp"
 #include "SaveGame.hpp"
 #include "LoadGame.hpp"
+#include "AudioSource.hpp"
 
 void    Projectile::serialize(SaveState &state) const
 {}
@@ -67,6 +68,8 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::HEAL] =
     ProjectileReaction{
     [](Controllable &controllable, Projectile &projectile){
+      Ogre::Vector3 const pos { static_cast<Ogre::Real>(projectile.getPos()[0]), 0.f, static_cast<Ogre::Real>(projectile.getPos()[1]) };
+      AudioSource::playIndependentSound(Sounds::HEALTH_PICKUP, false, pos);
       controllable.heal(100);
       projectile.remove();
     },
@@ -75,6 +78,8 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::GOLD] =
     ProjectileReaction{
     [](Controllable &, Projectile &projectile){
+      Ogre::Vector3 const pos { static_cast<Ogre::Real>(projectile.getPos()[0]), 0.f, static_cast<Ogre::Real>(projectile.getPos()[1]) };
+      AudioSource::playIndependentSound(Sounds::COIN, false, pos);
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
@@ -82,6 +87,8 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::GOLD5] =
     ProjectileReaction{
     [](Controllable &, Projectile &projectile){
+      Ogre::Vector3 const pos { static_cast<Ogre::Real>(projectile.getPos()[0]), 0.f, static_cast<Ogre::Real>(projectile.getPos()[1]) };
+      AudioSource::playIndependentSound(Sounds::COIN, false, pos);
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
@@ -89,6 +96,8 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::GOLD20] =
     ProjectileReaction{
     [](Controllable &, Projectile &projectile){
+      Ogre::Vector3 const pos { static_cast<Ogre::Real>(projectile.getPos()[0]), 0.f, static_cast<Ogre::Real>(projectile.getPos()[1]) };
+      AudioSource::playIndependentSound(Sounds::COIN, false, pos);
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
@@ -96,6 +105,8 @@ ProjectileList::ProjectileList()
   map[(unsigned int)ProjectileType::GOLD50] =
     ProjectileReaction{
     [](Controllable &, Projectile &projectile){
+      Ogre::Vector3 const pos { static_cast<Ogre::Real>(projectile.getPos()[0]), 0.f, static_cast<Ogre::Real>(projectile.getPos()[1]) };
+      AudioSource::playIndependentSound(Sounds::COIN, false, pos);
       projectile.remove();
     },
     [](Projectile &, Vect<2u, double>){
