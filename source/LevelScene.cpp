@@ -211,10 +211,10 @@ void LevelScene::createWallMesh()
   createGroundMesh();
 }
 
-bool LevelScene::update(Game &, Ogre::FrameEvent const &)
+bool LevelScene::update(Game &g, Ogre::FrameEvent const &)
 {
   if (!isInPause()) {
-    logicThread->updateDisplay(*this);
+    logicThread->updateDisplay(g.getRenderer(), *this);
   }
   // music.update();
   return true;

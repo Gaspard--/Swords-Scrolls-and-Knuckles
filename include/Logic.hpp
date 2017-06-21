@@ -68,7 +68,7 @@ public:
   void spawnProjectile(Vect<2u, double> pos, Vect<2u, double> speed, unsigned int type, double size = 0.2, unsigned int timeLeft = ~0u);
   void run();
   void exit();
-  void updateDisplay(LevelScene &);
+  void updateDisplay(Renderer &, LevelScene &);
 
   void pause(void);
   void unpause(void);
