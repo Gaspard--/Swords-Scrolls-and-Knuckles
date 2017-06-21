@@ -6,6 +6,7 @@
 #include "SceneMainMenu.hpp"
 #include "EntityFactory.hpp"
 #include "Game.hpp"
+#include "MusicThread.hpp"
 
 char const *UIOverlaySelection::GAMEPLAYS_NAME[] =
 {
@@ -129,6 +130,10 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	  }
 	}
       }
+      AudioSource::playIndependentSound(Sounds::METROID_DOOR);
+
+      MusicThread::getInstance()->setMusic(Musics::SMALL_WORLD);
+      MusicThread::getInstance()->play();
       return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));

@@ -53,8 +53,8 @@ AnimatedEntity EntityFactory::spawnHero(Skins::Skin skin)
 
   hero.getEntity().getOgre()->setCastShadows(false);
   hero.getEntity().getNode()->setScale(1.0f / 150.0f, 1.0f / 150.0f, 1.0f / 150.0f);
-  (*(hero.getEntity().soundMap))[Sounds::BOYAUX1].setSound(Sounds::BOYAUX1);
-  (*(hero.getEntity().soundMap))[Sounds::BOYAUX1].setLooping(true);
+  (*(hero.getEntity().soundMap))[Sounds::FOOTSTEPS].setSound(Sounds::FOOTSTEPS);
+  (*(hero.getEntity().soundMap))[Sounds::FOOTSTEPS].setLooping(true);
 
   // Mount
   AnimatedEntity *mount(new AnimatedEntity("wolf.mesh", hero.getEntity().getNode()));
@@ -83,6 +83,8 @@ AnimatedEntity EntityFactory::spawnEnemy()
 
   enemy.getEntity().getOgre()->setCastShadows(false);
   enemy.getEntity().getNode()->setScale(1.0f / 300.0f, 1.0f / 300.0f, 1.0f / 300.0f);
+  (*(enemy.getEntity().soundMap))[Sounds::FOOTSTEPS].setSound(Sounds::FOOTSTEPS);
+  (*(enemy.getEntity().soundMap))[Sounds::FOOTSTEPS].setLooping(true);
   return enemy;
 }
 
