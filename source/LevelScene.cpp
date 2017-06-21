@@ -74,27 +74,26 @@ void LevelScene::resetSceneCallbacks(Renderer &r) {
 }
 void LevelScene::setTerrain(Terrain const &terrain)
 {
+  this->terrain.clear();
   for (unsigned int i(0); i < terrain.getSize()[0]; ++i)
     {
       for (unsigned int j(0); j < terrain.getSize()[1]; ++j)
 	{
 	  if (terrain.getTile({i, j}).isSolid)
 	    {
-	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
-	      Ogre::Entity* wall(wallNode->getCreator()->createEntity("WallMesh"));
+	      Entity entity("WallMesh", terrainNode->createChildSceneNode());
 
-	      wall->setCastShadows(true);
-	      wallNode->attachObject(wall);
-	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      entity.getOgre()->setCastShadows(true);
+	      entity.getNode()->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      this->terrain.push_back(std::move(entity));
 	    }
 	  else
-	    {
-	      Ogre::SceneNode *wallNode(terrainNode->createChildSceneNode());
-	      Ogre::Entity* ground(wallNode->getCreator()->createEntity("GroundMesh"));
+	    {	
+	      Entity entity("GroundMesh", terrainNode->createChildSceneNode());
 
-	      ground->setCastShadows(false);
-	      wallNode->attachObject(ground);
-	      wallNode->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      entity.getOgre()->setCastShadows(true);
+	      entity.getNode()->setPosition(static_cast<Ogre::Real>(i), 0.0f, static_cast<Ogre::Real>(j));
+	      this->terrain.push_back(std::move(entity));
 	    }
 	}
     }
