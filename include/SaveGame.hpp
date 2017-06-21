@@ -15,8 +15,10 @@ public:
   SaveState() = delete;
   SaveState(GameState &, long unsigned int);
   SaveState(SaveState const &) = delete;
+  SaveState(SaveState &&) = delete;
   SaveState &operator=(SaveState const &) = delete;
-  ~SaveState();
+  SaveState &operator=(SaveState &&) = delete;
+  ~SaveState() = default;
 
   void    serialize(unsigned int);
   void    serialize(double);

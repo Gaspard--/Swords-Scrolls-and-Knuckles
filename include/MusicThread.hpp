@@ -17,24 +17,28 @@ private:
   MusicThread(PARAMS &&... params)
     : go(true)
     , music(std::forward<PARAMS>(params)...)
-    , thread([this]() {
-	       {
-		 std::lock_guard<std::mutex> guard(mutex);
+    , mutex()
+    , thread{}
+  {
+    std::lock_guard<std::mutex> lg(mutex);
 
-		 music.setVolume(0.02f);
-		 music.play();
-	       }
-	     while ([this]() {
-	       std::lock_guard<std::mutex> guard(mutex);
+    thread = std::thread([this]() {
+      std::cout << "IN THREAD" << std::endl;
+      {
+	std::lock_guard<std::mutex> guard(mutex);
 
-	       music.update();
-	       std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60));
-	       return go;
-	     }());
-      })
-  {}
+	music.setVolume(0.02f);
+	music.play();
+      }
+      while ([this]() {
+	std::lock_guard<std::mutex> guard(mutex);
 
-  static MusicThread instance;
+	music.update();
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60));
+	return go;
+      }());
+    });
+  }
 
 public:
   std::mutex mutex;
