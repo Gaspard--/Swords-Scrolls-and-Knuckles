@@ -1,7 +1,7 @@
 #ifndef SCENE_OPTIONS_HPP
 # define SCENE_OPTIONS_HPP
 
-# include "UIOVerlayOptions.hpp"
+# include "UIOverlayOptions.hpp"
 # include "Scene.hpp"
 # include "Renderer.hpp"
 
