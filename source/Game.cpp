@@ -16,6 +16,7 @@ Game::Game()
   , window(nullptr)
   , inputManager(nullptr)
 {
+
   setupResources();
   setupRenderSystem();
 

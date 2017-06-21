@@ -21,7 +21,7 @@ AudioSource::~AudioSource()
 }
 
 AudioSource::AudioSource(AudioSource &&o)
-  : id(o.id), buffer(o.buffer)
+     : id(o.id), buffer(o.buffer)
 {
   o.id = AL_NONE;
   o.buffer = AL_NONE;
@@ -38,10 +38,10 @@ void AudioSource::init()
 {
   alGenSources(1, &id);
   Audio::checkError();
-  alSourcef(id, AL_DISTANCE_MODEL, AL_LINEAR_DISTANCE_CLAMPED);
-  alSourcef(id, AL_ROLLOFF_FACTOR, 6);
+  alSourcef(id, AL_ROLLOFF_FACTOR, 25);
+  alSourcef(id, AL_GAIN, 50);
   alSourcef(id, AL_REFERENCE_DISTANCE, 1);
-  // alSourcef(id, AL_MAX_DISTANCE, 6);
+  alSourcef(id, AL_MAX_DISTANCE, 100);
 }
 
 void AudioSource::setSound(Sounds sound)

@@ -36,7 +36,7 @@ public:
   bool isPlaying(void) const;
 
   static void playIndependentSound(Sounds, bool global=true,
-				    Ogre::Vector3 const &pos={0, 0, 0}, float volume=100.f);
+				    Ogre::Vector3 const &pos={0, 0, 0}, float volume=50.f);
   static void removeFinishedIndeSounds(void);
 };
 

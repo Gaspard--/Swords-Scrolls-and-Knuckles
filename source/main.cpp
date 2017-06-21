@@ -5,7 +5,6 @@
 int main() {
   std::cout << "in main" << std::endl;
   try {
-    MusicThread::getInstance();
     Game game;
 
     game.run();

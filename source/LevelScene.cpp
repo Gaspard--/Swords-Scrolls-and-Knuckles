@@ -223,6 +223,9 @@ void LevelScene::updateUI(std::vector<Player> const &v) {
 }
 
 void LevelScene::pauseScene(Renderer &r) {
+  auto stopFootstepsSound([](auto &ae) { ae.getEntity().soundMap->at(Sounds::FOOTSTEPS).stop(); });
+  std::for_each(players.begin(), players.end(), stopFootstepsSound);
+  std::for_each(enemies.begin(), enemies.end(), stopFootstepsSound);
   logicThread->pause();
   inPause = true;
   uiPause.setUIVisible(true);

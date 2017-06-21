@@ -37,8 +37,8 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", [&renderer]() {
     renderer.switchScene([&renderer]() {
-      MusicThread::getInstance()->setMusic(Musics::FIND_YOU);
-      MusicThread::getInstance()->play();
+      /*MusicThread::getInstance()->setMusic(Musics::FIND_YOU);
+      MusicThread::getInstance()->play();*/
       return new SceneMainMenu(renderer);
     });
   }));
