@@ -45,7 +45,7 @@ void Terrain::generateLevel(unsigned int seed)
   std::uniform_int_distribution<> range5(1, 5);
   // std::vector<Vect<2u, unsigned int>> rooms;
 
-  rooms.emplace_back(Vect<2u, unsigned int>{5u, 5u});
+  rooms.emplace_back(Vect<2u, unsigned int>{7u, 7u});
   for (unsigned int i(1); i < 30; ++i)
     rooms.emplace_back(Vect<2u, unsigned int>{static_cast<unsigned int>(rangeX(engine)), static_cast<unsigned int>(rangeY(engine))}, i, false);
   rooms.emplace_back(getSize() - Vect<2u, unsigned int>{5u, 5u}, 30u, false);
