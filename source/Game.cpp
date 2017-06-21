@@ -39,6 +39,9 @@ Game::Game()
   Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName("HUD/Font");
   font->load();
 
+  // Activate vsync
+  window->setVSyncEnabled(true);
+
   // Go to start screen
   renderer->doSwitchScene(Renderer::SceneSwitcherException([this]() {
     return (static_cast<Scene *>(new SceneStart(*renderer)));
@@ -185,6 +188,13 @@ void Game::windowClosed(Ogre::RenderWindow* rw)
       OIS::InputManager::destroyInputSystem(inputManager);
       inputManager = nullptr;
     }
+  }
+}
+
+void Game::windowResized(Ogre::RenderWindow* rw)
+{
+  if (rw == window) {
+    rw->resize(Game::WIDTH, Game::HEIGHT);
   }
 }
 

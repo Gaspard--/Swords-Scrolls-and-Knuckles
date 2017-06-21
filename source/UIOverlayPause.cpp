@@ -12,7 +12,7 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   Ogre::OverlayManager *manager(Ogre::OverlayManager::getSingletonPtr());
   int i(0);
   Ogre::Real posX(0.55f);
-  Ogre::Real offset(0.2f);
+  Ogre::Real offset(0.35f);
   Ogre::Real mult(1.8f);
 
   // Background
@@ -26,21 +26,13 @@ UIOverlayPause::UIOverlayPause(LevelScene &ls, Renderer &renderer)
   bg->addChild(resume->getPanel());
   buttons.emplace_back(std::move(resume));
 
-  // Exit button
+  // Save button
   std::unique_ptr<UIButton> save(new UIButton(manager, "Save", [&ls, &renderer]() {
     ls.unpauseScene(renderer);
   }));
   save->init("HUD/ButtonPauseSave", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
   bg->addChild(save->getPanel());
   buttons.emplace_back(std::move(save));
-
-  // Exit button
-  std::unique_ptr<UIButton> options(new UIButton(manager, "Options", [&ls, &renderer]() {
-    ls.unpauseScene(renderer);
-  }));
-  options->init("HUD/ButtonPauseOptions", posX, offset + UIButton::DEFAULT_HEIGHT * mult * i++);
-  bg->addChild(options->getPanel());
-  buttons.emplace_back(std::move(options));
 
   // Exit button
   std::unique_ptr<UIButton> exit(new UIButton(manager, "Exit", [&renderer]() {

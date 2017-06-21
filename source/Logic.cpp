@@ -1,6 +1,7 @@
 #include <OgreParticleSystem.h>
 #include <algorithm>
 #include <iostream>
+#include "SceneGameOver.hpp"
 #include "UIOverlaySelection.hpp"
 #include "Logic.hpp"
 #include "Physics.hpp"
@@ -42,7 +43,8 @@ bool Logic::tick()
 		    (dropSeed == 1) ? ProjectileType::GOLD50 :
 		    (dropSeed <= 3) ? ProjectileType::GOLD20 :
 		    (dropSeed <= 6) ? ProjectileType::GOLD5 :
-		    (dropSeed <= 10) ? ProjectileType::HEAL :  ProjectileType::GOLD);
+		    (dropSeed <= 10) ? ProjectileType::HEAL :
+		    ProjectileType::GOLD);
 
 	  enemyProjectiles.add([this, drop](){
 	      return entityFactory.spawnProjectile(drop);
@@ -124,23 +126,47 @@ bool Logic::tick()
   Physics::collisionTest(gameState.players.begin(), gameState.players.end(), correctOverlap);
   Physics::collisionTest(gameState.enemies.begin(), gameState.enemies.end(), correctOverlap);
   for (auto &enemy : gameState.enemies)
-  {
-    if (enemy.ai)
     {
-      pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+      if (enemy.ai)
+	{
+	  pyBindInstance.execAI[enemy.ai](&pyBindInstance, enemy, pyEvaluate);
+	}
     }
-  }
   for (auto &player : gameState.players)
-  {
-    unsigned int ai(player.getAI());
-
-    if (ai)
     {
-      pyBindInstance.execAI[ai](&pyBindInstance, player, pyEvaluate);
-      player.setAttacking(0u, pyEvaluate.attack);
-      player.setAttacking(2u, pyEvaluate.attack);
+      unsigned int ai(player.getAI());
+
+      if (ai)
+	{
+	  pyBindInstance.execAI[ai](&pyBindInstance, player, pyEvaluate);
+	  player.setAttacking(0u, pyEvaluate.attack);
+	  player.setAttacking(2u, pyEvaluate.attack);
+	}
+      if (player.shouldBeRemoved())
+	{
+	  auto it(std::find_if(gameState.players.begin(), gameState.players.end(),
+			       [](auto const &player)
+			       {
+				 return !player.isDead();
+			       }));
+
+	  if (it == gameState.players.end())
+	    {
+	      Scoreboard sb;
+	      for (auto const &player : gameState.players) {
+		sb.addScore(static_cast<PlayerId>(player.getId()), player.getGold());
+	      }
+	      stop = true;
+	    }
+	  else
+	    {
+	      player.pos = it->pos + Vect<2u, double>{0.1, 0.1};
+	      player.heal(1000);
+	      player.dePopCounter = 0;
+	      player.resetCooldowns();
+	    }
+	}
     }
-  }
   return stop;
 }
 
@@ -274,10 +300,16 @@ void Logic::exit()
   std::clog << "[Logic] stoping thread" << std::endl;
 }
 
-void Logic::updateDisplay(LevelScene &levelScene)
+void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
 {
   std::lock_guard<std::mutex> const lock_guard(lock);
 
+  if (stop)
+    {
+      renderer.switchScene([&renderer]() {
+        return new SceneGameOver(renderer);
+      });
+    }
   enemies.updateTarget();
   auto const updateProjectileEntities([this, &levelScene](auto &projectiles){
       projectiles.updateTarget();
@@ -318,13 +350,13 @@ void Logic::updateDisplay(LevelScene &levelScene)
 
   auto const updateControllableEntity([](AnimatedEntity &animatedEntity, Controllable &controllable){
       animatedEntity.getEntity().setDirection(controllable.getDir());
-      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(controllable.pos[0]),
-					     animatedEntity.isMounted(), // Put the controllable a bit higher when he's on his mount.
-					     static_cast<Ogre::Real>(controllable.pos[1])
-					     );
     });
   enemies.forEach([updateControllableEntity, this](AnimatedEntity &animatedEntity, Enemy &enemy)
 		  {
+		    animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(enemy.pos[0]),
+							   0.0f,
+							   static_cast<Ogre::Real>(enemy.pos[1])
+							   );
 		    updateControllableEntity(animatedEntity, enemy);
 		    if (enemy.isWalking())
 		    {
@@ -352,6 +384,12 @@ void Logic::updateDisplay(LevelScene &levelScene)
       Player &player(gameState.players[i]);
       bool otherMainAnimation{false};
 
+      animatedEntity.getEntity().setPosition(static_cast<Ogre::Real>(player.pos[0]),
+					     animatedEntity.isMounted() - player.dePopCounter * 0.001f,
+					     static_cast<Ogre::Real>(player.pos[1])
+					     );
+      if (player.isDead())
+	continue ;
       updateControllableEntity(animatedEntity, player);
 
       switch (static_cast<PlayerId>(player.getId()))
@@ -414,7 +452,7 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    }
 	  if (player.getSpells()[2].hasEffect())
 	    {
-	      double angle(-player.getSpells()[2].startedSince() * 0.1);
+	      double angle(-(player.getSpells()[2].startedSince() * 0.1));
 
 	      animatedEntity.setMainAnimation(Animations::Controllable::Warrior::SPELL_FORWARD, 0.1f, true);
 	      animatedEntity.getEntity().setDirection(Vect<2u, float>((float)std::cos(angle), (float)std::sin(angle)));
@@ -434,7 +472,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	    }
 	  break;
 	}
-
       if (!otherMainAnimation)
 	{
 	  if (player.isWalking())
@@ -464,7 +501,6 @@ void Logic::updateDisplay(LevelScene &levelScene)
 	}
       animatedEntity.updateAnimations(static_cast<Ogre::Real>(updatesSinceLastFrame * (1.0f / 120.0f)));
     }
-
   action.update();
   calculateCamera(levelScene);
   levelScene.updateUI(gameState.players);
@@ -489,8 +525,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 					  }));
   Vect<3u, double> const leftVecX(minmax_x.first->getPos()[0], 0.0, minmax_x.first->getPos()[1]);
   Vect<3u, double> const rightVecX(minmax_x.second->getPos()[0], 0.0, minmax_x.first->getPos()[1]);
-  auto const midVecX((rightVecX - leftVecX) / 2 - cameraPos);
-
+  auto const midVecX((rightVecX - leftVecX) / 2);
   auto const minmax_z(std::minmax_element(gameState.players.cbegin(),
 					  gameState.players.cend(),
 					  [](auto const &p1, auto const &p2) {
@@ -498,7 +533,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
 					  }));
   Vect<3u, double> const leftVecZ(minmax_z.first->getPos()[1], 0.0, minmax_z.first->getPos()[1]);
   Vect<3u, double> const rightVecZ(minmax_z.second->getPos()[1], 0.0, minmax_z.first->getPos()[1]);
-  auto const midVecZ((rightVecZ - leftVecZ) / 2 - cameraPos);
+  auto const midVecZ((rightVecZ - leftVecZ) / 2);
 
   double const yxpos((-tanAngle * (std::sqrt(midVecX.length2())) + 10) * 1.5f);
   double const yzpos((-tanAngleUp * (std::sqrt(midVecZ.length2())) + 10) * 0.8f);
@@ -508,7 +543,7 @@ void Logic::calculateCamera(LevelScene &levelScene)
   cameraDest[0] = minmax_x.first->getPos()[0]
     + (double)(minmax_x.second->getPos()[0] - minmax_x.first->getPos()[0]) / 2.f;
   cameraDest[1] = clamp(std::max(yxpos, yzpos), 0.0, yMax);
-  cameraDest[2] = (double)(minmax_z.first->getPos()[1]+ (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
+  cameraDest[2] = (double)(minmax_z.first->getPos()[1] + (minmax_z.second->getPos()[1] - minmax_z.first->getPos()[1]) / 2.f)
     + 0.5f * cameraDest[1];
 
   cameraDest = cameraPos + (cameraDest - cameraPos) / 10.0;

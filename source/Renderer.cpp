@@ -1,3 +1,4 @@
+#include "AudioListener.hpp"
 #include "Renderer.hpp"
 #include "Game.hpp"
 
@@ -12,29 +13,53 @@ Renderer::Renderer(Game &game)
 
   // viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 0.0)); // Black
   camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) /
-			 Ogre::Real(viewport->getActualHeight()));
+    Ogre::Real(viewport->getActualHeight()));
+  
+  // Options init
+  options.emplace_back("FULLSCREEN", true, [&game](bool b) {
+    game.getWindow().setFullscreen(b, Game::WIDTH, Game::HEIGHT);
+  });
+  options.emplace_back("SOUNDS", true, [](bool b) {
+    AudioListener::setVolume(static_cast<float>(b));
+  });
+  options.emplace_back("VSYNC", true, [&game](bool b) {
+    game.getWindow().setVSyncEnabled(b);
+  });
+  options.emplace_back("STENCIL SHADOWS", true, [this](bool b) {
+    scenemgr->setShadowTechnique(b ? Ogre::SHADOWTYPE_STENCIL_ADDITIVE : Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+  });
 }
 
 Ogre::SceneManager &Renderer::getSceneManager(void)
 {
-	return (*scenemgr);
+  return (*scenemgr);
 }
 
 Ogre::SceneManager const &Renderer::getSceneManager(void) const
 {
-	return (*scenemgr);
+  return (*scenemgr);
 }
 
 Ogre::Camera &Renderer::getCamera(void)
 {
-	return (*camera);
+  return (*camera);
 }
 
 Ogre::Camera const &Renderer::getCamera(void) const
 {
-	return (*camera);
+  return (*camera);
 }
 
 std::unique_ptr<Scene> const &Renderer::getScene(void) const {
-	return (scene);
+  return (scene);
+}
+
+std::vector<Option> &Renderer::getOptions(void)
+{
+  return (options);
+}
+
+std::vector<Option> const &Renderer::getOptions(void) const
+{
+  return (options);
 }

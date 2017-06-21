@@ -2,6 +2,7 @@
 # define RENDERER_HPP
 
 # include <memory>
+# include <vector>
 # include <functional>
 # include <OgreSceneManager.h>
 # include <OgreCamera.h>
@@ -11,6 +12,7 @@
 # include "Joystick.hpp"
 # include "Keyboard.hpp"
 # include "Scene.hpp"
+# include "Option.hpp"
 
 class Renderer
 {
@@ -22,6 +24,7 @@ private:
   Ogre::Camera *camera;
   Ogre::Viewport *viewport;
   std::unique_ptr<Scene> scene;
+  std::vector<Option> options;
 
 public:
   Renderer(void) = delete;
@@ -64,6 +67,11 @@ public:
 
   /// Returns the current scene
   std::unique_ptr<Scene> const & getScene(void) const;
+
+  
+  /// Returns the options
+  std::vector<Option> &getOptions(void);
+  std::vector<Option> const &getOptions(void) const;
 
   // Scene switching exceptions
 

@@ -1,6 +1,7 @@
 #ifndef UIOVERLAY_SCOREBOARD_HPP
 # define UIOVERLAY_SCOREBOARD_HPP
 
+# include <Overlay/OgreTextAreaOverlayElement.h>
 # include "UIOverlay.hpp"
 # include "Scoreboard.hpp"
 

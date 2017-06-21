@@ -1,0 +1,46 @@
+material HUD/OptionsMenuBG
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit
+			{
+				texture OptionsMenuBG.png
+			}
+		}
+	}
+}
+
+material HUD/YesButton
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture YesButton.png
+			}
+		}
+	}
+}
+
+material HUD/NoButton
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture NoButton.png
+			}
+		}
+	}
+}

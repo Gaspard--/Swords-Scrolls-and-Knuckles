@@ -72,7 +72,7 @@ void            Scoreboard::loadScoreboard(std::string const &path)
 void              Scoreboard::sort()
 {
   std::sort(scoreboard.begin(), scoreboard.end(), [](PlayerData const &a, PlayerData const &b){
-    return a.playerScore < b.playerScore;
+    return a.playerScore > b.playerScore;
   });
 }
 

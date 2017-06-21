@@ -23,7 +23,7 @@ void Action::update()
     catch (std::out_of_range const &) {}
     try { jsCtrld.second->setAttacking(2u, (*jsCtrld.first)[joystickState::JS_B]); }
     catch (std::out_of_range const &) {}
-    try { jsCtrld.second->setLocked((*jsCtrld.first)[joystickState::JS_RB]); }
+    try { jsCtrld.second->setLocked((*jsCtrld.first)[joystickState::JS_LT] ||(*jsCtrld.first)[joystickState::JS_RB]); }
     catch (std::out_of_range const &) {}
   }
   for (auto &kbCtrld : keyboardControlled)
