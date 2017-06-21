@@ -21,7 +21,7 @@ private:
 	       {
 		 std::lock_guard<std::mutex> guard(mutex);
 
-		 music.setVolume(0.02f);
+		 music.setVolume(0.04f);
 		 music.play();
 	       }
 	     while ([this]() {

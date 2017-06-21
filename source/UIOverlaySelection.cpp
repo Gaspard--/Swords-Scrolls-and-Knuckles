@@ -130,7 +130,7 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	  }
 	}
       }
-      AudioSource::playIndependentSound(Sounds::METROID_DOOR);
+      AudioSource::playIndependentSound(Sounds::METROID_DOOR, true, {0, 0, 0}, 25);
 
       MusicThread::getInstance()->setMusic(Musics::SMALL_WORLD);
       MusicThread::getInstance()->play();
