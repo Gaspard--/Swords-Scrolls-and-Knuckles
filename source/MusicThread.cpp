@@ -1,6 +1,5 @@
 #include "MusicThread.hpp"
 
-MusicThread MusicThread::instance(Musics::FIND_YOU);
 
 MusicThread::~MusicThread()
 {
@@ -10,6 +9,8 @@ MusicThread::~MusicThread()
 
 MusicThread &MusicThread::getInstance(void)
 {
+  static MusicThread instance(Musics::FIND_YOU);
+
   return instance;
 }
 

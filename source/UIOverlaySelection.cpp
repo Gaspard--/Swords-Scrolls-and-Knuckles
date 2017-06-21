@@ -132,8 +132,8 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
       }
       AudioSource::playIndependentSound(Sounds::METROID_DOOR, true, {0, 0, 0}, 25);
 
-      MusicThread::getInstance()->setMusic(Musics::SMALL_WORLD);
-      MusicThread::getInstance()->play();
+      /*MusicThread::getInstance()->setMusic(Musics::SMALL_WORLD);
+      MusicThread::getInstance()->play();*/
       return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));
