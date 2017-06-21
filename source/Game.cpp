@@ -6,6 +6,8 @@
 #include "Joystick.hpp"
 #include "PyPlugin.hpp"
 #include "LevelScene.hpp"
+#include "AudioListener.hpp"
+#include "AudioSource.hpp"
 
 // Constructor
 

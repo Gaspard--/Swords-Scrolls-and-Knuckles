@@ -38,11 +38,10 @@ void AudioSource::init()
 {
   alGenSources(1, &id);
   Audio::checkError();
-  alSourcef(id, AL_PITCH, 1.f);
-  alSourcef(id, AL_GAIN, 100.f);
-  alSourcef(id, AL_ROLLOFF_FACTOR, 1.f);
-  alSourcef(id, AL_MAX_DISTANCE, 100.f);
-  alSourcef(id, AL_REFERENCE_DISTANCE, 0.2f);
+  alSourcef(id, AL_DISTANCE_MODEL, AL_LINEAR_DISTANCE_CLAMPED);
+  alSourcef(id, AL_ROLLOFF_FACTOR, 6);
+  alSourcef(id, AL_REFERENCE_DISTANCE, 1);
+  // alSourcef(id, AL_MAX_DISTANCE, 6);
 }
 
 void AudioSource::setSound(Sounds sound)

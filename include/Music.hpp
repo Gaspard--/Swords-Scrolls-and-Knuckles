@@ -2,8 +2,9 @@
 # define MUSIC_HPP
 
 # include <array>
-# include <ogg/ogg.h>
+# include <mutex>
 
+# include <ogg/ogg.h>
 # include <vorbis/codec.h>
 # include <vorbis/vorbisfile.h>
 # include <vorbis/vorbisenc.h>
@@ -22,6 +23,7 @@ private:
   std::array<ALuint, 2>	buffers;
   ALuint source;
   ALenum format;
+  Musics music;
   float	loopTime;
   bool fade;
 
@@ -36,6 +38,7 @@ public:
 
   Music(Music const &) = delete;
   Music &operator=(Music const &) = delete;
+  std::mutex mutex;
 
   void play(void);
 

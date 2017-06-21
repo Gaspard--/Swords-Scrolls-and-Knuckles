@@ -130,13 +130,10 @@ UIOverlaySelection::UIOverlaySelection(Renderer &renderer)
 	  }
 	}
       }
-      std::cout << "AH:locking to change musing" << std::endl;
       AudioSource::playIndependentSound(Sounds::METROID_DOOR);
-      // std::lock_guard<std::mutex> guard(MusicThread::getInstance().mutex);
 
       MusicThread::getInstance()->setMusic(Musics::SMALL_WORLD);
       MusicThread::getInstance()->play();
-      std::cout << "AH: unlocking" << std::endl;
       return static_cast<Scene *>(new LevelScene(renderer, v, classes, gameplays));
     });
   }, bwidth, UIOverlaySelection::SELECTIONBUTTON_HEIGHT, 0.0f));

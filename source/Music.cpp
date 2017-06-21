@@ -40,6 +40,8 @@ void Music::initMusic(Musics music, float loopTime)
 {
   if (ov_fopen(Audio::getMusicFileName(music), &oggStream) < 0)
     throw AudioError("Could not open .ogg file");
+
+  this->music = music;
   vorbisInfo = ov_info(&oggStream, -1);
   vorbisComment = ov_comment(&oggStream, -1);
   format = vorbisInfo->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
@@ -55,6 +57,7 @@ void Music::releaseMusic(void)
 
 void Music::setMusic(Musics music, float loopTime)
 {
+  std::lock_guard<std::mutex> guard(mutex);
   if (source != AL_NONE)
     {
       releaseMusic();
@@ -107,6 +110,9 @@ void Music::update(void)
   ALuint buffer[1];
   int processed(AL_NONE);
   bool active(true);
+  mutex.lock();
+  Musics first(this->music);
+  mutex.unlock();
 
   if (fade)
     setVolume(getVolume() / 1.1f);
@@ -116,6 +122,11 @@ void Music::update(void)
       alSourceUnqueueBuffers(source, 1, buffer);
       Audio::checkError();
       active = streamFile(buffer[0]);
+	{
+	  std::lock_guard<std::mutex> guard(mutex);
+	  if (first != this->music)
+	    return;
+	}
       alSourceQueueBuffers(source, 1, buffer);
       Audio::checkError();
       if (!active)
@@ -127,9 +138,16 @@ bool Music::streamFile(ALuint buffer)
 {
   char data[BUFFER_SIZE];
   unsigned int size(0);
+  Musics first(this->music);
 
   while (size < BUFFER_SIZE)
     {
+	{
+	  std::lock_guard<std::mutex> guard(mutex);
+
+	  if (first != this->music)
+	    return true;
+	}
       int size_read(ov_read(&oggStream, data + size, BUFFER_SIZE - size, 0, 2, 1, 0));
       size += size_read;
       if (size_read <= 0)
