@@ -1,7 +1,9 @@
 #include <exception>
+#include "MusicThread.hpp"
 #include "Game.hpp"
 
 int main() {
+  std::cout << "in main" << std::endl;
   try {
     Game game;
 

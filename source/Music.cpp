@@ -19,7 +19,7 @@ Music::Music(Musics m, float loop)
   alSource3f(source, AL_VELOCITY, 0., 0., 0.);
   alSource3f(source, AL_DIRECTION, 0., 0., 0.);
   alSourcef(source, AL_ROLLOFF_FACTOR, 0.);
-  alSourcef(source, AL_SOURCE_RELATIVE, AL_TRUE);
+  alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
   if (!Audio::checkError(false))
     {
       alDeleteSources(1, &source);
@@ -27,6 +27,7 @@ Music::Music(Musics m, float loop)
       alDeleteBuffers(1, &buffers[0]);
       throw AudioError("Couldn't delete a buffer in Music::Music");
     }
+  std::cout << "ENDCTOR" << std::endl;
 }
 
 Music::~Music()
@@ -69,8 +70,10 @@ void Music::play(void)
 {
   if (!streamFile(buffers[0]) || !streamFile(buffers[1]))
     throw AudioError("Couldn't play music");
+  std::cout << "PLAYINIT" << std::endl;
   alSourceQueueBuffers(source, 2, buffers.data());
   alSourcePlay(source);
+  std::cout << "PLAYINITEND" << std::endl;
 }
 
 void Music::setLoopTime(float f)

@@ -42,6 +42,11 @@ void AnimatedEntity::addSubAnimation(std::string const &s, bool reset, bool loop
   as->setEnabled(true);
 }
 
+void AnimatedEntity::stopSubAnimation(std::string const &s)
+{
+  entity.getOgre()->getAnimationState(s)->setEnabled(false);
+}
+
 void AnimatedEntity::updateAnimations(Ogre::Real r)
 {
   if (entityMount)

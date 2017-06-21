@@ -1,6 +1,5 @@
 #include "MusicThread.hpp"
 
-
 MusicThread::~MusicThread()
 {
   go = false;

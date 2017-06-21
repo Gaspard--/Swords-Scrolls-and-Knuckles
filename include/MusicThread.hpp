@@ -34,8 +34,6 @@ private:
       })
   {}
 
-  static MusicThread instance;
-
 public:
   std::mutex mutex;
 

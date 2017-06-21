@@ -47,6 +47,8 @@ public:
   /// Add a sub animation to this entity
   void addSubAnimation(std::string const &s,  bool reset = true, bool loop = false);
 
+  void stopSubAnimation(std::string const &s);
+
   /// Update all animations
   void updateAnimations(Ogre::Real);
 

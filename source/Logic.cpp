@@ -170,7 +170,8 @@ bool Logic::tick()
   return stop;
 }
 
-Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities, std::vector<PlayerId> const &vec, std::vector<Gameplays> const &gp)
+Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEntity> &playerEntities,
+	     std::vector<PlayerId> const &vec, std::vector<Gameplays> const &gp)
   : stop(false)
   , playerEntities(playerEntities)
   , enemies(gameState.enemies, levelScene.enemies)
@@ -187,28 +188,24 @@ Logic::Logic(LevelScene &levelScene, Renderer &renderer, std::vector<AnimatedEnt
       { {KBACTION::GO_UP, OIS::KC_W}, {KBACTION::GO_DOWN, OIS::KC_S},
       {KBACTION::GO_LEFT, OIS::KC_A}, {KBACTION::GO_RIGHT, OIS::KC_D},
       {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
-      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
-      {KBACTION::MOUNT, OIS::KC_Z}},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
 #else
       {{KBACTION::GO_UP, OIS::KC_Z}, {KBACTION::GO_DOWN, OIS::KC_S},
       {KBACTION::GO_LEFT, OIS::KC_Q}, {KBACTION::GO_RIGHT, OIS::KC_D},
       {KBACTION::SPELL1, OIS::KC_V}, {KBACTION::SPELL2, OIS::KC_B},
-      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT},
-      {KBACTION::MOUNT, OIS::KC_W}},
+      {KBACTION::SPELL3, OIS::KC_N}, {KBACTION::LOCK, OIS::KC_LSHIFT}},
 #endif // defined OIS_WIN32_PLATFORM
       std::map<unsigned int, OIS::KeyCode>
 #if defined OIS_WIN32_PLATFORM
       { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
       {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_SEMICOLON},
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
-      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
-      {KBACTION::MOUNT, OIS::KC_DOWN}} }
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 #else
       { {KBACTION::GO_UP, OIS::KC_O}, {KBACTION::GO_DOWN, OIS::KC_L},
       {KBACTION::GO_LEFT, OIS::KC_K}, {KBACTION::GO_RIGHT, OIS::KC_M},
       {KBACTION::SPELL1, OIS::KC_LEFT}, {KBACTION::SPELL2, OIS::KC_RIGHT},
-      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT},
-      {KBACTION::MOUNT, OIS::KC_DOWN}}}
+      {KBACTION::SPELL3, OIS::KC_UP}, {KBACTION::LOCK, OIS::KC_RSHIFT}}}
 #endif // defined OIS_WIN32_PLATFORM
 {
   gameState.terrain.generateLevel(420u); // TODO: something better
@@ -426,7 +423,7 @@ void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
 	  if (player.getSpells()[1].hasEffect())
 	    animatedEntity.addSubAnimation(Animations::Controllable::Mage::SPELL_E, true);
 	  if (player.getSpells()[2].hasEffect() != animatedEntity.isMounted()) {
-	    animatedEntity.setMounted(player.isMounted());
+	    animatedEntity.setMounted(player.getSpells()[2].hasEffect());
 	  }
 	  break;
 	case PlayerId::TANK:
@@ -437,10 +434,12 @@ void Logic::updateDisplay(Renderer &renderer, LevelScene &levelScene)
 	      animatedEntity.setMainAnimation(Animations::Controllable::Tank::JUMP, 0.1f, false);
 	      otherMainAnimation = true;
 	    }
-	  if (player.getSpells()[3].hasEffect())
-	    {
-	      animatedEntity.addSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD, 0.0f, true);
-	    }
+	  if (player.getSpells()[2].startedSince() <= updatesSinceLastFrame)
+	    animatedEntity.addSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD, true, true);
+	  else if (player.getSpells()[2].hasEffect())
+	    animatedEntity.addSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD, false, true);
+	  else
+	    animatedEntity.stopSubAnimation(Animations::Controllable::Tank::SPELL_FORWARD);
 	  break;
 	case PlayerId::WARRIOR:
 	  if (player.getSpells()[0].startedSince() <= updatesSinceLastFrame)
